@@ -1,0 +1,7 @@
+option('boost_path', type : 'string', value : '', description : 'Path to boost')
+option('boost_inc_path', type : 'string', value : '', description : 'Path to boost includes')
+option('boost_lib_path', type : 'string', value : '', description : 'Path to boost libraries')
+
+option('libcpp', type : 'boolean', value : false, description : 'Use libc++')
+option('libcpp_link_path', type : 'string', value : '', description : 'Path to libc++ for linking')
+option('libcpp_inc_path', type : 'string', value : '', description : 'Include path to libc++')
