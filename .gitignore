@@ -1,4 +1,6 @@
 *.swp
+.rake_tasks~
+
 
 build
 branches

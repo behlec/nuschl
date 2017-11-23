@@ -1,4 +1,4 @@
-project('nuschl', 'cpp', default_options : ['cpp_std=c++14'])
+project('nuschl', 'cpp', default_options : ['cpp_std=c++1z'])
 
 ################################
 #
@@ -12,6 +12,7 @@ add_project_arguments(['-DBOOST_LOG_DYN_LINK'], language : 'cpp')
 
 # We compile with libc++
 if get_option('libcpp')
+    message('Using libcpp')
     add_project_arguments(['-stdlib=libc++'], language : 'cpp')
     add_project_link_arguments(['-stdlib=libc++'], language : 'cpp')
     if get_option('libcpp_link_path') != ''
@@ -19,7 +20,14 @@ if get_option('libcpp')
     endif
 endif
 
-add_project_arguments(['-DNUSCHL_BOOSTVARIANT'], language : 'cpp')
+if meson.get_compiler('cpp').get_id() == 'clang' and not get_option('libcpp')
+    message('Using boost::variant for clang')
+    add_project_arguments(['-DNUSCHL_BOOSTVARIANT'], language : 'cpp')
+    boost_variant = true
+else
+    message('Using std::variant')
+    boost_variant = false
+endif
 
 
 ###########
@@ -61,6 +69,7 @@ endif
 ################################
 
 nuschl_files = files(
+    'src/lib/atom.cpp',
     'src/lib/number.cpp',
     'src/lib/symbol.cpp'
 )
@@ -90,6 +99,7 @@ endif
 
 unit_test_files = [
     'test/unittests/main.cpp',
+    'test/unittests/atom.cpp',
     'test/unittests/number.cpp',
     'test/unittests/symbol.cpp'
 ]

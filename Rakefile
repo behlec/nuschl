@@ -278,6 +278,11 @@ task :comp do
   end
 end
 
+desc 'Create coverage'
+task :coverage => 'test:gcc' do
+    Rake.sh "cd build/gcc && ninja coverage-text && cat meson-logs/coverage.txt"
+end
+
 # desc 'Create documentation'
 # task :doc => 'doc:doxy'
 #
