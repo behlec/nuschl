@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <memory>
 
 #include <nuschl/number.hpp>
 #include <nuschl/symbol.hpp>
@@ -29,7 +30,13 @@ class atom {
     variant<symbol, number> m_value;
 };
 
+using atom_ptr = std::shared_ptr<const atom>;
+
 bool operator==(const atom &, const atom &) noexcept;
+
 bool operator!=(const atom &, const atom &) noexcept;
+
 std::ostream &operator<<(std::ostream &, const atom &);
+
+std::ostream &operator<<(std::ostream &, const atom_ptr &);
 }

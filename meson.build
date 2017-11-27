@@ -70,8 +70,11 @@ endif
 
 nuschl_files = files(
     'src/lib/atom.cpp',
+    'src/lib/exceptions.cpp',
+    'src/lib/function.cpp',
     'src/lib/number.cpp',
-    'src/lib/symbol.cpp'
+    'src/lib/symbol.cpp',
+    'src/lib/s_exp.cpp'
 )
 
 nuschl_inc = include_directories('include')
@@ -100,8 +103,10 @@ endif
 unit_test_files = [
     'test/unittests/main.cpp',
     'test/unittests/atom.cpp',
+    'test/unittests/function.cpp',
     'test/unittests/number.cpp',
-    'test/unittests/symbol.cpp'
+    'test/unittests/symbol.cpp',
+    'test/unittests/s_exp.cpp'
 ]
 
 exe = executable('unittests', unit_test_files, dependencies: [nuschl_dep, boost_test_dep])

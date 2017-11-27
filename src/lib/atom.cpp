@@ -35,3 +35,8 @@ std::ostream &nuschl::operator<<(std::ostream &os, const nuschl::atom &a) {
     }
     return os;
 }
+
+std::ostream &nuschl::operator<<(std::ostream &os, const nuschl::atom_ptr &ap) {
+    os << ap.get();
+    return os;
+}
