@@ -32,6 +32,10 @@ class atom {
 
 using atom_ptr = std::shared_ptr<const atom>;
 
+atom_ptr make_atom(const number &);
+atom_ptr make_atom(const symbol &);
+atom_ptr make_atom(const symbol &&);
+
 bool operator==(const atom &, const atom &) noexcept;
 
 bool operator!=(const atom &, const atom &) noexcept;

@@ -19,7 +19,7 @@ BOOST_AUTO_TEST_CASE(nil) {
 }
 
 BOOST_AUTO_TEST_CASE(create_from_atom) {
-    const atom_ptr a = std::make_shared<atom>("hello");
+    const atom_ptr a = make_atom("hello");
     s_exp e(a);
 
     BOOST_REQUIRE(e.is_atom());
@@ -32,9 +32,9 @@ BOOST_AUTO_TEST_CASE(create_from_atom) {
 }
 
 BOOST_AUTO_TEST_CASE(create_list) {
-    const atom_ptr a1 = std::make_shared<atom>(number{1});
-    const atom_ptr a2 = std::make_shared<atom>(number{2});
-    const atom_ptr a3 = std::make_shared<atom>(number{3});
+    const atom_ptr a1 = make_atom(number{1});
+    const atom_ptr a2 = make_atom(number{2});
+    const atom_ptr a3 = make_atom(number{3});
 
     s_exp e3(a3);
     s_exp e2(a2);
@@ -67,13 +67,13 @@ BOOST_AUTO_TEST_CASE(ostream_nil) {
 
 BOOST_AUTO_TEST_CASE(ostream_atom) {
     std::stringstream ss;
-    const atom_ptr a = std::make_shared<atom>("hello");
+    const atom_ptr a = make_atom("hello");
     s_exp e(a);
     ss << &e;
     BOOST_CHECK_EQUAL(ss.str(), "hello");
     ss.str("");
 
-    const atom_ptr b = std::make_shared<atom>(number{1});
+    const atom_ptr b = make_atom(number{1});
     e = s_exp(b);
     ss << &e;
     BOOST_CHECK_EQUAL(ss.str(), "1");
@@ -82,9 +82,9 @@ BOOST_AUTO_TEST_CASE(ostream_atom) {
 BOOST_AUTO_TEST_CASE(ostream_list) {
     std::stringstream ss;
 
-    const atom_ptr a1 = std::make_shared<atom>(number{1});
-    const atom_ptr a2 = std::make_shared<atom>(number{2});
-    const atom_ptr a3 = std::make_shared<atom>(number{3});
+    const atom_ptr a1 = make_atom(number{1});
+    const atom_ptr a2 = make_atom(number{2});
+    const atom_ptr a3 = make_atom(number{3});
 
     s_exp e3(a3);
     s_exp e2(a2);

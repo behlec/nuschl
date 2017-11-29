@@ -40,3 +40,13 @@ std::ostream &nuschl::operator<<(std::ostream &os, const nuschl::atom_ptr &ap) {
     os << ap.get();
     return os;
 }
+
+nuschl::atom_ptr nuschl::make_atom(const number &n) {
+    return std::make_shared<atom>(n);
+}
+nuschl::atom_ptr nuschl::make_atom(const symbol &s) {
+    return std::make_shared<atom>(s);
+}
+nuschl::atom_ptr nuschl::make_atom(const symbol &&s) {
+    return std::make_shared<atom>(std::move(s));
+}
