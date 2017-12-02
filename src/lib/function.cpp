@@ -11,7 +11,7 @@ nuschl::lambda::lambda(lambda::argument_list argument_names,
                        const s_exp_ptr function_body, env_ptr env)
     : m_vars(argument_names), m_body(function_body), m_env(env) {}
 
-const nuschl::s_exp_ptr nuschl::lambda::body() const noexcept { return m_body; }
+nuschl::s_exp_ptr nuschl::lambda::body() const noexcept { return m_body; }
 
 const nuschl::lambda::argument_list &nuschl::lambda::get_argument_names() const
     noexcept {

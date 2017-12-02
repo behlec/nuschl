@@ -105,6 +105,7 @@ unit_test_files = [
     'test/unittests/main.cpp',
     'test/unittests/atom.cpp',
     'test/unittests/function.cpp',
+    'test/unittests/helper.cpp',
     'test/unittests/number.cpp',
     'test/unittests/primitives.cpp',
     'test/unittests/symbol.cpp',

@@ -34,7 +34,7 @@ class lambda {
     lambda(argument_list argument_names, const s_exp_ptr function_body,
            env_ptr env);
 
-    const s_exp_ptr body() const noexcept;
+    s_exp_ptr body() const noexcept;
     const argument_list &get_argument_names() const noexcept;
     env_ptr get_env() const noexcept;
     std::string representation() const;

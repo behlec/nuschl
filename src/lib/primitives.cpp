@@ -30,7 +30,7 @@ argument_checker exact_n_args(size_t n) {
                                 "arguments, got " + std::to_string(args.size());
         throw eval_argument_error(error_msg.c_str());
     });
-};
+}
 
 argument_checker least_n_args(size_t n) {
     return argument_checker([n](const std::vector<s_exp_ptr> &args) {
@@ -41,5 +41,5 @@ argument_checker least_n_args(size_t n) {
                                 "arguments, got " + std::to_string(args.size());
         throw eval_argument_error(error_msg.c_str());
     });
-};
+}
 }

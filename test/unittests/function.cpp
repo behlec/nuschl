@@ -14,7 +14,7 @@ using namespace nuschl;
 
 namespace {
 class pseudo : public primitive {
-    s_exp_ptr execute(const std::vector<s_exp_ptr> &arguments) const override {
+    s_exp_ptr execute(const std::vector<s_exp_ptr> &) const override {
         const s_exp *ret = s_exp::nil;
         return ret;
     };

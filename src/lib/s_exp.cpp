@@ -97,3 +97,28 @@ std::ostream &nuschl::operator<<(std::ostream &os, const s_exp &e) {
     os << &e;
     return os;
 }
+
+bool nuschl::operator==(const s_exp &a, const s_exp &b) {
+    if (a.get_kind() != b.get_kind()) {
+        return false;
+    }
+    switch (a.get_kind()) {
+    case s_exp::kind::atom:
+        return *(a.get_atom()) == *(b.get_atom()); // compare values
+        break;
+    case s_exp::kind::primitive:
+        return a.get_primitive() == b.get_primitive(); // compare addresses
+        break;
+    case s_exp::kind::lambda:
+        return a.get_lambda() == b.get_lambda(); // compare addresses
+        break;
+    case s_exp::kind::cell:
+        if (a.is_nil())
+            return true;
+        else {
+            return (*a.car() == *b.car()) && (*a.cdr() == *b.cdr());
+        }
+        break;
+    }
+    return false;
+}

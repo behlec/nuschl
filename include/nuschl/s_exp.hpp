@@ -34,7 +34,9 @@ class s_exp {
     bool is_cell() const noexcept;
 
     friend std::ostream &operator<<(std::ostream &, const s_exp *);
-    friend std::ostream &operator<<(std::ostream &, const s_exp &);
+    friend std::ostream &operator<<(std::ostream &, const s_exp *);
+
+    friend bool operator==(const s_exp &, const s_exp &);
 
     static const s_exp nil_elem;
     static const s_exp *nil;
@@ -46,4 +48,6 @@ class s_exp {
 };
 
 std::ostream &operator<<(std::ostream &, const s_exp &);
+
+bool operator==(const s_exp &, const s_exp &);
 }
