@@ -3,6 +3,12 @@
 #include <ostream>
 
 namespace nuschl {
+/**
+ * \brief Represents a number.
+ *
+ * Currently only integers.
+ * \TODO floats, overflow?
+ */
 class number {
   public:
     explicit number(int);
@@ -39,5 +45,6 @@ bool operator!=(const number &, const number &) noexcept;
 bool operator<(const number &, const number &) noexcept;
 bool operator>(const number &, const number &) noexcept;
 
+//! Print number.
 std::ostream &operator<<(std::ostream &, const number &);
 }

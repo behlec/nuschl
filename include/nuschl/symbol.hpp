@@ -6,7 +6,9 @@
 namespace nuschl {
 
 struct symbol_cmp;
-
+/**
+ * \brief An immutable string.
+ */
 class symbol {
   public:
     symbol(const char *);
@@ -28,6 +30,7 @@ class symbol {
 bool operator==(const symbol &, const symbol &) noexcept;
 bool operator!=(const symbol &, const symbol &) noexcept;
 
+//! Compare two symbols lexicographically.
 struct symbol_cmp {
     bool operator()(const symbol &, const symbol &) const noexcept;
 };

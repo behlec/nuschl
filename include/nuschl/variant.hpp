@@ -1,5 +1,12 @@
 #pragma once
 
+/**
+ * \file
+ *
+ * \brief Select boost::variant or std::variant depending on
+ * NUSCHL_BOOSTVARIANT
+ */
+
 #ifdef NUSCHL_BOOSTVARIANT
 #include <boost/variant.hpp>
 namespace nuschl {
