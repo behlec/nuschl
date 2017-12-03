@@ -252,8 +252,7 @@ desc 'Default task'
 task :default =>  ["test:#{CONFIG.default}"]
 TaskBuilder.build
 
-#task :all =>  [:doc, :buildall, :test]
-task :all =>  [:buildall, :test]
+task :all =>  [:doc, :buildall, :test]
 
 desc 'Check compatibility'
 task :comp do
@@ -283,10 +282,10 @@ task :coverage => 'test:gcc' do
     Rake.sh "cd build/gcc && ninja coverage-text && cat meson-logs/coverage.txt"
 end
 
-# desc 'Create documentation'
-# task :doc => 'doc:doxy'
-#
-# desc 'Create doxygen documentation'
-# task 'doc:doxy' do
-#   sh "doxygen doc/Doxyfile"
-# end
+desc 'Create documentation'
+task :doc => 'doc:doxy'
+
+desc 'Create doxygen documentation'
+task 'doc:doxy' do
+  sh "doxygen doc/Doxyfile"
+end

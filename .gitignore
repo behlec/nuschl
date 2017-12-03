@@ -1,5 +1,6 @@
 *.swp
 .rake_tasks~
+doc/doxy
 
 
 build
