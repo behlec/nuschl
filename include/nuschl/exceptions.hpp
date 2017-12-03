@@ -3,6 +3,7 @@
 #include <nuschl/s_exp_fwd.hpp>
 
 #include <exception>
+#include <string>
 
 namespace nuschl {
 
@@ -18,5 +19,16 @@ class eval_error : public std::runtime_error {
 class eval_argument_error : public std::runtime_error {
   public:
     explicit eval_argument_error(const char *);
+};
+
+class unbound_variable_error : public std::exception {
+  public:
+    explicit unbound_variable_error(const std::string &name);
+    explicit unbound_variable_error(const std::string &&name);
+
+    const std::string &name() const;
+
+  private:
+    const std::string m_name;
 };
 }

@@ -70,6 +70,7 @@ endif
 
 nuschl_files = files(
     'src/lib/atom.cpp',
+    'src/lib/environment.cpp',
     'src/lib/exceptions.cpp',
     'src/lib/function.cpp',
     'src/lib/number.cpp',
@@ -104,6 +105,7 @@ endif
 unit_test_files = [
     'test/unittests/main.cpp',
     'test/unittests/atom.cpp',
+    'test/unittests/environment.cpp',
     'test/unittests/function.cpp',
     'test/unittests/helper.cpp',
     'test/unittests/number.cpp',

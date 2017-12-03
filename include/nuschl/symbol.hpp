@@ -4,6 +4,9 @@
 #include <string>
 
 namespace nuschl {
+
+struct symbol_cmp;
+
 class symbol {
   public:
     symbol(const char *);
@@ -14,6 +17,7 @@ class symbol {
 
     friend bool operator==(const symbol &, const symbol &) noexcept;
     friend bool operator!=(const symbol &, const symbol &) noexcept;
+    friend symbol_cmp;
 
     friend std::ostream &operator<<(std::ostream &, const symbol &);
 
@@ -23,6 +27,10 @@ class symbol {
 
 bool operator==(const symbol &, const symbol &) noexcept;
 bool operator!=(const symbol &, const symbol &) noexcept;
+
+struct symbol_cmp {
+    bool operator()(const symbol &, const symbol &) const noexcept;
+};
 
 std::ostream &operator<<(std::ostream &, const symbol &);
 }

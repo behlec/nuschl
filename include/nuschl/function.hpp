@@ -4,14 +4,11 @@
 #include <string>
 #include <vector>
 
+#include <nuschl/environment_fwd.hpp>
 #include <nuschl/s_exp_fwd.hpp>
 #include <nuschl/symbol.hpp>
 
 namespace nuschl {
-
-class environment;
-
-using env_ptr = std::shared_ptr<environment>;
 
 //! Builtin primitive functions
 class primitive {

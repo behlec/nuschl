@@ -18,6 +18,11 @@ bool nuschl::operator!=(const symbol &a, const symbol &b) noexcept {
     return a.m_value != b.m_value;
 }
 
+bool nuschl::symbol_cmp::operator()(const symbol &a, const symbol &b) const
+    noexcept {
+    return a.m_value < b.m_value;
+}
+
 std::ostream &nuschl::operator<<(std::ostream &os, const symbol &s) {
     os << s.m_value;
     return os;
