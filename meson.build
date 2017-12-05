@@ -75,6 +75,7 @@ nuschl_files = files(
     'src/lib/function.cpp',
     'src/lib/number.cpp',
     'src/lib/primitives.cpp',
+    'src/lib/readfile.cpp',
     'src/lib/symbol.cpp',
     'src/lib/s_exp.cpp'
 )
@@ -110,6 +111,7 @@ unit_test_files = [
     'test/unittests/helper.cpp',
     'test/unittests/number.cpp',
     'test/unittests/primitives.cpp',
+    'test/unittests/readfile.cpp',
     'test/unittests/symbol.cpp',
     'test/unittests/s_exp.cpp'
 ]
