@@ -4,8 +4,9 @@ project(nuschl CXX)
 
 find_package(Boost QUIET COMPONENTS unit_test_framework)
 
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
+#set(CMAKE_CXX_STANDARD 17)
+#set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_FLAGS "--std=c++17")
 
 set(NUSCHL_LIB_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/src/lib/atom.cpp
