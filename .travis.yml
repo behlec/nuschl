@@ -9,7 +9,7 @@ matrix:
             - ubuntu-toolchain-r-test
           packages:
             - g++-7
-            - libboost-all-dev
+            - libboost-test-dev
             - ninja-build
       env:
          - MATRIX_EVAL="CXX=g++-7"
