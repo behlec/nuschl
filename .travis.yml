@@ -18,6 +18,7 @@ before_install:
   - eval "${MATRIX_EVAL}"
 
 script:
+  - cmake --version
   - mkdir build && cd build
   - cmake -GNinja ..
   - ninja
