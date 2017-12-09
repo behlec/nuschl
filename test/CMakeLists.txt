@@ -1,4 +1,4 @@
-find_package(Boost REQUIRED COMPONENTS unit_test_framework)
+find_package(Boost 1.59.0 REQUIRED COMPONENTS unit_test_framework)
 
 set(NUSCHL_UNITTESTS_SRC
 ${CMAKE_CURRENT_SOURCE_DIR}/unittests/main.cpp

@@ -1,8 +1,8 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.2)
 
 project(nuschl CXX)
 
-find_package(Boost QUIET COMPONENTS unit_test_framework)
+find_package(Boost 1.59.0 QUIET COMPONENTS unit_test_framework)
 
 #set(CMAKE_CXX_STANDARD 17)
 #set(CMAKE_CXX_STANDARD_REQUIRED ON)
