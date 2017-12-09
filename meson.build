@@ -59,7 +59,7 @@ if local_boost
   boost_dep = declare_dependency(include_directories: clangboost_inc, link_args: '-L'+boost_lib_path)
         add_project_link_arguments(['-Wl,-rpath,'+boost_lib_path], language : 'cpp')
 else
-  boost_dep = dependency('boost', required: true)
+  boost_dep = dependency('boost', required: true, version: '>=1.59.0')
 endif
 
 ################################
@@ -98,7 +98,7 @@ if local_boost
     clangboost_timer = meson.get_compiler('cpp').find_library('boost_timer', dirs: boost_lib_path, required: true)
     boost_test_dep = declare_dependency(include_directories: clangboost_inc, dependencies: [clangboost_log_setup, clangboost_log, clangboost_test, clangboost_timer], link_args: '-L'+boost_lib_path)
 else
-    boost_test_dep = dependency('boost', modules: ['unit_test_framework'], required: true)
+    boost_test_dep = dependency('boost', modules: ['unit_test_framework'], required: true, version: '>=1.59.0')
 endif
 
 
