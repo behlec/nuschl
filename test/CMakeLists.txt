@@ -1,4 +1,4 @@
-find_package(Boost REQUIRED COMPONENTS unit_test_framework)
+find_package(Boost 1.59.0 REQUIRED COMPONENTS unit_test_framework)
 
 set(NUSCHL_UNITTESTS_SRC
 ${CMAKE_CURRENT_SOURCE_DIR}/unittests/main.cpp
@@ -15,6 +15,6 @@ ${CMAKE_CURRENT_SOURCE_DIR}/unittests/symbol.cpp
 
 add_executable(nuschltests ${NUSCHL_UNITTESTS_SRC} )
 target_link_libraries(nuschltests PRIVATE nuschl)
-target_link_libraries(nuschltests PRIVATE Boost::unit_test_framework)
+target_link_libraries(nuschltests PRIVATE ${Boost_LIBRARIES})
 
 add_test(testnuschl nuschltests)
