@@ -23,7 +23,7 @@ struct file_pos {
 class token {
   public:
     enum class tokens { lparan, rparan, atom };
-    token(tokens type, input_iterator from, input_iterator to);
+    token(tokens type, input_iterator begin, input_iterator end);
 
     bool is_lparan() const noexcept;
     bool is_rparan() const noexcept;
@@ -35,8 +35,8 @@ class token {
 
   private:
     tokens m_type;
-    input_iterator m_from;
-    input_iterator m_to;
+    input_iterator m_begin;
+    input_iterator m_end;
 };
 
 //! Print the value.
@@ -61,14 +61,19 @@ class token_iterator {
     token operator*() const;
     const token *operator->() const;
 
+    token_iterator &operator++();
+    token_iterator operator++(int);
+
     friend bool operator==(const token_iterator &, const token_iterator &);
     friend bool operator!=(const token_iterator &, const token_iterator &);
 
   private:
-    void parse(const input_iterator &end);
+    void parse();
     input_iterator m_pos;
     input_iterator m_fin;
+    input_iterator m_end;
     token m_t;
+    input_iterator advance() const;
 };
 
 bool operator==(const token_iterator &, const token_iterator &);

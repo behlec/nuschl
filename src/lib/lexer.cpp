@@ -2,9 +2,9 @@
 
 #include <cctype>
 
-nuschl::parsing::token::token(tokens type, input_iterator from,
-                              input_iterator to)
-    : m_type(type), m_from(from), m_to(to) {}
+nuschl::parsing::token::token(tokens type, input_iterator begin,
+                              input_iterator end)
+    : m_type(type), m_begin(begin), m_end(end) {}
 
 bool nuschl::parsing::token::is_lparan() const noexcept {
     return tokens::lparan == m_type;
@@ -23,7 +23,7 @@ nuschl::parsing::token::tokens nuschl::parsing::token::type() const noexcept {
 }
 
 std::string nuschl::parsing::token::value() const noexcept {
-    return std::string(m_from, m_to + 1);
+    return std::string(m_begin, m_end);
 }
 
 std::ostream &nuschl::parsing::operator<<(std::ostream &os, const token &t) {
@@ -33,8 +33,8 @@ std::ostream &nuschl::parsing::operator<<(std::ostream &os, const token &t) {
 
 nuschl::parsing::token_iterator::token_iterator(const input_iterator &p,
                                                 const input_iterator &end)
-    : m_pos(p), m_t(token::tokens::atom, m_pos, m_pos) {
-    parse(end);
+    : m_pos(p), m_end(end), m_t(token::tokens::atom, m_pos, m_pos) {
+    parse();
 }
 
 nuschl::parsing::token nuschl::parsing::token_iterator::operator*() const {
@@ -46,22 +46,55 @@ operator->() const {
     return &m_t;
 }
 
-void nuschl::parsing::token_iterator::parse(const input_iterator &end) {
-    if (*m_pos == '(') {
-        m_fin = m_pos;
-        m_t = token(token::tokens::lparan, m_fin, m_pos);
-    } else if (*m_pos == ')') {
-        m_fin = m_pos;
-        m_t = token(token::tokens::rparan, m_fin, m_pos);
-    } else {
-        input_iterator cur = m_pos;
-        while ((cur != end) && !std::isspace(*cur) && !(*cur == '(') &&
-               (*cur == ')')) {
-            cur++;
-        }
-        m_fin = cur;
-        m_t = token(token::tokens::atom, m_pos, cur);
+nuschl::parsing::input_iterator
+nuschl::parsing::token_iterator::advance() const {
+    input_iterator cur = m_pos;
+    if (cur == m_end)
+        return cur;
+    ++cur;
+    while ((cur != m_end) && !std::isspace(*cur) && !(*cur == '(') &&
+           !(*cur == ')')) {
+        ++cur;
     }
+    return cur;
+}
+
+void nuschl::parsing::token_iterator::parse() {
+    if (*m_pos == '(') {
+        m_fin = m_pos + 1;
+        m_t = token(token::tokens::lparan, m_pos, m_fin);
+    } else if (*m_pos == ')') {
+        m_fin = m_pos + 1;
+        m_t = token(token::tokens::rparan, m_pos, m_fin);
+    } else {
+        auto cur = advance();
+        m_fin = cur;
+        m_t = token(token::tokens::atom, m_pos, m_fin);
+    }
+}
+
+nuschl::parsing::token_iterator &nuschl::parsing::token_iterator::operator++() {
+    if (m_fin == m_end) { // we where the last token
+        m_pos = m_end;    // set to end
+        return *this;
+    }
+    if (isspace(*m_fin)) { // we need to skip whitespace
+        m_pos = m_fin;
+        while ((m_pos != m_end) && std::isspace(*m_pos)) {
+            ++m_pos;
+        }
+    } else { // we are not at the end and point at the begin of the next token
+        m_pos = m_fin;
+    }
+    parse();
+    return *this;
+}
+
+nuschl::parsing::token_iterator nuschl::parsing::token_iterator::
+operator++(int) {
+    auto old = *this;
+    ++*this;
+    return old;
 }
 
 bool nuschl::parsing::operator==(const token_iterator &a,
@@ -79,7 +112,7 @@ nuschl::parsing::lexer::lexer(const std::string &input)
 
 nuschl::parsing::token_iterator nuschl::parsing::lexer::begin() const {
     input_iterator res = m_begin;
-    while (res != m_end && std::isspace(*res)) {
+    while ((res != m_end) && std::isspace(*res)) {
         ++res;
     }
     return token_iterator(res, m_end);
