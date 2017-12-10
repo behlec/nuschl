@@ -68,6 +68,10 @@ endif
 #
 ################################
 
+##############
+# Lib
+##############
+
 nuschl_files = files(
     'src/lib/atom.cpp',
     'src/lib/environment.cpp',
@@ -86,6 +90,12 @@ nuschl_inc = include_directories('include')
 nuschl_lib = static_library('nuschl', nuschl_files, include_directories: nuschl_inc, dependencies: boost_dep)
 nuschl_dep = declare_dependency(include_directories: nuschl_inc, link_with: nuschl_lib)
 
+
+##############
+# Executables
+##############
+
+lexer = executable('lexer', 'src/bin/lexer.cpp', dependencies: nuschl_dep)
 
 ################################
 #
