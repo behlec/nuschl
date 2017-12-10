@@ -1,4 +1,4 @@
-#include <nuschl/lexer.hpp>
+#include <nuschl/parsing/lexer.hpp>
 #include <nuschl/readfile.hpp>
 
 #include <iostream>

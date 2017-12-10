@@ -82,7 +82,9 @@ nuschl_files = files(
     'src/lib/primitives.cpp',
     'src/lib/readfile.cpp',
     'src/lib/symbol.cpp',
-    'src/lib/s_exp.cpp'
+    'src/lib/s_exp.cpp',
+    'src/lib/token.cpp',
+    'src/lib/token_iterator.cpp'
 )
 
 nuschl_inc = include_directories('include')
@@ -120,12 +122,13 @@ unit_test_files = [
     'test/unittests/environment.cpp',
     'test/unittests/function.cpp',
     'test/unittests/helper.cpp',
-    'test/unittests/lexer.cpp',
     'test/unittests/number.cpp',
     'test/unittests/primitives.cpp',
     'test/unittests/readfile.cpp',
     'test/unittests/symbol.cpp',
-    'test/unittests/s_exp.cpp'
+    'test/unittests/s_exp.cpp',
+    'test/unittests/token.cpp',
+    'test/unittests/token_iterator.cpp'
 ]
 
 exe = executable('unittests', unit_test_files, dependencies: [nuschl_dep, boost_test_dep])
