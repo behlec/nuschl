@@ -5,12 +5,12 @@
 #include <string>
 
 std::string nuschl::parsing::read_file(const char *filename) try {
-    std::ifstream in(filename, std::ios::in | std::ios::binary);
-    in.exceptions(std::ifstream::failbit);
+    std::ifstream in(filename, std::ios::in);
     if (!in.is_open()) {
-        throw std::runtime_error("Could not open file:");
+        throw std::runtime_error("Could not open file: \"");
     }
     if (in) {
+        in.exceptions(std::ifstream::failbit);
         std::string contents;
         in.seekg(0, std::ios::end);
         contents.resize(in.tellg());
@@ -19,11 +19,12 @@ std::string nuschl::parsing::read_file(const char *filename) try {
         in.close();
         return contents;
     } else {
-        throw std::runtime_error("Could not read file contents:");
+        throw std::runtime_error("Could not read file contents: \"");
     }
 } catch (std::runtime_error &e) {
     std::string err = e.what();
     err += filename;
+    err += '"';
     throw std::runtime_error(err);
 }
 
