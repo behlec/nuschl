@@ -4,18 +4,25 @@
 
 namespace nuschl::parsing {
 /**
-*\brief Allows to iterate in reverse over the tokens.
+* \brief Allows to iterate in reverse over the tokens.
 *
-*Holds a position to the start of the token to represent.
-*Also holds a copy to end to do the iterations.
+* The external interface is, except from the constructor, equal to
+* token_iterator.
+*
+* Always points to a valid token or to is the end.
+*
+* In the input stream the position p is actually the last position of the token.
+* Besides the reverse end it holds also the position of the beginning of the
+* input to return tokens correctly.
 */
 class reverse_token_iterator {
   public:
     /**
      * \brief Create a token.
      *
-     * \param p The start of the token.
+     * \param p The start of the input.
      * \param end The end of the input.
+     * \param b The end of the input.
      */
     reverse_token_iterator(const reverse_input_iterator &p,
                            const reverse_input_iterator &end,
@@ -41,7 +48,14 @@ class reverse_token_iterator {
     token m_t;
 
     // methods
+    /**
+     * \brief Parse the next token.
+     */
     void parse();
+    /**
+     * \brief if m_pos points to the start of an atom, return the end of the
+     * atom.
+     */
     reverse_input_iterator find_atom_end() const;
 };
 
