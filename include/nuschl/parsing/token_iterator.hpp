@@ -27,12 +27,18 @@ class token_iterator {
     friend bool operator!=(const token_iterator &, const token_iterator &);
 
   private:
+    /**
+     * \brief Parse the next token.
+     */
     void parse();
     input_iterator m_pos;
     input_iterator m_fin;
     input_iterator m_end;
     token m_t;
-    input_iterator advance() const;
+    /**
+     * \brief
+     */
+    input_iterator find_atom_end() const;
 };
 
 bool operator==(const token_iterator &, const token_iterator &);

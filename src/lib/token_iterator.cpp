@@ -17,7 +17,7 @@ operator->() const {
 }
 
 nuschl::parsing::input_iterator
-nuschl::parsing::token_iterator::advance() const {
+nuschl::parsing::token_iterator::find_atom_end() const {
     input_iterator cur = m_pos;
     if (cur == m_end)
         return cur;
@@ -30,6 +30,9 @@ nuschl::parsing::token_iterator::advance() const {
 }
 
 void nuschl::parsing::token_iterator::parse() {
+    if (m_pos == m_end) {
+        return;
+    }
     if (*m_pos == '(') {
         m_fin = m_pos + 1;
         m_t = token(token::tokens::lparan, m_pos, m_fin);
@@ -37,7 +40,7 @@ void nuschl::parsing::token_iterator::parse() {
         m_fin = m_pos + 1;
         m_t = token(token::tokens::rparan, m_pos, m_fin);
     } else {
-        auto cur = advance();
+        auto cur = find_atom_end();
         m_fin = cur;
         m_t = token(token::tokens::atom, m_pos, m_fin);
     }
