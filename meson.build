@@ -81,6 +81,7 @@ nuschl_files = files(
     'src/lib/number.cpp',
     'src/lib/primitives.cpp',
     'src/lib/readfile.cpp',
+    'src/lib/reverse_token_iterator.cpp',
     'src/lib/symbol.cpp',
     'src/lib/s_exp.cpp',
     'src/lib/token.cpp',
@@ -128,7 +129,8 @@ unit_test_files = [
     'test/unittests/symbol.cpp',
     'test/unittests/s_exp.cpp',
     'test/unittests/token.cpp',
-    'test/unittests/token_iterator.cpp'
+    'test/unittests/token_iterator.cpp',
+    'test/unittests/reverse_token_iterator.cpp'
 ]
 
 exe = executable('unittests', unit_test_files, dependencies: [nuschl_dep, boost_test_dep])

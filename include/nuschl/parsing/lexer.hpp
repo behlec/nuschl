@@ -1,5 +1,6 @@
 #pragma once
 
+#include <nuschl/parsing/reverse_token_iterator.hpp>
 #include <nuschl/parsing/token.hpp>
 #include <nuschl/parsing/token_iterator.hpp>
 
@@ -36,8 +37,14 @@ class lexer {
     //! The end token, points to input.end().
     token_iterator end() const;
 
+    reverse_token_iterator rbegin() const;
+    //! The end token, points to input.end().
+    reverse_token_iterator rend() const;
+
   private:
     input_iterator m_begin;
     input_iterator m_end;
+    reverse_input_iterator m_rbegin;
+    reverse_input_iterator m_rend;
 };
 }
