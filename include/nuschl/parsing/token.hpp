@@ -1,10 +1,8 @@
 #pragma once
 
-#include <string>
+#include <nuschl/parsing/input.hpp>
 
 namespace nuschl::parsing {
-using input_iterator = std::string::const_iterator;
-using reverse_input_iterator = std::string::const_reverse_iterator;
 
 /**
  * \brief A token of the input stream, including position data.
