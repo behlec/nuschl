@@ -77,13 +77,15 @@ nuschl_files = files(
     'src/lib/environment.cpp',
     'src/lib/exceptions.cpp',
     'src/lib/function.cpp',
-    'src/lib/lexer.cpp',
     'src/lib/number.cpp',
     'src/lib/primitives.cpp',
     'src/lib/readfile.cpp',
     'src/lib/reverse_token_iterator.cpp',
     'src/lib/symbol.cpp',
     'src/lib/s_exp.cpp',
+
+    'src/lib/lexer.cpp',
+    'src/lib/parseerror.cpp',
     'src/lib/token.cpp',
     'src/lib/token_iterator.cpp'
 )
