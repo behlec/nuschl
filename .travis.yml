@@ -31,9 +31,9 @@ before_install:
 install:
   - wget -O boost_1_59_0.tar.gz http://sourceforge.net/projects/boost/files/boost/1.59.0/boost_1_59_0.tar.gz/download
   - tar xzf boost_1_59_0.tar.gz
+  - cp helper/buildboost.sh boost_1_59_0/
   - cd boost_1_59_0/
   - ./bootstrap.sh --prefix=/usr/local
-  - cp helper/buildboost.sh .
   - CXX=${CXX} ./buildboost.sh
   - sudo ./b2 install
 
