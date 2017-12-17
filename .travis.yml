@@ -42,6 +42,7 @@ install:
   - cd boost_1_59_0/
   - ./bootstrap.sh --prefix=/usr/local
   - ./buildboost.sh
+  - cd ..
 
 script:
   - eval "${MATRIX_EVAL}"
