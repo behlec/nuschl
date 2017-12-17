@@ -86,6 +86,7 @@ nuschl_files = files(
     'src/lib/s_exp_pool.cpp',
 
     'src/lib/lexer.cpp',
+    'src/lib/parser.cpp',
     'src/lib/parseerror.cpp',
     'src/lib/token.cpp',
     'src/lib/token_iterator.cpp'
@@ -131,6 +132,8 @@ unit_test_files = [
     'test/unittests/readfile.cpp',
     'test/unittests/symbol.cpp',
     'test/unittests/s_exp.cpp',
+
+    'test/unittests/parser.cpp',
     'test/unittests/token.cpp',
     'test/unittests/token_iterator.cpp',
     'test/unittests/reverse_token_iterator.cpp'
