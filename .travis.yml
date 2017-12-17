@@ -33,7 +33,8 @@ install:
   - tar xzf boost_1_59_0.tar.gz
   - cd boost_1_59_0/
   - ./bootstrap.sh --prefix=/usr/local
-  - CXX=${CXX} ./b2 --build-type=minimal
+  - cp helper/buildboost.sh .
+  - CXX=${CXX} ./buildboost.sh
   - sudo ./b2 install
 
 script:
