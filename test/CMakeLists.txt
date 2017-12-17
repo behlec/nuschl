@@ -15,6 +15,6 @@ ${CMAKE_CURRENT_SOURCE_DIR}/unittests/symbol.cpp
 
 add_executable(nuschltests ${NUSCHL_UNITTESTS_SRC} )
 target_link_libraries(nuschltests PRIVATE nuschl)
-target_link_libraries(nuschltests PRIVATE ${Boost_LIBRARIES})
+target_link_libraries(nuschltests PRIVATE Boost::unit_test_framework)
 
 add_test(testnuschl nuschltests)
