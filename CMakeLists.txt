@@ -17,7 +17,7 @@ set(NUSCHL_LIB_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/src/lib/symbol.cpp
 )
 
-find_package(Boost 1.45.0 COMPONENTS unit_test_framework)
+find_package(Boost 1.59.0 COMPONENTS unit_test_framework)
 
 if(Boost_FOUND)
   if (Boost_UNIT_TEST_FRAMEWORK_FOUND)
