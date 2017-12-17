@@ -1,4 +1,4 @@
-#define BOOST_TEST_DYN_LINK
+#define BOOST_CHECK_DYN_LINK
 // clang-format off
 #include <boost/test/unit_test.hpp>
 // clang-format on
@@ -16,23 +16,23 @@ BOOST_AUTO_TEST_CASE(Default_constructor) {
     nuschl::environment e;
 
     BOOST_CHECK(*e["nil"s] == *nuschl::s_exp::nil);
-    BOOST_TEST(!e.defined("a"s));
-    BOOST_TEST(!e.defined("b"s));
-    BOOST_TEST(e.defined("nil"s));
-    BOOST_TEST(!e.defined_locally("a"s));
-    BOOST_TEST(!e.defined_locally("b"s));
-    BOOST_TEST(e.defined_locally("nil"s));
+    BOOST_CHECK(!e.defined("a"s));
+    BOOST_CHECK(!e.defined("b"s));
+    BOOST_CHECK(e.defined("nil"s));
+    BOOST_CHECK(!e.defined_locally("a"s));
+    BOOST_CHECK(!e.defined_locally("b"s));
+    BOOST_CHECK(e.defined_locally("nil"s));
 }
 
 BOOST_AUTO_TEST_CASE(Constructor_nullptr) {
     nuschl::environment e(nullptr);
 
-    BOOST_TEST(!e.defined("a"s));
-    BOOST_TEST(!e.defined("b"s));
-    BOOST_TEST(!e.defined("nil"s));
-    BOOST_TEST(!e.defined_locally("a"s));
-    BOOST_TEST(!e.defined_locally("b"s));
-    BOOST_TEST(!e.defined_locally("nil"s));
+    BOOST_CHECK(!e.defined("a"s));
+    BOOST_CHECK(!e.defined("b"s));
+    BOOST_CHECK(!e.defined("nil"s));
+    BOOST_CHECK(!e.defined_locally("a"s));
+    BOOST_CHECK(!e.defined_locally("b"s));
+    BOOST_CHECK(!e.defined_locally("nil"s));
 }
 
 BOOST_AUTO_TEST_CASE(simpl) {
@@ -43,14 +43,14 @@ BOOST_AUTO_TEST_CASE(simpl) {
     t.insert({"a"s, a.get()});
     t.insert({"b"s, b.get()});
     nuschl::environment env1(t, nullptr);
-    BOOST_TEST(env1.defined("a"s));
-    BOOST_TEST(env1.defined("b"s));
+    BOOST_CHECK(env1.defined("a"s));
+    BOOST_CHECK(env1.defined("b"s));
 
-    BOOST_TEST(env1.defined_locally("a"s));
-    BOOST_TEST(env1.defined_locally("b"s));
+    BOOST_CHECK(env1.defined_locally("a"s));
+    BOOST_CHECK(env1.defined_locally("b"s));
 
-    BOOST_TEST(*(env1["a"s]) == *nuschl::test::make_num(1));
-    BOOST_TEST(*(env1["b"s]) == *nuschl::test::make_num(2));
+    BOOST_CHECK(*(env1["a"s]) == *nuschl::test::make_num(1));
+    BOOST_CHECK(*(env1["b"s]) == *nuschl::test::make_num(2));
 }
 
 BOOST_AUTO_TEST_CASE(lookup) {
@@ -70,15 +70,15 @@ BOOST_AUTO_TEST_CASE(lookup) {
     nuschl::env_ptr ep1(&env1, [](nuschl::environment *) {});
     nuschl::environment env2(t2, ep1);
 
-    BOOST_TEST(*(env1["a"s]) == *nuschl::test::make_num(1));
-    BOOST_TEST(*(env1["b"s]) == *nuschl::test::make_num(2));
+    BOOST_CHECK(*(env1["a"s]) == *nuschl::test::make_num(1));
+    BOOST_CHECK(*(env1["b"s]) == *nuschl::test::make_num(2));
 
-    BOOST_TEST(*(env2["a"s]) == *nuschl::test::make_num(23));
-    BOOST_TEST(*(env2["b"s]) == *nuschl::test::make_num(2));
+    BOOST_CHECK(*(env2["a"s]) == *nuschl::test::make_num(23));
+    BOOST_CHECK(*(env2["b"s]) == *nuschl::test::make_num(2));
 
     nuschl::environment env3(ep1);
-    BOOST_TEST(*(env3["a"s]) == *nuschl::test::make_num(1));
-    BOOST_TEST(*(env3["b"s]) == *nuschl::test::make_num(2));
+    BOOST_CHECK(*(env3["a"s]) == *nuschl::test::make_num(1));
+    BOOST_CHECK(*(env3["b"s]) == *nuschl::test::make_num(2));
 }
 BOOST_AUTO_TEST_CASE(Defined) {
     nuschl::environment env(nullptr);
@@ -98,20 +98,20 @@ BOOST_AUTO_TEST_CASE(Defined) {
     nuschl::env_ptr ep1(&env1, [](nuschl::environment *) {});
     nuschl::environment env2(t2, ep1);
 
-    BOOST_TEST(env1.defined("a"s));
-    BOOST_TEST(env1.defined("b"s));
-    BOOST_TEST(!env1.defined("c"s));
+    BOOST_CHECK(env1.defined("a"s));
+    BOOST_CHECK(env1.defined("b"s));
+    BOOST_CHECK(!env1.defined("c"s));
 
-    BOOST_TEST(env1.defined_locally("a"s));
-    BOOST_TEST(env1.defined_locally("b"s));
-    BOOST_TEST(!env1.defined_locally("c"s));
+    BOOST_CHECK(env1.defined_locally("a"s));
+    BOOST_CHECK(env1.defined_locally("b"s));
+    BOOST_CHECK(!env1.defined_locally("c"s));
 
-    BOOST_TEST(env2.defined("a"s));
-    BOOST_TEST(env2.defined("b"s));
-    BOOST_TEST(env2.defined("c"s));
-    BOOST_TEST(!env2.defined_locally("a"s));
-    BOOST_TEST(env2.defined_locally("b"s));
-    BOOST_TEST(env2.defined_locally("c"s));
+    BOOST_CHECK(env2.defined("a"s));
+    BOOST_CHECK(env2.defined("b"s));
+    BOOST_CHECK(env2.defined("c"s));
+    BOOST_CHECK(!env2.defined_locally("a"s));
+    BOOST_CHECK(env2.defined_locally("b"s));
+    BOOST_CHECK(env2.defined_locally("c"s));
 }
 
 BOOST_AUTO_TEST_SUITE_END()
