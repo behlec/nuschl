@@ -2,11 +2,9 @@ cmake_minimum_required(VERSION 3.2)
 
 project(nuschl CXX)
 
-find_package(Boost 1.59.0 QUIET COMPONENTS unit_test_framework)
 
-#set(CMAKE_CXX_STANDARD 17)
-#set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_FLAGS "--std=c++17")
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(NUSCHL_LIB_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/src/lib/atom.cpp
@@ -19,15 +17,37 @@ set(NUSCHL_LIB_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/src/lib/symbol.cpp
 )
 
+find_package(Boost 1.45.0 COMPONENTS unit_test_framework)
+
+if(Boost_FOUND)
+  if (Boost_UNIT_TEST_FRAMEWORK_FOUND)
+    if (Boost_VERSION VERSION_GREATER "1.59.0")
+      message("Tests enabled")
+      enable_testing()
+      add_subdirectory("test")
+    else()
+      message("Tests disabled, need at least version 1.59.0")
+    endif()
+  else()
+    message("Tests disabled, boost unit testing framework required")
+  endif()
+else()
+  message("Boost not found")
+endif()
+
 add_library(nuschl ${NUSCHL_LIB_FILES})
+
+# clang need libc++ or boost
+if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  if (Boost_FOUND)
+    message("Use boost variant")
+    target_link_libraries(nuschl Boost::boost)
+    target_compile_definitions(nuschl PUBLIC "-DNUSCHL_BOOSTVARIANT")
+  else()
+    message(FATAL_ERROR "Clang needs boost to compile")
+  endif()
+endif()
+
 target_include_directories(nuschl PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
-
-if(Boost_FOUND)
-	enable_testing()
-	message("Tests enabled")
-	add_subdirectory("test")
-else()
-	message("Tests disabled, boost unit testing framework required")
-endif()

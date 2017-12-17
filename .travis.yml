@@ -23,9 +23,10 @@ matrix:
         apt:
           packages:
             - libboost-test-dev
+            - libboost-dev
             - ninja-build
       env:
-         - MATRIX_EVAL="CXX=clang++"
+         - MATRIX_EVAL="CXX=clang++-5.0"
 
 before_install:
   - eval "${MATRIX_EVAL}"
