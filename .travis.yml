@@ -17,7 +17,7 @@ matrix:
             - libboost-test-dev
             - ninja-build
       env:
-         - MATRIX_EVAL="CXX=g++-7"
+         - CXX=g++-7
     - os: linux
       addons:
         apt:
@@ -26,13 +26,14 @@ matrix:
             - libboost-dev
             - ninja-build
       env:
-         - MATRIX_EVAL="CXX=clang++-5.0"
+         - CXX=clang++
 
 before_install:
   - eval "${MATRIX_EVAL}"
 
 script:
   - cmake --version
+  - ${CXX} --version
   - mkdir build && cd build
   - cmake -GNinja ..
   - ninja
