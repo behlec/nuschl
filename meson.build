@@ -68,6 +68,10 @@ endif
 #
 ################################
 
+##############
+# Lib
+##############
+
 nuschl_files = files(
     'src/lib/atom.cpp',
     'src/lib/environment.cpp',
@@ -75,8 +79,17 @@ nuschl_files = files(
     'src/lib/function.cpp',
     'src/lib/number.cpp',
     'src/lib/primitives.cpp',
+    'src/lib/readfile.cpp',
+    'src/lib/reverse_token_iterator.cpp',
     'src/lib/symbol.cpp',
-    'src/lib/s_exp.cpp'
+    'src/lib/s_exp.cpp',
+    'src/lib/s_exp_pool.cpp',
+
+    'src/lib/lexer.cpp',
+    'src/lib/parser.cpp',
+    'src/lib/parseerror.cpp',
+    'src/lib/token.cpp',
+    'src/lib/token_iterator.cpp'
 )
 
 nuschl_inc = include_directories('include')
@@ -84,6 +97,12 @@ nuschl_inc = include_directories('include')
 nuschl_lib = static_library('nuschl', nuschl_files, include_directories: nuschl_inc, dependencies: boost_dep)
 nuschl_dep = declare_dependency(include_directories: nuschl_inc, link_with: nuschl_lib)
 
+
+##############
+# Executables
+##############
+
+lexer = executable('lexer', 'src/bin/lexer.cpp', dependencies: nuschl_dep)
 
 ################################
 #
@@ -110,8 +129,14 @@ unit_test_files = [
     'test/unittests/helper.cpp',
     'test/unittests/number.cpp',
     'test/unittests/primitives.cpp',
+    'test/unittests/readfile.cpp',
     'test/unittests/symbol.cpp',
-    'test/unittests/s_exp.cpp'
+    'test/unittests/s_exp.cpp',
+
+    'test/unittests/parser.cpp',
+    'test/unittests/token.cpp',
+    'test/unittests/token_iterator.cpp',
+    'test/unittests/reverse_token_iterator.cpp'
 ]
 
 exe = executable('unittests', unit_test_files, dependencies: [nuschl_dep, boost_test_dep])
