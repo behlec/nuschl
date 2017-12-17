@@ -50,7 +50,5 @@ script:
   - ${CXX} --version
   - mkdir build && cd build
   - CXX=${CXX} cmake -GNinja ..
-  - mkdir build && cd build
-  - cmake -GNinja ..
   - ninja
   - ninja test
