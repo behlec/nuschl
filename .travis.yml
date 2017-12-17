@@ -17,6 +17,7 @@ matrix:
             - ninja-build
       env:
         - MATRIX_EVAL="CXX=g++-7"
+        - CXX=g++-7
     - os: linux
       addons:
         apt:
@@ -24,6 +25,7 @@ matrix:
             - ninja-build
       env:
         - MATRIX_EVAL="CXX=clang++"
+        - CXX=clang++
 
 before_install:
     - eval "${MATRIX_EVAL}"
@@ -35,9 +37,10 @@ install:
   - cd boost_1_59_0/
   - ./bootstrap.sh --prefix=/usr/local
   - CXX=${CXX} ./buildboost.sh
-  - sudo ./b2 install
+  - sudo ./b2 install -d0
 
 script:
+  - eval "${MATRIX_EVAL}"
   - cmake --version
   - ${CXX} --version
   - mkdir build && cd build
