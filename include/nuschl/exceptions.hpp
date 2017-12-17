@@ -3,6 +3,7 @@
 #include <nuschl/s_exp_fwd.hpp>
 
 #include <exception>
+#include <stdexcept>
 #include <string>
 
 namespace nuschl {
