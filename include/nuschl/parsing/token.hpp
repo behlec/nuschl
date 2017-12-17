@@ -23,6 +23,8 @@ class token {
 
     //! Returns the characters of this token.
     std::string value() const noexcept;
+    //! Return the start position of the token.
+    input_iterator position() const noexcept;
 
   private:
     tokens m_type;

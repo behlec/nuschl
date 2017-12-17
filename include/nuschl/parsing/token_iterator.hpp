@@ -1,5 +1,8 @@
 #pragma once
 
+#include <nuschl/parsing/input.hpp>
+#include <nuschl/parsing/token.hpp>
+
 namespace nuschl::parsing {
 /**
 * \brief Allows to iterate over the tokens.

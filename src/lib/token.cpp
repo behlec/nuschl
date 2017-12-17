@@ -24,6 +24,11 @@ std::string nuschl::parsing::token::value() const noexcept {
     return std::string(m_begin, m_end);
 }
 
+nuschl::parsing::input_iterator nuschl::parsing::token::position() const
+    noexcept {
+    return m_begin;
+}
+
 std::ostream &nuschl::parsing::operator<<(std::ostream &os, const token &t) {
     os << t.value();
     return os;
