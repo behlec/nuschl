@@ -15,11 +15,32 @@ matrix:
           packages:
             - g++-7
             - ninja-build
-      compiler: g++-7
+      env:
+        - MATRIX_EVAL="CXX=g++-7"
+    - os: linux
+      addons:
+        apt:
+          packages:
+            - ninja-build
+      env:
+        - MATRIX_EVAL="CXX=clang++"
+
+before_install:
+    - eval "${MATRIX_EVAL}"
+
+install:
+  - wget -O boost_1_59_0.tar.gz http://sourceforge.net/projects/boost/files/boost/1.59.0/boost_1_59_0.tar.gz/download
+  - tar xzf boost_1_59_0.tar.gz
+  - cd boost_1_59_0/
+  - ./bootstrap.sh --prefix=/usr/local
+  - CXX=${CXX} ./b2 --build-type=minimal
+  - sudo ./b2 install
 
 script:
   - cmake --version
   - ${CXX} --version
   - mkdir build && cd build
   - CXX=${CXX} cmake -GNinja ..
+  - mkdir build && cd build
+  - cmake -GNinja ..
   - ninja
