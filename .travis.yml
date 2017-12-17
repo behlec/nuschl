@@ -24,8 +24,11 @@ matrix:
     - os: linux
       addons:
         apt:
+          sources:
+            - ubuntu-toolchain-r-test
           packages:
             - ninja-build
+            - libstdc++-7-dev  
       env:
         - MATRIX_EVAL="CXX=clang++"
         - CXX=clang++
