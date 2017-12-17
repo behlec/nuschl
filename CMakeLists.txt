@@ -21,7 +21,7 @@ find_package(Boost 1.45.0 COMPONENTS unit_test_framework)
 
 if(Boost_FOUND)
   if (Boost_UNIT_TEST_FRAMEWORK_FOUND)
-    if (Boost_VERSION VERSION_GREATER "1.59.0")
+    if (Boost_VERSION VERSION_GREATER "105900")
       message("Tests enabled")
       enable_testing()
       add_subdirectory("test")
