@@ -40,8 +40,7 @@ install:
   - cp helper/buildboost.sh boost_1_59_0/
   - cd boost_1_59_0/
   - ./bootstrap.sh --prefix=/usr/local
-  - CXX=${CXX} ./buildboost.sh
-  - sudo ./b2 install -d0
+  - ./buildboost.sh
 
 script:
   - eval "${MATRIX_EVAL}"
