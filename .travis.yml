@@ -3,6 +3,9 @@ sudo: false
 language: cpp
 notifications:
   email: false
+cache:
+  directories:
+    - download
 
 matrix:
   include:
@@ -31,8 +34,9 @@ before_install:
     - eval "${MATRIX_EVAL}"
 
 install:
-  - wget -O boost_1_59_0.tar.gz http://sourceforge.net/projects/boost/files/boost/1.59.0/boost_1_59_0.tar.gz/download
-  - tar xzf boost_1_59_0.tar.gz
+  - cp helper/getboost.sh .
+  - ./getboost.sh
+  - tar xzf download/boost_1_59_0.tar.gz
   - cp helper/buildboost.sh boost_1_59_0/
   - cd boost_1_59_0/
   - ./bootstrap.sh --prefix=/usr/local
