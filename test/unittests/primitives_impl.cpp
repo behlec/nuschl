@@ -7,6 +7,7 @@
 
 #include <nuschl/primitives_impl.hpp>
 #include <nuschl/s_exp.hpp>
+#include <nuschl/memory/s_exp_pool.hpp>
 
 #include <sstream>
 
@@ -97,6 +98,8 @@ BOOST_AUTO_TEST_CASE(combine_checker) {
 }
 
 BOOST_AUTO_TEST_CASE(primitive_builder) {
+    memory::s_exp_pool pool;
+
     nuschl::primitive_impl::primitivebuilder id(
         "id",
         [](const std::vector<s_exp_ptr> &arguments) {
@@ -114,10 +117,10 @@ BOOST_AUTO_TEST_CASE(primitive_builder) {
     std::vector<s_exp_ptr> l3 = {&e1, &e2};
     std::vector<s_exp_ptr> l4 = {&e2};
 
-    BOOST_CHECK(*id.execute(l1) == e1);
-    BOOST_CHECK(*id.execute(l4) == e2);
-    BOOST_CHECK_THROW(id.execute(l2), nuschl::eval_argument_error);
-    BOOST_CHECK_THROW(id.execute(l3), nuschl::eval_argument_error);
+    BOOST_CHECK(*id.execute(l1, &pool) == e1);
+    BOOST_CHECK(*id.execute(l4, &pool) == e2);
+    BOOST_CHECK_THROW(id.execute(l2, &pool), nuschl::eval_argument_error);
+    BOOST_CHECK_THROW(id.execute(l3, &pool), nuschl::eval_argument_error);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

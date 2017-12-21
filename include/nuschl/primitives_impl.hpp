@@ -1,6 +1,7 @@
 #pragma once
 
 #include <nuschl/exceptions.hpp>
+#include <nuschl/memory/s_exp_pool.hpp>
 #include <nuschl/primitives.hpp>
 #include <nuschl/s_exp.hpp>
 
@@ -56,7 +57,8 @@ template <typename F, typename T> class primitivebuilder : public primitive {
      * \param arguments The arguments to apply.
      * \throws eval_argument_error If the arguments are not OK.
      */
-    s_exp_ptr execute(const std::vector<s_exp_ptr> &arguments) const override {
+    s_exp_ptr execute(const std::vector<s_exp_ptr> &arguments,
+                      memory::s_exp_pool *) const override {
         try {
             m_test(arguments);
         } catch (const nuschl::eval_argument_error &e) {
