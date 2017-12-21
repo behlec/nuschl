@@ -2,11 +2,6 @@
 
 #include <sstream>
 
-std::ostream &nuschl::operator<<(std::ostream &os, const primitive &p) {
-    os << p.representation();
-    return os;
-}
-
 nuschl::lambda::lambda(lambda::argument_list argument_names,
                        const s_exp_ptr function_body, env_ptr env)
     : m_vars(argument_names), m_body(function_body), m_env(env) {}

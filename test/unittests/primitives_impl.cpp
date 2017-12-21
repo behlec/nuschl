@@ -5,7 +5,7 @@
 #include <boost/test/data/monomorphic.hpp>
 // clang-format on
 
-#include <nuschl/primitives.hpp>
+#include <nuschl/primitives_impl.hpp>
 #include <nuschl/s_exp.hpp>
 
 #include <sstream>

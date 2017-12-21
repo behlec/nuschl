@@ -2,6 +2,7 @@
 
 #include <nuschl/atom.hpp>
 #include <nuschl/function.hpp>
+#include <nuschl/primitives.hpp>
 #include <nuschl/s_exp_fwd.hpp>
 #include <nuschl/variant.hpp>
 
