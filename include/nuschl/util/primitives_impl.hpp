@@ -4,6 +4,7 @@
 #include <nuschl/memory/s_exp_pool.hpp>
 #include <nuschl/primitives.hpp>
 #include <nuschl/s_exp.hpp>
+#include <nuschl/s_exp_helpers.hpp>
 
 #include <functional>
 
@@ -34,6 +35,21 @@ extern argument_checker exact_n_args(size_t n);
 extern argument_checker least_n_args(size_t n);
 
 /**
+ * \brief Turn sequence of numbers into a sequence of numbers.
+ *
+ * \tparam It Forward iterator
+ * \tparam Ot Output iterator.
+ * \param b Begin of input range.
+ * \param e End of input range.
+ * \param out Write ints to this iterator.
+ */
+template <typename It, typename Ot> void to_numbers(It b, It e, Ot out) {
+    for (; b != e; ++b) {
+        out = to_number(*b);
+    }
+}
+
+/**
  * \brief Allows to build a primitive from a string, a function and a checker.
  */
 template <typename F, typename T> class primitivebuilder : public primitive {
@@ -58,14 +74,14 @@ template <typename F, typename T> class primitivebuilder : public primitive {
      * \throws eval_argument_error If the arguments are not OK.
      */
     s_exp_ptr execute(const std::vector<s_exp_ptr> &arguments,
-                      memory::s_exp_pool *) const override {
+                      memory::s_exp_pool *pool) const override {
         try {
             m_test(arguments);
         } catch (const nuschl::eval_argument_error &e) {
             std::string err_str = m_representation + " " + e.what();
             throw nuschl::eval_argument_error(err_str.c_str());
         }
-        return m_impl(arguments);
+        return m_impl(arguments, pool);
     }
 
     //! Return representation.

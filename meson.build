@@ -122,6 +122,9 @@ else
     boost_test_dep = dependency('boost', modules: ['unit_test_framework'], required: true, version: '>=1.59.0')
 endif
 
+nuschl_test_inc = include_directories('test/include')
+nuschl_test_lib = static_library('nuschl-test', 'test/lib/helper.cpp', include_directories: nuschl_test_inc, dependencies: nuschl_dep)
+nuschl_test_dep = declare_dependency(include_directories: nuschl_test_inc, link_with: nuschl_test_lib)
 
 unit_test_files = [
     'test/unittests/main.cpp',
@@ -141,7 +144,7 @@ unit_test_files = [
     'test/unittests/reverse_token_iterator.cpp'
 ]
 
-exe = executable('unittests', unit_test_files, dependencies: [nuschl_dep, boost_test_dep])
+exe = executable('unittests', unit_test_files, dependencies: [nuschl_dep, boost_test_dep, nuschl_test_dep])
 test('unittests', exe)
 
 

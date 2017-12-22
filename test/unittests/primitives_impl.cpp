@@ -5,15 +5,18 @@
 #include <boost/test/data/monomorphic.hpp>
 // clang-format on
 
-#include <nuschl/primitives_impl.hpp>
+#include <nuschl/util/primitives_impl.hpp>
 #include <nuschl/s_exp.hpp>
 #include <nuschl/memory/s_exp_pool.hpp>
+
+#include <nuschl/unittests/helper.hpp>
 
 #include <sstream>
 
 using namespace nuschl;
 
 BOOST_AUTO_TEST_SUITE(Primitives)
+memory::s_exp_pool pool;
 BOOST_AUTO_TEST_CASE(All_numbers) {
     auto n1 = make_atom(number{1});
     auto n2 = make_atom(number{2});
@@ -98,11 +101,10 @@ BOOST_AUTO_TEST_CASE(combine_checker) {
 }
 
 BOOST_AUTO_TEST_CASE(primitive_builder) {
-    memory::s_exp_pool pool;
 
     nuschl::primitive_impl::primitivebuilder id(
         "id",
-        [](const std::vector<s_exp_ptr> &arguments) {
+        [](const std::vector<s_exp_ptr> &arguments, memory::s_exp_pool *) {
             assert(arguments.size() == 1);
             return arguments[0];
         },
@@ -121,6 +123,47 @@ BOOST_AUTO_TEST_CASE(primitive_builder) {
     BOOST_CHECK(*id.execute(l4, &pool) == e2);
     BOOST_CHECK_THROW(id.execute(l2, &pool), nuschl::eval_argument_error);
     BOOST_CHECK_THROW(id.execute(l3, &pool), nuschl::eval_argument_error);
+}
+
+BOOST_AUTO_TEST_SUITE_END()
+
+BOOST_AUTO_TEST_SUITE(ExtractNumbers)
+memory::s_exp_pool pool;
+BOOST_AUTO_TEST_CASE(empty) {
+    std::vector<s_exp_ptr> args;
+    std::vector<number> res;
+    primitive_impl::to_numbers(args.begin(), args.end(),
+                               std::back_inserter(res));
+
+    BOOST_CHECK(res.empty());
+}
+
+BOOST_AUTO_TEST_CASE(simple) {
+    std::vector<s_exp_ptr> args;
+    args.push_back(make_number(1, &pool));
+    std::vector<number> res;
+    BOOST_REQUIRE_NO_THROW(primitive_impl::all_numbers(args));
+    primitive_impl::to_numbers(args.begin(), args.end(),
+                               std::back_inserter(res));
+
+    BOOST_REQUIRE_EQUAL(res.size(), 1);
+    BOOST_CHECK_EQUAL(res[0], number{1});
+}
+
+BOOST_AUTO_TEST_CASE(simple2) {
+    std::vector<s_exp_ptr> args;
+    args.push_back(make_number(1, &pool));
+    args.push_back(make_number(2, &pool));
+    args.push_back(make_number(3, &pool));
+    std::vector<number> res;
+    BOOST_REQUIRE_NO_THROW(primitive_impl::all_numbers(args));
+    primitive_impl::to_numbers(args.begin(), args.end(),
+                               std::back_inserter(res));
+
+    BOOST_REQUIRE_EQUAL(res.size(), 3);
+    BOOST_CHECK_EQUAL(res[0], number{1});
+    BOOST_CHECK_EQUAL(res[1], number{2});
+    BOOST_CHECK_EQUAL(res[2], number{3});
 }
 
 BOOST_AUTO_TEST_SUITE_END()

@@ -1,4 +1,4 @@
-#include <nuschl/primitives_impl.hpp>
+#include <nuschl/util/primitives_impl.hpp>
 
 #include <algorithm>
 
