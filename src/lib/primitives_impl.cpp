@@ -29,7 +29,8 @@ argument_checker exact_n_args(size_t n) {
             return;
 
         std::string error_msg = "expects exactly " + std::to_string(n) +
-                                "arguments, got " + std::to_string(args.size());
+                                " arguments, got " +
+                                std::to_string(args.size()) + ".";
         throw eval_argument_error(error_msg.c_str());
     });
 }
@@ -40,7 +41,8 @@ argument_checker least_n_args(size_t n) {
             return;
 
         std::string error_msg = "expects at least " + std::to_string(n) +
-                                "arguments, got " + std::to_string(args.size());
+                                " arguments, got " +
+                                std::to_string(args.size()) + ".";
         throw eval_argument_error(error_msg.c_str());
     });
 }

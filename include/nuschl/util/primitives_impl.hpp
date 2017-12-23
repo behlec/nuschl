@@ -33,6 +33,7 @@ argument_checker operator&&(const argument_checker &a,
 argument_checker all_numbers();
 argument_checker exact_n_args(size_t n);
 argument_checker least_n_args(size_t n);
+argument_checker is_list();
 
 /**
  * \brief Turn sequence of numbers into a sequence of numbers.
