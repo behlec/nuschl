@@ -60,6 +60,12 @@ class s_exp {
     static const s_exp nil_elem;
     static const s_exp *nil;
 
+    static const s_exp tru_elem;
+    static const s_exp *tru;
+
+    static const s_exp fals_elem;
+    static const s_exp *fals;
+
   private:
     using pair = std::pair<const s_exp *, const s_exp *>;
     kind m_kind;
