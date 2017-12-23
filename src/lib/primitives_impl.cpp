@@ -12,14 +12,16 @@ argument_checker operator&&(const argument_checker &a,
         }));
 }
 
-argument_checker all_numbers([](const std::vector<s_exp_ptr> &args) {
-    if (std::all_of(args.begin(), args.end(), [](const s_exp_ptr e) {
-            return e->is_atom() && e->get_atom()->is_number();
-        })) {
-        return;
-    }
-    throw eval_argument_error("expects only numbers as arguments.");
-});
+argument_checker all_numbers() {
+    return argument_checker([](const std::vector<s_exp_ptr> &args) -> void {
+        if (std::all_of(args.begin(), args.end(), [](s_exp_ptr e) {
+                return e->is_atom() && e->get_atom()->is_number();
+            })) {
+            return;
+        }
+        throw eval_argument_error("expects only numbers as arguments.");
+    });
+};
 
 argument_checker exact_n_args(size_t n) {
     return argument_checker([n](const std::vector<s_exp_ptr> &args) {

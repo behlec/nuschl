@@ -30,9 +30,9 @@ struct argument_checker {
 argument_checker operator&&(const argument_checker &a,
                             const argument_checker &b);
 
-extern argument_checker all_numbers;
-extern argument_checker exact_n_args(size_t n);
-extern argument_checker least_n_args(size_t n);
+argument_checker all_numbers();
+argument_checker exact_n_args(size_t n);
+argument_checker least_n_args(size_t n);
 
 /**
  * \brief Turn sequence of numbers into a sequence of numbers.
