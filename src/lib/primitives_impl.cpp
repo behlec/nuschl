@@ -44,4 +44,14 @@ argument_checker least_n_args(size_t n) {
         throw eval_argument_error(error_msg.c_str());
     });
 }
+
+argument_checker is_list() {
+    return argument_checker([](const std::vector<s_exp_ptr> &args) -> void {
+
+        if (args.size() == 1 && args[0]->is_cell()) {
+            return;
+        }
+        throw eval_argument_error("expects only numbers as arguments.");
+    });
+};
 }

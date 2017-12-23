@@ -21,6 +21,8 @@ bool is_number(const s_exp *) noexcept;
 bool is_primitive(const s_exp *) noexcept;
 //! \brief Test if lambda
 bool is_lambda(const s_exp *) noexcept;
+//! \brief Test if nil
+bool is_cell(const s_exp *) noexcept;
 
 //! \brief Test if lambda
 number to_number(const s_exp *);
