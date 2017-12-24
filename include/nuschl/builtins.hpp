@@ -7,25 +7,26 @@
 #include <cassert>
 #include <numeric>
 
-namespace nuschl::primitive_impl {
+namespace nuschl::primitives {
 
 /**
  * \brief Add numbers.
  *
  * \param arguments Must be all numbers.
  */
-primitivebuilder plus("+",
-                      [](const std::vector<s_exp_ptr> &arguments,
-                         memory::s_exp_pool *pool) -> const s_exp * {
-                          assert(pool != nullptr);
-                          number sum{0};
-                          std::vector<number> tmp;
-                          to_numbers(arguments.begin(), arguments.end(),
-                                     std::back_inserter(tmp));
-                          sum = std::accumulate(tmp.begin(), tmp.end(), sum);
-                          return pool->create(make_atom(number{sum}));
-                      },
-                      all_numbers());
+primitive_impl::primitivebuilder
+    plus("+",
+         [](const std::vector<s_exp_ptr> &arguments,
+            memory::s_exp_pool *pool) -> const s_exp * {
+             assert(pool != nullptr);
+             number sum{0};
+             std::vector<number> tmp;
+             primitive_impl::to_numbers(arguments.begin(), arguments.end(),
+                                        std::back_inserter(tmp));
+             sum = std::accumulate(tmp.begin(), tmp.end(), sum);
+             return pool->create(make_atom(number{sum}));
+         },
+         primitive_impl::all_numbers());
 
 /**
  * \brief Negate number or subtract numbers.
@@ -36,63 +37,65 @@ primitivebuilder plus("+",
  * \param arguments There must be at least one argument and they must be all
  * numbers.
  */
-primitivebuilder minus("-",
-                       [](const std::vector<s_exp_ptr> &arguments,
-                          memory::s_exp_pool *pool) -> const s_exp * {
-                           assert(pool != nullptr);
-                           std::vector<number> tmp;
-                           to_numbers(arguments.begin(), arguments.end(),
-                                      std::back_inserter(tmp));
-                           if (tmp.size() == 1) {
-                               number res(-tmp[0]);
-                               return pool->create(make_atom(number{res}));
-                           } else {
-                               number res(tmp[0]);
-                               number sum{0};
-                               sum = std::accumulate(tmp.begin() + 1, tmp.end(),
-                                                     sum);
-                               res = res - sum;
-                               return pool->create(make_atom(number{res}));
-                           }
-                       },
-                       all_numbers() && least_n_args(1));
+primitive_impl::primitivebuilder
+    minus("-",
+          [](const std::vector<s_exp_ptr> &arguments,
+             memory::s_exp_pool *pool) -> const s_exp * {
+              assert(pool != nullptr);
+              std::vector<number> tmp;
+              primitive_impl::to_numbers(arguments.begin(), arguments.end(),
+                                         std::back_inserter(tmp));
+              if (tmp.size() == 1) {
+                  number res(-tmp[0]);
+                  return pool->create(make_atom(number{res}));
+              } else {
+                  number res(tmp[0]);
+                  number sum{0};
+                  sum = std::accumulate(tmp.begin() + 1, tmp.end(), sum);
+                  res = res - sum;
+                  return pool->create(make_atom(number{res}));
+              }
+          },
+          primitive_impl::all_numbers() && primitive_impl::least_n_args(1));
 
 /**
  * \brief Multiply numbers.
  *
  * \param arguments Must be all numbers.
  */
-primitivebuilder times(
+primitive_impl::primitivebuilder times(
     "*",
     [](const std::vector<s_exp_ptr> &arguments,
        memory::s_exp_pool *pool) -> const s_exp * {
         assert(pool != nullptr);
         number res{1};
         std::vector<number> tmp;
-        to_numbers(arguments.begin(), arguments.end(), std::back_inserter(tmp));
+        primitive_impl::to_numbers(arguments.begin(), arguments.end(),
+                                   std::back_inserter(tmp));
         res = std::accumulate(tmp.begin(), tmp.end(), res,
                               [](const number &a, number &b) { return a * b; });
         return pool->create(make_atom(number{res}));
     },
-    all_numbers());
+    primitive_impl::all_numbers());
 
 /**
  * \brief Divide two numbers.
  *
  * \param arguments Number of arguments must be exactly two and numbers.
  */
-primitivebuilder divide("/",
-                        [](const std::vector<s_exp_ptr> &arguments,
-                           memory::s_exp_pool *pool) -> const s_exp * {
-                            assert(pool != nullptr);
-                            std::vector<number> tmp;
-                            to_numbers(arguments.begin(), arguments.end(),
-                                       std::back_inserter(tmp));
-                            number res(tmp[0]);
-                            res = res / tmp[1];
-                            return pool->create(make_atom(number{res}));
-                        },
-                        all_numbers() && exact_n_args(2));
+primitive_impl::primitivebuilder
+    divide("/",
+           [](const std::vector<s_exp_ptr> &arguments,
+              memory::s_exp_pool *pool) -> const s_exp * {
+               assert(pool != nullptr);
+               std::vector<number> tmp;
+               primitive_impl::to_numbers(arguments.begin(), arguments.end(),
+                                          std::back_inserter(tmp));
+               number res(tmp[0]);
+               res = res / tmp[1];
+               return pool->create(make_atom(number{res}));
+           },
+           primitive_impl::all_numbers() && primitive_impl::exact_n_args(2));
 
 /**
  * \brief Compares two elements.
@@ -101,16 +104,17 @@ primitivebuilder divide("/",
  *
  * \param arguments Number of arguments must be exactly two.
  */
-primitivebuilder eq("eq",
-                    [](const std::vector<s_exp_ptr> &arguments,
-                       memory::s_exp_pool *pool) -> const s_exp * {
-                        const s_exp *res = s_exp::fals;
-                        if (*arguments[0] == *arguments[1]) {
-                            res = s_exp::tru;
-                        }
-                        return res;
-                    },
-                    exact_n_args(2));
+primitive_impl::primitivebuilder
+    eq("eq",
+       [](const std::vector<s_exp_ptr> &arguments,
+          memory::s_exp_pool *pool) -> const s_exp * {
+           const s_exp *res = s_exp::fals;
+           if (*arguments[0] == *arguments[1]) {
+               res = s_exp::tru;
+           }
+           return res;
+       },
+       primitive_impl::exact_n_args(2));
 
 /**
  * \brief Compares two elements for less.
@@ -120,20 +124,21 @@ primitivebuilder eq("eq",
  * \param arguments Number of arguments must be exactly two and both must be
  * numbers.
  */
-primitivebuilder less("<",
-                      [](const std::vector<s_exp_ptr> &arguments,
-                         memory::s_exp_pool *pool) -> const s_exp * {
-                          assert(pool != nullptr);
-                          std::vector<number> tmp;
-                          to_numbers(arguments.begin(), arguments.end(),
-                                     std::back_inserter(tmp));
-                          if (tmp[0] < tmp[1]) {
-                              return s_exp::tru;
-                          } else {
-                              return s_exp::fals;
-                          }
-                      },
-                      all_numbers() && exact_n_args(2));
+primitive_impl::primitivebuilder
+    less("<",
+         [](const std::vector<s_exp_ptr> &arguments,
+            memory::s_exp_pool *pool) -> const s_exp * {
+             assert(pool != nullptr);
+             std::vector<number> tmp;
+             primitive_impl::to_numbers(arguments.begin(), arguments.end(),
+                                        std::back_inserter(tmp));
+             if (tmp[0] < tmp[1]) {
+                 return s_exp::tru;
+             } else {
+                 return s_exp::fals;
+             }
+         },
+         primitive_impl::all_numbers() && primitive_impl::exact_n_args(2));
 
 /**
  * \brief Compares two elements for greater.
@@ -143,59 +148,63 @@ primitivebuilder less("<",
  * \param arguments Number of arguments must be exactly two and both must be
  * numbers.
  */
-primitivebuilder greater(">",
-                         [](const std::vector<s_exp_ptr> &arguments,
-                            memory::s_exp_pool *pool) -> const s_exp * {
-                             assert(pool != nullptr);
-                             std::vector<number> tmp;
-                             to_numbers(arguments.begin(), arguments.end(),
-                                        std::back_inserter(tmp));
-                             if (tmp[0] > tmp[1]) {
-                                 return s_exp::tru;
-                             } else {
-                                 return s_exp::fals;
-                             }
-                         },
-                         all_numbers() && exact_n_args(2));
+primitive_impl::primitivebuilder
+    greater(">",
+            [](const std::vector<s_exp_ptr> &arguments,
+               memory::s_exp_pool *pool) -> const s_exp * {
+                assert(pool != nullptr);
+                std::vector<number> tmp;
+                primitive_impl::to_numbers(arguments.begin(), arguments.end(),
+                                           std::back_inserter(tmp));
+                if (tmp[0] > tmp[1]) {
+                    return s_exp::tru;
+                } else {
+                    return s_exp::fals;
+                }
+            },
+            primitive_impl::all_numbers() && primitive_impl::exact_n_args(2));
 
 /**
  * \brief Get the first element of a cell.
  *
  * \param arguments Must be one element of type cell.
  */
-primitivebuilder car("car",
-                     [](const std::vector<s_exp_ptr> &arguments,
-                        memory::s_exp_pool *pool) -> const s_exp * {
-                         assert(pool != nullptr);
-                         return arguments[0]->car();
-                     },
-                     is_list());
+primitive_impl::primitivebuilder
+    car("car",
+        [](const std::vector<s_exp_ptr> &arguments,
+           memory::s_exp_pool *pool) -> const s_exp * {
+            assert(pool != nullptr);
+            return arguments[0]->car();
+        },
+        primitive_impl::is_list());
 
 /**
  * \brief Get the second element of a cell.
  *
  * \param arguments Must be one element of type cell.
  */
-primitivebuilder cdr("cdr",
-                     [](const std::vector<s_exp_ptr> &arguments,
-                        memory::s_exp_pool *pool) -> const s_exp * {
-                         assert(pool != nullptr);
-                         return arguments[0]->cdr();
-                     },
-                     is_list());
+primitive_impl::primitivebuilder
+    cdr("cdr",
+        [](const std::vector<s_exp_ptr> &arguments,
+           memory::s_exp_pool *pool) -> const s_exp * {
+            assert(pool != nullptr);
+            return arguments[0]->cdr();
+        },
+        primitive_impl::is_list());
 
 /**
  * \brief Create a cell from two elements.
  *
  * \param arguments Must be exactly two elements.
  */
-primitivebuilder cons("cons",
-                      [](const std::vector<s_exp_ptr> &arguments,
-                         memory::s_exp_pool *pool) -> const s_exp * {
-                          assert(pool != nullptr);
-                          return pool->create(arguments[0], arguments[1]);
-                      },
-                      exact_n_args(2));
+primitive_impl::primitivebuilder
+    cons("cons",
+         [](const std::vector<s_exp_ptr> &arguments,
+            memory::s_exp_pool *pool) -> const s_exp * {
+             assert(pool != nullptr);
+             return pool->create(arguments[0], arguments[1]);
+         },
+         primitive_impl::exact_n_args(2));
 
 /**
  * \brief Create a list from elements.
