@@ -9,6 +9,11 @@
 
 namespace nuschl::primitive_impl {
 
+/**
+ * \brief Add numbers.
+ *
+ * \param arguments Must be all numbers.
+ */
 primitivebuilder plus("+",
                       [](const std::vector<s_exp_ptr> &arguments,
                          memory::s_exp_pool *pool) -> const s_exp * {
@@ -22,6 +27,15 @@ primitivebuilder plus("+",
                       },
                       all_numbers());
 
+/**
+ * \brief Negate number or subtract numbers.
+ *
+ * If there is only one arguments, the argument ist negated.
+ * Else takes the first argument and subtracts the remaining arguments.
+ *
+ * \param arguments There must be at least one argument and they must be all
+ * numbers.
+ */
 primitivebuilder minus("-",
                        [](const std::vector<s_exp_ptr> &arguments,
                           memory::s_exp_pool *pool) -> const s_exp * {
@@ -43,6 +57,11 @@ primitivebuilder minus("-",
                        },
                        all_numbers() && least_n_args(1));
 
+/**
+ * \brief Multiply numbers.
+ *
+ * \param arguments Must be all numbers.
+ */
 primitivebuilder times(
     "*",
     [](const std::vector<s_exp_ptr> &arguments,
@@ -57,6 +76,11 @@ primitivebuilder times(
     },
     all_numbers());
 
+/**
+ * \brief Divide two numbers.
+ *
+ * \param arguments Number of arguments must be exactly two and numbers.
+ */
 primitivebuilder divide("/",
                         [](const std::vector<s_exp_ptr> &arguments,
                            memory::s_exp_pool *pool) -> const s_exp * {
@@ -70,6 +94,13 @@ primitivebuilder divide("/",
                         },
                         all_numbers() && exact_n_args(2));
 
+/**
+ * \brief Compares two elements.
+ *
+ * Test if two elements are equal.
+ *
+ * \param arguments Number of arguments must be exactly two.
+ */
 primitivebuilder eq("eq",
                     [](const std::vector<s_exp_ptr> &arguments,
                        memory::s_exp_pool *pool) -> const s_exp * {
@@ -81,6 +112,14 @@ primitivebuilder eq("eq",
                     },
                     exact_n_args(2));
 
+/**
+ * \brief Compares two elements for less.
+ *
+ * Test if the first element is less than the second.
+ *
+ * \param arguments Number of arguments must be exactly two and both must be
+ * numbers.
+ */
 primitivebuilder less("<",
                       [](const std::vector<s_exp_ptr> &arguments,
                          memory::s_exp_pool *pool) -> const s_exp * {
@@ -96,6 +135,14 @@ primitivebuilder less("<",
                       },
                       all_numbers() && exact_n_args(2));
 
+/**
+ * \brief Compares two elements for greater.
+ *
+ * Test if the first element is greater than the second.
+ *
+ * \param arguments Number of arguments must be exactly two and both must be
+ * numbers.
+ */
 primitivebuilder greater(">",
                          [](const std::vector<s_exp_ptr> &arguments,
                             memory::s_exp_pool *pool) -> const s_exp * {
@@ -111,6 +158,11 @@ primitivebuilder greater(">",
                          },
                          all_numbers() && exact_n_args(2));
 
+/**
+ * \brief Get the first element of a cell.
+ *
+ * \param arguments Must be one element of type cell.
+ */
 primitivebuilder car("car",
                      [](const std::vector<s_exp_ptr> &arguments,
                         memory::s_exp_pool *pool) -> const s_exp * {
@@ -119,6 +171,11 @@ primitivebuilder car("car",
                      },
                      is_list());
 
+/**
+ * \brief Get the second element of a cell.
+ *
+ * \param arguments Must be one element of type cell.
+ */
 primitivebuilder cdr("cdr",
                      [](const std::vector<s_exp_ptr> &arguments,
                         memory::s_exp_pool *pool) -> const s_exp * {
@@ -127,6 +184,11 @@ primitivebuilder cdr("cdr",
                      },
                      is_list());
 
+/**
+ * \brief Create a cell from two elements.
+ *
+ * \param arguments Must be exactly two elements.
+ */
 primitivebuilder cons("cons",
                       [](const std::vector<s_exp_ptr> &arguments,
                          memory::s_exp_pool *pool) -> const s_exp * {
@@ -135,6 +197,11 @@ primitivebuilder cons("cons",
                       },
                       exact_n_args(2));
 
+/**
+ * \brief Create a list from elements.
+ *
+ * \param arguments No restrictions.
+ */
 struct list : primitive {
     s_exp_ptr execute(const std::vector<s_exp_ptr> &arguments,
                       memory::s_exp_pool *pool) const override;

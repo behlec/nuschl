@@ -30,9 +30,13 @@ struct argument_checker {
 argument_checker operator&&(const argument_checker &a,
                             const argument_checker &b);
 
+//! Check if all arguments are numbers.
 argument_checker all_numbers();
+//! Check if there are exactly n arguments.
 argument_checker exact_n_args(size_t n);
+//! Check if there are at least n arguments.
 argument_checker least_n_args(size_t n);
+//! Expects one argument, which is a cell.
 argument_checker is_list();
 
 /**
@@ -72,6 +76,7 @@ template <typename F, typename T> class primitivebuilder : public primitive {
      * Then applies the function to the arguments.
      *
      * \param arguments The arguments to apply.
+     * \param pool The memory pool to use to create new s_exp.
      * \throws eval_argument_error If the arguments are not OK.
      */
     s_exp_ptr execute(const std::vector<s_exp_ptr> &arguments,

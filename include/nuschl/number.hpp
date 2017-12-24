@@ -7,7 +7,8 @@ namespace nuschl {
  * \brief Represents a number.
  *
  * Currently only integers.
- * \TODO floats, overflow?
+ *
+ * TODO floats, overflow?
  */
 class number {
   public:

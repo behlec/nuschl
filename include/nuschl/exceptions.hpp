@@ -7,9 +7,15 @@
 
 namespace nuschl {
 
-//! An error during eval.
+//! \brief An error during eval.
 class eval_error : public std::runtime_error {
   public:
+    /**
+     * \brief Report an error during evaluation of an expression.
+     *
+     * \param what A string describing the error.
+     * \param e The expression that caused the error.
+     */
     eval_error(const char *what, const s_exp_ptr e);
     s_exp_ptr exp() const noexcept;
 
@@ -17,13 +23,18 @@ class eval_error : public std::runtime_error {
     s_exp_ptr m_exp;
 };
 
-//! An error evaluating the arguments for a primitive.
+//! \brief An error evaluating the arguments for a primitive.
 class eval_argument_error : public std::runtime_error {
   public:
-    explicit eval_argument_error(const char *);
+    /**
+     * \brief Report an error during evaluation of arguments.
+     *
+     * \param what A string describing the error.
+     */
+    explicit eval_argument_error(const char *what);
 };
 
-//! Variable not defined.
+//! \brief Variable not defined.
 class unbound_variable_error : public std::exception {
   public:
     explicit unbound_variable_error(const std::string &name);
