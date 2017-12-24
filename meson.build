@@ -74,6 +74,7 @@ endif
 
 nuschl_files = files(
     'src/lib/atom.cpp',
+    'src/lib/builtins.cpp',
     'src/lib/environment.cpp',
     'src/lib/exceptions.cpp',
     'src/lib/function.cpp',
@@ -122,13 +123,19 @@ else
     boost_test_dep = dependency('boost', modules: ['unit_test_framework'], required: true, version: '>=1.59.0')
 endif
 
+test_lib_files = files(
+    'test/lib/helper.cpp',
+    'test/lib/vector_printer.cpp'
+)
+
 nuschl_test_inc = include_directories('test/include')
-nuschl_test_lib = static_library('nuschl-test', 'test/lib/helper.cpp', include_directories: nuschl_test_inc, dependencies: nuschl_dep)
+nuschl_test_lib = static_library('nuschl-test', test_lib_files, include_directories: nuschl_test_inc, dependencies: [nuschl_dep, boost_test_dep])
 nuschl_test_dep = declare_dependency(include_directories: nuschl_test_inc, link_with: nuschl_test_lib)
 
 unit_test_files = [
     'test/unittests/main.cpp',
     'test/unittests/atom.cpp',
+    'test/unittests/builtins.cpp',
     'test/unittests/environment.cpp',
     'test/unittests/function.cpp',
     'test/unittests/helper.cpp',

@@ -50,10 +50,11 @@ argument_checker least_n_args(size_t n) {
 argument_checker is_list() {
     return argument_checker([](const std::vector<s_exp_ptr> &args) -> void {
 
-        if (args.size() == 1 && args[0]->is_cell()) {
+        exact_n_args(1)(args);
+        if (args[0]->is_cell()) {
             return;
         }
-        throw eval_argument_error("expects only numbers as arguments.");
+        throw eval_argument_error("expects a list as argument.");
     });
 };
 }
