@@ -75,6 +75,7 @@ endif
 nuschl_files = files(
     'src/lib/atom.cpp',
     'src/lib/builtins.cpp',
+    'src/lib/default_env.cpp',
     'src/lib/environment.cpp',
     'src/lib/exceptions.cpp',
     'src/lib/function.cpp',
