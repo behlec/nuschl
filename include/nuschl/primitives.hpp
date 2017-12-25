@@ -28,7 +28,7 @@ class primitive {
 };
 
 //! Pointer to primitive.
-using primitive_ptr = std::shared_ptr<primitive>;
+using primitive_ptr = const primitive *;
 
 //! Print the primitive, uses primitive::representation().
 std::ostream &operator<<(std::ostream &, const primitive &);
