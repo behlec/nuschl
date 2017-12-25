@@ -616,7 +616,7 @@ auto list3 = pool.create(three, list2);
 std::vector<s_exp_ptr> exp = {s_exp::nil, list1, list2, list3};
 
 BOOST_DATA_TEST_CASE(List, bdata::make(val) ^ bdata::make(exp), args, e) {
-    auto res = primitives::list{}.execute(args, &pool);
+    auto res = primitives::list.execute(args, &pool);
     BOOST_CHECK_EQUAL(*res, *e);
 }
 

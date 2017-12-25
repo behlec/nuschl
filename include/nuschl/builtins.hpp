@@ -211,9 +211,11 @@ primitive_impl::primitivebuilder
  *
  * \param arguments No restrictions.
  */
-struct list : primitive {
+struct list_impl : primitive {
     s_exp_ptr execute(const std::vector<s_exp_ptr> &arguments,
                       memory::s_exp_pool *pool) const override;
     std::string representation() const override;
 };
+
+extern list_impl list;
 }
