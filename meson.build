@@ -83,7 +83,6 @@ nuschl_files = files(
     'src/lib/primitives.cpp',
     'src/lib/primitives_impl.cpp',
     'src/lib/readfile.cpp',
-    'src/lib/reverse_token_iterator.cpp',
     'src/lib/symbol.cpp',
     'src/lib/s_exp.cpp',
     'src/lib/s_exp_helpers.cpp',
@@ -92,6 +91,7 @@ nuschl_files = files(
     'src/lib/lexer.cpp',
     'src/lib/parser.cpp',
     'src/lib/parseerror.cpp',
+    'src/lib/reverse_token_iterator.cpp',
     'src/lib/token.cpp',
     'src/lib/token_iterator.cpp'
 )

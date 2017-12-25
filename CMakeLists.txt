@@ -8,19 +8,24 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(NUSCHL_LIB_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/src/lib/atom.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/lib/builtins.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/lib/default_env.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/lib/environment.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/lib/exceptions.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/lib/function.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/lib/lexer.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/lib/number.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/lib/parseerror.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/lib/parser.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/lib/primitives.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/lib/primitives_impl.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/lib/readfile.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/lib/reverse_token_iterator.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/lib/symbol.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/lib/s_exp.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/lib/s_exp_pool.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/lib/symbol.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/lib/s_exp_helpers.cpp
+
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/lib/lexer.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/lib/parser.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/lib/parseerror.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/lib/reverse_token_iterator.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/lib/token.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/lib/token_iterator.cpp
 )
