@@ -144,6 +144,7 @@ unit_test_files = [
     'test/unittests/readfile.cpp',
     'test/unittests/symbol.cpp',
     'test/unittests/s_exp.cpp',
+    'test/unittests/s_exp_helpers.cpp',
 
     'test/unittests/parser.cpp',
     'test/unittests/token.cpp',
