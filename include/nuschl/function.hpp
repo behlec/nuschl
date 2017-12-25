@@ -46,6 +46,9 @@ class lambda {
 //! Pointer to lambda.
 using lambda_ptr = std::shared_ptr<lambda>;
 
+lambda_ptr make_lambda(const std::vector<symbol> &, s_exp_ptr, env_ptr);
+// lambda_ptr make_lambda(const std::vector<std::string> &, s_exp_ptr, env_ptr);
+
 //! Print the lambda.
 std::ostream &operator<<(std::ostream &, const lambda &);
 }
