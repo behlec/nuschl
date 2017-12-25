@@ -74,15 +74,19 @@ endif
 
 nuschl_files = files(
     'src/lib/atom.cpp',
+    'src/lib/builtins.cpp',
+    'src/lib/default_env.cpp',
     'src/lib/environment.cpp',
     'src/lib/exceptions.cpp',
     'src/lib/function.cpp',
     'src/lib/number.cpp',
     'src/lib/primitives.cpp',
+    'src/lib/primitives_impl.cpp',
     'src/lib/readfile.cpp',
     'src/lib/reverse_token_iterator.cpp',
     'src/lib/symbol.cpp',
     'src/lib/s_exp.cpp',
+    'src/lib/s_exp_helpers.cpp',
     'src/lib/s_exp_pool.cpp',
 
     'src/lib/lexer.cpp',
@@ -120,18 +124,28 @@ else
     boost_test_dep = dependency('boost', modules: ['unit_test_framework'], required: true, version: '>=1.59.0')
 endif
 
+test_lib_files = files(
+    'test/lib/helper.cpp',
+    'test/lib/vector_printer.cpp'
+)
+
+nuschl_test_inc = include_directories('test/include')
+nuschl_test_lib = static_library('nuschl-test', test_lib_files, include_directories: nuschl_test_inc, dependencies: [nuschl_dep, boost_test_dep])
+nuschl_test_dep = declare_dependency(include_directories: nuschl_test_inc, link_with: nuschl_test_lib)
 
 unit_test_files = [
     'test/unittests/main.cpp',
     'test/unittests/atom.cpp',
+    'test/unittests/builtins.cpp',
     'test/unittests/environment.cpp',
     'test/unittests/function.cpp',
     'test/unittests/helper.cpp',
     'test/unittests/number.cpp',
-    'test/unittests/primitives.cpp',
+    'test/unittests/primitives_impl.cpp',
     'test/unittests/readfile.cpp',
     'test/unittests/symbol.cpp',
     'test/unittests/s_exp.cpp',
+    'test/unittests/s_exp_helpers.cpp',
 
     'test/unittests/parser.cpp',
     'test/unittests/token.cpp',
@@ -139,7 +153,7 @@ unit_test_files = [
     'test/unittests/reverse_token_iterator.cpp'
 ]
 
-exe = executable('unittests', unit_test_files, dependencies: [nuschl_dep, boost_test_dep])
+exe = executable('unittests', unit_test_files, dependencies: [nuschl_dep, boost_test_dep, nuschl_test_dep])
 test('unittests', exe)
 
 

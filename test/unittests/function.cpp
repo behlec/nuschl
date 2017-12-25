@@ -7,6 +7,7 @@
 
 #include <nuschl/function.hpp>
 #include <nuschl/s_exp.hpp>
+#include <nuschl/memory/s_exp_pool.hpp>
 
 #include <sstream>
 
@@ -14,7 +15,8 @@ using namespace nuschl;
 
 namespace {
 class pseudo : public primitive {
-    s_exp_ptr execute(const std::vector<s_exp_ptr> &) const override {
+    s_exp_ptr execute(const std::vector<s_exp_ptr> &,
+                      memory::s_exp_pool *) const override {
         const s_exp *ret = s_exp::nil;
         return ret;
     };

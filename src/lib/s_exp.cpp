@@ -67,6 +67,12 @@ bool nuschl::s_exp::is_cell() const noexcept {
 const nuschl::s_exp *nuschl::s_exp::nil = &nuschl::s_exp::nil_elem;
 const nuschl::s_exp nuschl::s_exp::nil_elem(&nil_elem, &nil_elem);
 
+const nuschl::s_exp *nuschl::s_exp::tru = &nuschl::s_exp::tru_elem;
+const nuschl::s_exp nuschl::s_exp::tru_elem(make_atom("#t"));
+
+const nuschl::s_exp *nuschl::s_exp::fals = &nuschl::s_exp::fals_elem;
+const nuschl::s_exp nuschl::s_exp::fals_elem(make_atom("#f"));
+
 std::ostream &nuschl::operator<<(std::ostream &os, const s_exp *e) {
     switch (e->get_kind()) {
     case s_exp::kind::atom:

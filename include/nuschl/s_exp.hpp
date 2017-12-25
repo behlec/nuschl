@@ -2,6 +2,7 @@
 
 #include <nuschl/atom.hpp>
 #include <nuschl/function.hpp>
+#include <nuschl/primitives.hpp>
 #include <nuschl/s_exp_fwd.hpp>
 #include <nuschl/variant.hpp>
 
@@ -58,6 +59,12 @@ class s_exp {
 
     static const s_exp nil_elem;
     static const s_exp *nil;
+
+    static const s_exp tru_elem;
+    static const s_exp *tru;
+
+    static const s_exp fals_elem;
+    static const s_exp *fals;
 
   private:
     using pair = std::pair<const s_exp *, const s_exp *>;

@@ -10,39 +10,29 @@
 
 namespace nuschl {
 
-//! Builtin primitive functions
-class primitive {
-  public:
-    /**
-     * \brief Eval arguments.
-     *
-     * \param arguments The (already evaluated) arguments.
-     * \throws eval_argument_error If the arguments are not as expected.
-     */
-    virtual s_exp_ptr
-    execute(const std::vector<s_exp_ptr> &arguments) const = 0;
-    //! A representation for the primitive, used for printing or debugging.
-    virtual std::string representation() const = 0;
-    virtual ~primitive() = default;
-};
-
-//! Pointer to primitive.
-using primitive_ptr = std::shared_ptr<primitive>;
-
-//! Print the primitive, uses primitive::representation().
-std::ostream &operator<<(std::ostream &, const primitive &);
-
 //! A function
 class lambda {
   public:
+    //! The arguments by name.
     using argument_list = std::vector<symbol>;
 
+    /**
+     * \brief Create a function.
+     *
+     * \param argument_names The names of the arguments.
+     * \param function_body The body of the function.
+     * \param env The variable bindings at the point of instantiation.
+     */
     lambda(argument_list argument_names, const s_exp_ptr function_body,
            env_ptr env);
 
+    //! Return the body of the function.
     s_exp_ptr body() const noexcept;
+    //! Return the names of the arguments.
     const argument_list &get_argument_names() const noexcept;
+    //! Return the environment at point of instantiation.
     env_ptr get_env() const noexcept;
+    //! A string representation of the function.
     std::string representation() const;
 
     ~lambda() = default;
@@ -55,6 +45,9 @@ class lambda {
 
 //! Pointer to lambda.
 using lambda_ptr = std::shared_ptr<lambda>;
+
+lambda_ptr make_lambda(const std::vector<symbol> &, s_exp_ptr, env_ptr);
+// lambda_ptr make_lambda(const std::vector<std::string> &, s_exp_ptr, env_ptr);
 
 //! Print the lambda.
 std::ostream &operator<<(std::ostream &, const lambda &);
