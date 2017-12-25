@@ -4,7 +4,7 @@
 #include <nuschl/memory/s_exp_pool.hpp>
 #include <nuschl/primitives.hpp>
 #include <nuschl/s_exp.hpp>
-#include <nuschl/s_exp_helpers.hpp>
+#include <nuschl/util/s_exp_helpers.hpp>
 
 #include <functional>
 

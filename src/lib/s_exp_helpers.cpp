@@ -1,4 +1,4 @@
-#include <nuschl/s_exp_helpers.hpp>
+#include <nuschl/util/s_exp_helpers.hpp>
 
 bool nuschl::to_bool(const nuschl::s_exp *exp) {
     if (exp->is_nil())

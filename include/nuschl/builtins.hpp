@@ -1,8 +1,8 @@
 #pragma once
 
 #include <nuschl/primitives.hpp>
-#include <nuschl/s_exp_helpers.hpp>
 #include <nuschl/util/primitives_impl.hpp>
+#include <nuschl/util/s_exp_helpers.hpp>
 
 #include <cassert>
 #include <numeric>
