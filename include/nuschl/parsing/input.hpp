@@ -35,7 +35,7 @@ std::pair<std::size_t, std::size_t> to_line(It pos, It b, It e) {
 template <typename It> std::string to_line_string(It pos, It b, It e) {
     std::string ret;
     auto p = to_line(pos, b, e);
-    ret += std::to_string(p.first) + ":" + std::string(p.second);
+    ret += std::to_string(p.first) + ":" + std::to_string(p.second);
     return ret;
 }
 }
