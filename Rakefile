@@ -248,6 +248,20 @@ end
 CONFIG.builds.each { |k,v|
   TaskBuilder.new(k, *v)
 }
+
+desc 'Build with cmake'
+task :cmake => :cmakeconf do
+    Rake.sh 'cd build/cmake && ninja'
+end
+
+file 'build/cmake' do
+    FileUtils.mkdir 'build/cmake'
+end
+
+task 'cmakeconf' => 'build/cmake' do
+    Rake.sh 'cd build/cmake && cmake -GNinja ../..'
+end
+
 desc 'Default task'
 task :default =>  ["test:#{CONFIG.default}"]
 TaskBuilder.build
@@ -289,3 +303,4 @@ desc 'Create doxygen documentation'
 task 'doc:doxy' do
   sh "doxygen doc/Doxyfile"
 end
+
