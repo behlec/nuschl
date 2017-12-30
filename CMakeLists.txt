@@ -60,3 +60,9 @@ endif()
 target_include_directories(nuschl PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
+
+add_executable(lexer ${CMAKE_CURRENT_SOURCE_DIR}/src/bin/lexer.cpp)
+target_link_libraries(lexer PRIVATE nuschl)
+
+add_executable(parser ${CMAKE_CURRENT_SOURCE_DIR}/src/bin/parser.cpp)
+target_link_libraries(parser PRIVATE nuschl)
