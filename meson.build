@@ -93,7 +93,9 @@ nuschl_files = files(
     'src/lib/parseerror.cpp',
     'src/lib/reverse_token_iterator.cpp',
     'src/lib/token.cpp',
-    'src/lib/token_iterator.cpp'
+    'src/lib/token_iterator.cpp',
+
+    'src/lib/interpreter.cpp'
 )
 
 nuschl_inc = include_directories('include')
@@ -125,6 +127,11 @@ else
     boost_test_dep = dependency('boost', modules: ['unit_test_framework'], required: true, version: '>=1.59.0')
 endif
 
+################################
+#
+# Examples and Tests
+#
+################################
 
 subdir('test')
 
