@@ -55,8 +55,8 @@ int main(int argc, char **argv) {
         return 1;
     }
     std::cout << input << '\n';
-    std::cout << "Reverse:\n";
     if (reverse) {
+        std::cout << "Reverse:\n";
         rlex(input);
     } else {
         lex(input);
