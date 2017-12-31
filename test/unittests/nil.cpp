@@ -9,9 +9,11 @@
 #include <nuschl/memory/s_exp_pool.hpp>
 
 #include <nuschl/unittests/parse_res.hpp>
+#include <nuschl/unittests/print_test.hpp>
 #include <nuschl/unittests/vector_printer.hpp>
 
 #include <vector>
+#include <sstream>
 
 using namespace std::string_literals;
 
@@ -28,6 +30,15 @@ BOOST_AUTO_TEST_CASE(Is_nil) {
     BOOST_CHECK(s_exp::nil->is_nil());
     auto e = pool.create(s_exp::nil, s_exp::nil);
     BOOST_CHECK(!e->is_nil());
+}
+
+std::vector<testing::print_test> examples = {
+    {s_exp::nil, "nil"}, {pool.create(s_exp::nil, s_exp::nil), "(nil, nil)"}};
+
+BOOST_DATA_TEST_CASE(Parsing, bdata::make(examples), example) {
+    std::stringstream ss;
+    ss << *example.input;
+    BOOST_CHECK_EQUAL(ss.str(), example.expected);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

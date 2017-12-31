@@ -128,6 +128,7 @@ endif
 test_lib_files = files(
     'test/lib/helper.cpp',
     'test/lib/parse_res.cpp',
+    'test/lib/print_test.cpp',
     'test/lib/vector_printer.cpp'
 )
 
