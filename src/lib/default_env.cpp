@@ -23,6 +23,7 @@ nuschl::s_exp list(&primitives::list);
 
 nuschl::environment::table default_table() {
     nuschl::environment::table t;
+    t.insert({"nil"s, nuschl::s_exp::nil});
     t.insert({"#f"s, nuschl::s_exp::fals});
     t.insert({"#t"s, nuschl::s_exp::tru});
     t.insert({"+"s, &nuschl::defenv::plus});
