@@ -118,7 +118,7 @@ bool nuschl::operator==(const s_exp &a, const s_exp &b) {
         break;
     case s_exp::kind::cell:
         if (a.is_nil())
-            return true;
+            return b.is_nil();
         else {
             return (*a.car() == *b.car()) && (*a.cdr() == *b.cdr());
         }
