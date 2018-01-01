@@ -13,9 +13,9 @@ using namespace nuschl;
 
 BOOST_AUTO_TEST_SUITE(S_Exp)
 BOOST_AUTO_TEST_CASE(nil) {
-    BOOST_CHECK(s_exp().is_nil());
-    BOOST_CHECK(s_exp(s_exp::nil, s_exp::nil).is_nil());
-    BOOST_CHECK(s_exp(nullptr, nullptr).is_nil());
+    BOOST_CHECK(s_exp::nil->is_nil());
+    BOOST_CHECK(!s_exp(s_exp::nil, s_exp::nil).is_nil());
+    BOOST_CHECK(!s_exp(nullptr, nullptr).is_nil());
 }
 
 BOOST_AUTO_TEST_CASE(create_from_atom) {
@@ -60,8 +60,7 @@ BOOST_AUTO_TEST_CASE(create_list) {
 
 BOOST_AUTO_TEST_CASE(ostream_nil) {
     std::stringstream ss;
-    s_exp e;
-    ss << &e;
+    ss << s_exp::nil;
     BOOST_CHECK_EQUAL(ss.str(), "nil");
 }
 
@@ -98,10 +97,8 @@ BOOST_AUTO_TEST_CASE(ostream_list) {
 }
 
 BOOST_AUTO_TEST_CASE(Equality_Nil) {
-    BOOST_CHECK_EQUAL(s_exp{}, s_exp{});
-    BOOST_CHECK_EQUAL(*s_exp::nil, s_exp{});
     s_exp s{s_exp::nil, s_exp::nil};
-    BOOST_CHECK_EQUAL(*s_exp::nil, s);
+    BOOST_CHECK(*s_exp::nil != s);
 }
 
 BOOST_AUTO_TEST_CASE(Equality_Atom) {

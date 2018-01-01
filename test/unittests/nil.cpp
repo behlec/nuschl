@@ -28,8 +28,10 @@ memory::s_exp_pool pool;
 
 BOOST_AUTO_TEST_CASE(Is_nil) {
     BOOST_CHECK(s_exp::nil->is_nil());
+    BOOST_CHECK(!s_exp::nil->is_cell());
     auto e = pool.create(s_exp::nil, s_exp::nil);
     BOOST_CHECK(!e->is_nil());
+    BOOST_CHECK(!s_exp::nil->is_cell());
 }
 
 std::vector<testing::print_test> examples = {
