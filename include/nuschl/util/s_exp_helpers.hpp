@@ -24,6 +24,9 @@ bool is_lambda(const s_exp *) noexcept;
 //! \brief Test if nil
 bool is_cell(const s_exp *) noexcept;
 
+//! Test if argument is nil or the empty cell.
+bool is_empty_cell(const s_exp *) noexcept;
+
 //! \brief Test if lambda
 number to_number(const s_exp *);
 
@@ -60,7 +63,7 @@ template <typename It> const s_exp *to_list(It b, It e, memory::s_exp_pool *p);
 
 template <typename It>
 void nuschl::list_to_cont(const nuschl::s_exp *l, It out) {
-    while (!(l->is_nil())) {
+    while (!(is_empty_cell(l))) {
         *out = l->car();
         l = l->cdr();
     }
@@ -72,7 +75,7 @@ const nuschl::s_exp *nuschl::to_list(It b, It e, memory::s_exp_pool *pool) {
         return pool->create(s_exp::nil, s_exp::nil);
     }
     std::stack<const nuschl::s_exp *> s;
-    const nuschl::s_exp *ret = nuschl::s_exp::nil;
+    const nuschl::s_exp *ret = pool->create(s_exp::nil, s_exp::nil);
 
     for (auto it = b; it != e; ++it) {
         s.push(*it);
