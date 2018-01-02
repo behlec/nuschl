@@ -125,40 +125,8 @@ else
     boost_test_dep = dependency('boost', modules: ['unit_test_framework'], required: true, version: '>=1.59.0')
 endif
 
-test_lib_files = files(
-    'test/lib/helper.cpp',
-    'test/lib/parse_res.cpp',
-    'test/lib/print_test.cpp',
-    'test/lib/vector_printer.cpp'
-)
 
-nuschl_test_inc = include_directories('test/include')
-nuschl_test_lib = static_library('nuschl-test', test_lib_files, include_directories: nuschl_test_inc, dependencies: [nuschl_dep, boost_test_dep])
-nuschl_test_dep = declare_dependency(include_directories: nuschl_test_inc, link_with: nuschl_test_lib)
-
-unit_test_files = [
-    'test/unittests/main.cpp',
-    'test/unittests/atom.cpp',
-    'test/unittests/builtins.cpp',
-    'test/unittests/environment.cpp',
-    'test/unittests/function.cpp',
-    'test/unittests/helper.cpp',
-    'test/unittests/nil.cpp',
-    'test/unittests/number.cpp',
-    'test/unittests/primitives_impl.cpp',
-    'test/unittests/readfile.cpp',
-    'test/unittests/symbol.cpp',
-    'test/unittests/s_exp.cpp',
-    'test/unittests/s_exp_helpers.cpp',
-
-    'test/unittests/parser.cpp',
-    'test/unittests/token.cpp',
-    'test/unittests/token_iterator.cpp',
-    'test/unittests/reverse_token_iterator.cpp'
-]
-
-exe = executable('unittests', unit_test_files, dependencies: [nuschl_dep, boost_test_dep, nuschl_test_dep])
-test('unittests', exe)
+subdir('test')
 
 
 ################################
