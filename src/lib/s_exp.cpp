@@ -41,9 +41,7 @@ bool nuschl::s_exp::is_nil() const noexcept {
     if (kind::cell != m_kind) {
         return false;
     }
-    const s_exp *a = car();
-    const s_exp *b = cdr();
-    return (a == nil || a == nullptr) && (b == nil || b == nullptr);
+    return this == s_exp::nil;
 }
 
 bool nuschl::s_exp::is_atom() const noexcept { return kind::atom == m_kind; }
@@ -120,7 +118,7 @@ bool nuschl::operator==(const s_exp &a, const s_exp &b) {
         break;
     case s_exp::kind::cell:
         if (a.is_nil())
-            return true;
+            return b.is_nil();
         else {
             return (*a.car() == *b.car()) && (*a.cdr() == *b.cdr());
         }
@@ -128,3 +126,5 @@ bool nuschl::operator==(const s_exp &a, const s_exp &b) {
     }
     return false;
 }
+
+bool nuschl::operator!=(const s_exp &a, const s_exp &b) { return !(a == b); }

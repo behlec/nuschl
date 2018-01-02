@@ -4,6 +4,7 @@
 // clang-format on
 
 #include <nuschl/s_exp.hpp>
+#include <nuschl/memory/s_exp_pool.hpp>
 
 #include <sstream>
 
@@ -13,9 +14,9 @@ using namespace nuschl;
 
 BOOST_AUTO_TEST_SUITE(S_Exp)
 BOOST_AUTO_TEST_CASE(nil) {
-    BOOST_CHECK(s_exp().is_nil());
-    BOOST_CHECK(s_exp(s_exp::nil, s_exp::nil).is_nil());
-    BOOST_CHECK(s_exp(nullptr, nullptr).is_nil());
+    BOOST_CHECK(s_exp::nil->is_nil());
+    BOOST_CHECK(!s_exp(s_exp::nil, s_exp::nil).is_nil());
+    BOOST_CHECK(!s_exp(nullptr, nullptr).is_nil());
 }
 
 BOOST_AUTO_TEST_CASE(create_from_atom) {
@@ -60,8 +61,7 @@ BOOST_AUTO_TEST_CASE(create_list) {
 
 BOOST_AUTO_TEST_CASE(ostream_nil) {
     std::stringstream ss;
-    s_exp e;
-    ss << &e;
+    ss << s_exp::nil;
     BOOST_CHECK_EQUAL(ss.str(), "nil");
 }
 
@@ -98,10 +98,16 @@ BOOST_AUTO_TEST_CASE(ostream_list) {
 }
 
 BOOST_AUTO_TEST_CASE(Equality_Nil) {
-    BOOST_CHECK_EQUAL(s_exp{}, s_exp{});
-    BOOST_CHECK_EQUAL(*s_exp::nil, s_exp{});
     s_exp s{s_exp::nil, s_exp::nil};
-    BOOST_CHECK_EQUAL(*s_exp::nil, s);
+    BOOST_CHECK(*s_exp::nil != s);
+    BOOST_CHECK_EQUAL(*s_exp::nil, *s_exp::nil);
+}
+
+BOOST_AUTO_TEST_CASE(Equality_Empty) {
+    s_exp s{s_exp::nil, s_exp::nil};
+    s_exp t{s_exp::nil, s_exp::nil};
+    BOOST_CHECK_EQUAL(s, s);
+    BOOST_CHECK_EQUAL(t, s);
 }
 
 BOOST_AUTO_TEST_CASE(Equality_Atom) {
@@ -115,23 +121,20 @@ BOOST_AUTO_TEST_CASE(Equality_Atom) {
     BOOST_CHECK_NE(*e1.get(), *e3.get());
 }
 
+memory::s_exp_pool pool;
+
 BOOST_AUTO_TEST_CASE(Equality_List) {
-    auto e1 = test::make_num(1);
-    auto e2 = test::make_num(1);
-    auto e3 = test::make_num(2);
-
-    s_exp el2(e2.get(), s_exp::nil);
-    s_exp el3(e3.get(), s_exp::nil);
-
-    s_exp l1(e1.get(), &el2);
-    s_exp l2(e2.get(), &el2);
-
-    BOOST_CHECK(l1 == l2);
-
-    s_exp l3(e1.get(), &el2);
-    s_exp l4(e1.get(), &el3);
-
-    BOOST_CHECK(!(l3 == l4));
+    auto e1 = pool.create(s_exp::nil, s_exp::nil);
+    auto e2 = pool.create(s_exp::nil, s_exp::nil);
+    auto a1 = pool.create(make_atom(number{1}));
+    auto b1 = pool.create(make_atom(number{1}));
+    auto a = pool.create(a1, e1);
+    auto b = pool.create(b1, e2);
+    auto c2 = pool.create(make_atom(number{2}));
+    auto d2 = pool.create(make_atom(number{2}));
+    auto c = pool.create(c2, a);
+    auto d = pool.create(d2, b);
+    BOOST_CHECK_EQUAL(*c, *d);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

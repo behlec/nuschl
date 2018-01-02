@@ -11,11 +11,8 @@ bool nuschl::to_bool(const nuschl::s_exp *exp) {
 }
 
 std::size_t nuschl::list_size(const nuschl::s_exp *e) {
-    if (e->car()->is_nil()) {
-        return 0;
-    }
-    std::size_t ret = 1;
-    while (!e->cdr()->is_nil()) {
+    std::size_t ret = 0;
+    while (!is_empty_cell(e)) {
         e = e->cdr();
         ++ret;
     }
@@ -35,6 +32,11 @@ bool nuschl::is_number(const nuschl::s_exp *e) noexcept {
 bool nuschl::is_primitive(const s_exp *e) noexcept { return e->is_primitive(); }
 
 bool nuschl::is_lambda(const s_exp *e) noexcept { return e->is_lambda(); }
+
+bool nuschl::is_cell(const nuschl::s_exp *e) noexcept { return e->is_cell(); }
+bool nuschl::is_empty_cell(const nuschl::s_exp *e) noexcept {
+    return e->car()->is_nil() && e->cdr()->is_nil();
+}
 
 nuschl::number nuschl::to_number(const nuschl::s_exp *e) {
     return e->get_atom()->get_number();

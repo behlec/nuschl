@@ -2,6 +2,8 @@ find_package(Boost 1.59.0 REQUIRED COMPONENTS unit_test_framework)
 
 set(NUSCHL_UNITTEST_LIB_SRC
   ${CMAKE_CURRENT_SOURCE_DIR}/lib/helper.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/lib/parse_res.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/lib/print_test.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/lib/vector_printer.cpp
   )
 
@@ -17,6 +19,7 @@ ${CMAKE_CURRENT_SOURCE_DIR}/unittests/builtins.cpp
 ${CMAKE_CURRENT_SOURCE_DIR}/unittests/environment.cpp
 ${CMAKE_CURRENT_SOURCE_DIR}/unittests/function.cpp
 ${CMAKE_CURRENT_SOURCE_DIR}/unittests/helper.cpp
+${CMAKE_CURRENT_SOURCE_DIR}/unittests/nil.cpp
 ${CMAKE_CURRENT_SOURCE_DIR}/unittests/number.cpp
 ${CMAKE_CURRENT_SOURCE_DIR}/unittests/primitives_impl.cpp
 ${CMAKE_CURRENT_SOURCE_DIR}/unittests/readfile.cpp

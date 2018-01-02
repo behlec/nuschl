@@ -10,6 +10,10 @@ namespace nuschl::memory {
 class s_exp_pool {
   public:
     template <typename... T> const s_exp *create(T &&...);
+    const s_exp *create_num(number);
+    const s_exp *create_sym(symbol);
+    const s_exp *create_atom(number);
+    const s_exp *create_atom(symbol);
 
     void add(const nuschl::s_exp *);
 

@@ -15,19 +15,22 @@ namespace nuschl {
  * Can be a cell, i.e. pair of S-Expressions, or an atom, a primitive, or a
  * lambda.
  *
- * Nil is a special s_exp of type cell with two pointers to itself.
- * Any cell where both s_exp are either nil or nullptr are considered nil.
- *
  * A list is represented by a cell, where  car = value, cdr = cell rest of list,
  * cdr = nil last element.
+ *
+ * Nil is a singleton instance. It is a cell with two pointers to itself.
+ *
+ * \attention While nil is logically equivalent to the empty list we have to
+ * distinguish it internally.
+ * Otherwise we cannot distinguish between the empty list and the list
+ * containing nil.
+ *
  */
 class s_exp {
   public:
     //! The kind of S-Expressions.
     enum class kind { cell, atom, primitive, lambda };
 
-    //! Nil.
-    s_exp();
     explicit s_exp(const atom_ptr &);
     explicit s_exp(const primitive_ptr &);
     explicit s_exp(const lambda_ptr &);
@@ -50,12 +53,14 @@ class s_exp {
     bool is_atom() const noexcept;
     bool is_primitive() const noexcept;
     bool is_lambda() const noexcept;
+    //! True iff of type cell and not nil.
     bool is_cell() const noexcept;
 
     friend std::ostream &operator<<(std::ostream &, const s_exp *);
     friend std::ostream &operator<<(std::ostream &, const s_exp *);
 
     friend bool operator==(const s_exp &, const s_exp &);
+    friend bool operator!=(const s_exp &, const s_exp &);
 
     static const s_exp nil_elem;
     static const s_exp *nil;
@@ -67,6 +72,9 @@ class s_exp {
     static const s_exp *fals;
 
   private:
+    //! Nil.
+    s_exp();
+
     using pair = std::pair<const s_exp *, const s_exp *>;
     kind m_kind;
     variant<atom_ptr, primitive_ptr, lambda_ptr, pair> m_value;
@@ -75,4 +83,5 @@ class s_exp {
 std::ostream &operator<<(std::ostream &, const s_exp &);
 
 bool operator==(const s_exp &, const s_exp &);
+bool operator!=(const s_exp &, const s_exp &);
 }

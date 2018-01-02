@@ -127,6 +127,8 @@ endif
 
 test_lib_files = files(
     'test/lib/helper.cpp',
+    'test/lib/parse_res.cpp',
+    'test/lib/print_test.cpp',
     'test/lib/vector_printer.cpp'
 )
 
@@ -141,6 +143,7 @@ unit_test_files = [
     'test/unittests/environment.cpp',
     'test/unittests/function.cpp',
     'test/unittests/helper.cpp',
+    'test/unittests/nil.cpp',
     'test/unittests/number.cpp',
     'test/unittests/primitives_impl.cpp',
     'test/unittests/readfile.cpp',
