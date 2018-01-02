@@ -123,6 +123,18 @@ BOOST_AUTO_TEST_CASE(Equality_Atom) {
 
 memory::s_exp_pool pool;
 
-BOOST_AUTO_TEST_CASE(Equality_List) {}
+BOOST_AUTO_TEST_CASE(Equality_List) {
+    auto e1 = pool.create(s_exp::nil, s_exp::nil);
+    auto e2 = pool.create(s_exp::nil, s_exp::nil);
+    auto a1 = pool.create(make_atom(number{1}));
+    auto b1 = pool.create(make_atom(number{1}));
+    auto a = pool.create(a1, e1);
+    auto b = pool.create(b1, e2);
+    auto c2 = pool.create(make_atom(number{2}));
+    auto d2 = pool.create(make_atom(number{2}));
+    auto c = pool.create(c2, a);
+    auto d = pool.create(d2, b);
+    BOOST_CHECK_EQUAL(*c, *d);
+}
 
 BOOST_AUTO_TEST_SUITE_END()

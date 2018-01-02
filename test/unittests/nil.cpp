@@ -35,7 +35,17 @@ BOOST_AUTO_TEST_CASE(Is_nil) {
 }
 
 std::vector<testing::print_test> examples = {
-    {s_exp::nil, "nil"}, {pool.create(s_exp::nil, s_exp::nil), "(nil, nil)"}};
+    {s_exp::nil, "nil"},
+    {pool.create(s_exp::nil, s_exp::nil), "(nil, nil)"},
+    {pool.create(pool.create(make_atom(number{1})), s_exp::nil), "(1, nil)"},
+    {pool.create(pool.create(make_atom(number{1})),
+                 pool.create(s_exp::nil, s_exp::nil)),
+     "(1, (nil, nil))"},
+    {pool.create(pool.create(pool.create(make_atom(number{1})),
+                             pool.create(s_exp::nil, s_exp::nil)),
+                 pool.create(s_exp::nil, s_exp::nil)),
+     "((1, (nil, nil)), (nil, nil))"},
+};
 
 BOOST_DATA_TEST_CASE(Parsing, bdata::make(examples), example) {
     std::stringstream ss;
@@ -51,15 +61,18 @@ memory::s_exp_pool pool;
 
 std::vector<testing::parse_example> examples = {
     {""s, pool.create(s_exp::nil, s_exp::nil)},
-    {"nil"s, pool.create(s_exp::nil, pool.create(s_exp::nil, s_exp::nil))},
+    {"nil"s,
+     pool.create(pool.create_atom("nil"), pool.create(s_exp::nil, s_exp::nil))},
     {"()"s, pool.create(pool.create(s_exp::nil, s_exp::nil),
                         pool.create(s_exp::nil, s_exp::nil))},
-    {"(nil)"s,
-     pool.create(pool.create(s_exp::nil, pool.create(s_exp::nil, s_exp::nil)),
-                 pool.create(s_exp::nil, s_exp::nil))},
-    {"1"s, pool.create(pool.create(pool.create(make_atom(number{1})),
-                                   pool.create(s_exp::nil, s_exp::nil)),
-                       pool.create(s_exp::nil, s_exp::nil))}};
+    {"(nil)"s, pool.create(pool.create(pool.create_atom("nil"),
+                                       pool.create(s_exp::nil, s_exp::nil)),
+                           pool.create(s_exp::nil, s_exp::nil))},
+    {"1"s, pool.create(pool.create(make_atom(number{1})),
+                       pool.create(s_exp::nil, s_exp::nil))},
+    {"(1)"s, pool.create(pool.create(pool.create(make_atom(number{1})),
+                                     pool.create(s_exp::nil, s_exp::nil)),
+                         pool.create(s_exp::nil, s_exp::nil))}};
 
 BOOST_DATA_TEST_CASE(Parsing, bdata::make(examples), example) {
     nuschl::parsing::parser p(example.input, pool);

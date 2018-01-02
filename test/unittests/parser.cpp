@@ -5,17 +5,20 @@
 #include <boost/test/data/monomorphic.hpp>
 // clang-format on
 
-#include <boost/scoped_ptr.hpp>
-
 #include <nuschl/parsing/parser.hpp>
 #include <nuschl/memory/s_exp_pool.hpp>
+#include <nuschl/util/s_exp_helpers.hpp>
+
+#include <nuschl/unittests/parse_res.hpp>
+
+#include <sstream>
 
 using namespace std::string_literals;
 
 namespace bdata = boost::unit_test::data;
 namespace tt = boost::test_tools;
 
-BOOST_AUTO_TEST_SUITE(SimpleTests)
+BOOST_AUTO_TEST_SUITE(Parser)
 BOOST_AUTO_TEST_CASE(Symbol) {
     nuschl::memory::s_exp_pool pool;
     std::string code = "foo";
@@ -37,7 +40,7 @@ BOOST_AUTO_TEST_CASE(Number) {
     BOOST_REQUIRE(a->is_cell());
     BOOST_REQUIRE(a->car()->is_atom());
     BOOST_REQUIRE(a->car()->get_atom()->is_number());
-    BOOST_CHECK(a->car()->get_atom()->get_number() == nuschl::number(23));
+    BOOST_CHECK_EQUAL(a->car()->get_atom()->get_number(), nuschl::number(23));
 }
 
 BOOST_AUTO_TEST_CASE(List) {
@@ -49,7 +52,8 @@ BOOST_AUTO_TEST_CASE(List) {
         BOOST_REQUIRE(a);
         BOOST_REQUIRE(a->is_cell());
         BOOST_REQUIRE(a->car()->is_atom());
-        BOOST_CHECK(a->car()->get_atom()->get_number() == nuschl::number(i));
+        BOOST_CHECK_EQUAL(a->car()->get_atom()->get_number(),
+                          nuschl::number(i));
         a = a->cdr();
     }
 }
@@ -66,10 +70,11 @@ BOOST_AUTO_TEST_CASE(List2) {
         BOOST_REQUIRE(a);
         BOOST_REQUIRE(a->is_cell());
         BOOST_REQUIRE(a->car()->is_atom());
-        BOOST_CHECK(a->car()->get_atom()->get_number() == nuschl::number(i));
+        BOOST_CHECK_EQUAL(a->car()->get_atom()->get_number(),
+                          nuschl::number(i));
         a = a->cdr();
     }
-    BOOST_CHECK(a->is_nil());
+    BOOST_CHECK(nuschl::is_empty_cell(a));
 }
 BOOST_AUTO_TEST_CASE(List3) {
     nuschl::memory::s_exp_pool pool;
@@ -83,10 +88,11 @@ BOOST_AUTO_TEST_CASE(List3) {
         BOOST_REQUIRE(a);
         BOOST_REQUIRE(a->is_cell());
         BOOST_REQUIRE(a->car()->is_atom());
-        BOOST_CHECK(a->car()->get_atom()->get_number() == nuschl::number(i));
+        BOOST_CHECK_EQUAL(a->car()->get_atom()->get_number(),
+                          nuschl::number(i));
         a = a->cdr();
     }
-    BOOST_CHECK(a->is_nil());
+    BOOST_CHECK(is_empty_cell(a));
     a = l->cdr();
     BOOST_REQUIRE(a);
     BOOST_REQUIRE(a->is_cell());
@@ -95,11 +101,41 @@ BOOST_AUTO_TEST_CASE(List3) {
         BOOST_REQUIRE(a);
         BOOST_REQUIRE(a->is_cell());
         BOOST_REQUIRE(a->car()->is_atom());
-        BOOST_CHECK(a->car()->get_atom()->get_number() == nuschl::number(i));
+        BOOST_CHECK_EQUAL(a->car()->get_atom()->get_number(),
+                          nuschl::number(i));
         a = a->cdr();
     }
-    BOOST_CHECK(a->is_nil());
-    BOOST_CHECK(l->cdr()->cdr()->is_nil());
+    BOOST_CHECK(is_empty_cell(a));
+}
+
+BOOST_AUTO_TEST_SUITE_END()
+
+using namespace nuschl;
+
+BOOST_AUTO_TEST_SUITE(ParserData)
+
+memory::s_exp_pool pool;
+
+std::vector<testing::parse_example> examples = {
+    {""s, pool.create(s_exp::nil, s_exp::nil)},
+    {"nil"s,
+     pool.create(pool.create_sym("nil"), pool.create(s_exp::nil, s_exp::nil))},
+    {"()"s, pool.create(pool.create(s_exp::nil, s_exp::nil),
+                        pool.create(s_exp::nil, s_exp::nil))},
+    {"1"s, pool.create(pool.create(make_atom(number{1})),
+                       pool.create(s_exp::nil, s_exp::nil))},
+    {"1 2"s, pool.create(pool.create_num(number{1}),
+                         pool.create(pool.create_num(number{2}),
+                                     pool.create(s_exp::nil, s_exp::nil)))},
+    {"(1)"s, pool.create(pool.create(pool.create(make_atom(number{1})),
+                                     pool.create(s_exp::nil, s_exp::nil)),
+                         pool.create(s_exp::nil, s_exp::nil))}};
+
+BOOST_DATA_TEST_CASE(Parsing, bdata::make(examples), example) {
+    nuschl::parsing::parser p(example.input, pool);
+    auto a = p.parse().ast;
+    BOOST_REQUIRE(a);
+    BOOST_CHECK_EQUAL(*example.expected, *a);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
