@@ -50,22 +50,22 @@ BOOST_AUTO_TEST_SUITE(NilParsing)
 memory::s_exp_pool pool;
 
 std::vector<testing::parse_example> examples = {
-    {""s, s_exp::nil},
+    {""s, pool.create(s_exp::nil, s_exp::nil)},
     {"nil"s, pool.create(s_exp::nil, pool.create(s_exp::nil, s_exp::nil))},
     {"()"s, pool.create(pool.create(s_exp::nil, s_exp::nil),
                         pool.create(s_exp::nil, s_exp::nil))},
     {"(nil)"s,
      pool.create(pool.create(s_exp::nil, pool.create(s_exp::nil, s_exp::nil)),
                  pool.create(s_exp::nil, s_exp::nil))},
-    {"(1)"s, pool.create(pool.create(pool.create(make_atom(number{1})),
-                                     pool.create(s_exp::nil, s_exp::nil)),
-                         pool.create(s_exp::nil, s_exp::nil))}};
+    {"1"s, pool.create(pool.create(pool.create(make_atom(number{1})),
+                                   pool.create(s_exp::nil, s_exp::nil)),
+                       pool.create(s_exp::nil, s_exp::nil))}};
 
 BOOST_DATA_TEST_CASE(Parsing, bdata::make(examples), example) {
     nuschl::parsing::parser p(example.input, pool);
     auto a = p.parse().ast;
     BOOST_REQUIRE(a);
-    BOOST_CHECK_EQUAL(example.expected, a);
+    BOOST_CHECK_EQUAL(*example.expected, *a);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
