@@ -1,6 +1,7 @@
 #include <nuschl/parsing/lexer.hpp>
 #include <nuschl/parsing/parseerror.hpp>
 #include <nuschl/parsing/parser.hpp>
+#include <nuschl/util/s_exp_helpers.hpp>
 
 #include <cassert>
 #include <stack>
@@ -30,14 +31,17 @@ nuschl::parsing::parse_result nuschl::parsing::parser::parse() {
     lexer l(m_input);
     check_parens(l.begin(), l.end());
 
+    const s_exp *list_end = m_pool.create(s_exp::nil, s_exp::nil);
+    assert(is_empty_cell(list_end));
+
     s_exp_ptr ret = s_exp::nil;
 
     std::stack<s_exp_ptr> stack;
-    stack.push(s_exp::nil);
+    stack.push(list_end);
 
     for (auto it = l.rbegin(); it != l.rend(); ++it) {
         if (it->is_rparan()) {
-            stack.push(s_exp::nil);
+            stack.push(list_end);
         } else if (it->is_atom()) {
             atom_ptr a;
             assert(it->value().size() > 0);
@@ -47,16 +51,12 @@ nuschl::parsing::parse_result nuschl::parsing::parser::parse() {
             } else {
                 a = make_atom(it->value());
             }
-            if (stack.empty()) {
-                stack.push(m_pool.create(a));
-                ret = stack.top();
-            } else {
-                s_exp_ptr ca = m_pool.create(a);
-                s_exp_ptr cd = stack.top();
-                stack.pop();
-                stack.push(m_pool.create(ca, cd));
-                ret = stack.top();
-            }
+            assert(!stack.empty());
+            s_exp_ptr ca = m_pool.create(a);
+            s_exp_ptr cd = stack.top();
+            stack.pop();
+            stack.push(m_pool.create(ca, cd));
+            ret = stack.top();
         } else { // it->is_lparan()
             s_exp_ptr ca = stack.top();
             stack.pop();
@@ -66,8 +66,9 @@ nuschl::parsing::parse_result nuschl::parsing::parser::parse() {
             ret = stack.top();
         }
     }
-    if (!stack.empty()) {
-        ret = stack.top();
-    }
+    assert(!stack.empty());
+    ret = stack.top();
+    stack.pop();
+    assert(stack.empty());
     return parse_result{ret};
 }
