@@ -108,8 +108,16 @@ primitive_impl::primitivebuilder
     eq("eq",
        [](const std::vector<s_exp_ptr> &arguments,
           memory::s_exp_pool *pool) -> const s_exp * {
+           const s_exp *a = arguments[0];
+           const s_exp *b = arguments[1];
            const s_exp *res = s_exp::fals;
-           if (*arguments[0] == *arguments[1]) {
+           // Handle nil and empty list
+           if ((is_nil(a) || is_empty_cell(a)) &&
+               (is_nil(b) || is_empty_cell(b))) {
+               res = s_exp::tru;
+           }
+           // General case
+           if (*a == *b) {
                res = s_exp::tru;
            }
            return res;

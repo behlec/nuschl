@@ -291,6 +291,14 @@ BOOST_AUTO_TEST_CASE(SymbolsNotEqualNumber) {
     BOOST_CHECK_EQUAL(res, s_exp::fals);
 }
 
+BOOST_AUTO_TEST_CASE(NilEqEmptyList) {
+    std::vector<s_exp_ptr> args;
+    args.push_back(s_exp::nil);
+    args.push_back(pool.create(s_exp::nil, s_exp::nil));
+    auto res = primitives::eq.execute(args, &pool);
+    BOOST_CHECK_EQUAL(res, s_exp::tru);
+}
+
 std::vector<s_exp_ptr> val = {
     s_exp::nil,
     pool.create(s_exp::nil, s_exp::nil),
@@ -305,7 +313,7 @@ std::vector<s_exp_ptr> exp = {s_exp::tru,  s_exp::tru,  s_exp::fals,
                               s_exp::fals, s_exp::fals, s_exp::fals,
                               s_exp::fals, s_exp::fals};
 
-BOOST_DATA_TEST_CASE(Nil, bdata::make(val) ^ bdata::make(exp), a, e) {
+BOOST_DATA_TEST_CASE(Mix, bdata::make(val) ^ bdata::make(exp), a, e) {
     std::vector<s_exp_ptr> args;
     args.push_back(a);
     args.push_back(s_exp::nil);
