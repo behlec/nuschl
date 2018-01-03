@@ -35,6 +35,11 @@ bool nuschl::is_lambda(const s_exp *e) noexcept { return e->is_lambda(); }
 
 bool nuschl::is_cell(const nuschl::s_exp *e) noexcept { return e->is_cell(); }
 bool nuschl::is_empty_cell(const nuschl::s_exp *e) noexcept {
+    if (is_nil(e)) {
+        return true;
+    } else if (!e->is_cell()) {
+        return false;
+    }
     return e->car()->is_nil() && e->cdr()->is_nil();
 }
 

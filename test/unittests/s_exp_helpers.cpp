@@ -159,6 +159,10 @@ BOOST_AUTO_TEST_CASE(IsEmptyCell) {
     BOOST_CHECK(
         is_empty_cell(pool.create(nuschl::s_exp::nil, nuschl::s_exp::nil)));
     BOOST_CHECK(is_empty_cell(nuschl::s_exp::nil));
+    BOOST_CHECK(!is_empty_cell(pool.create_atom(nuschl::number{1})));
+    BOOST_CHECK(!is_empty_cell(pool.create_atom("a")));
+    auto l = nuschl::make_lambda({}, nullptr, nullptr);
+    BOOST_CHECK(!is_empty_cell(pool.create(l)));
 }
 
 BOOST_AUTO_TEST_SUITE_END()
