@@ -165,4 +165,21 @@ BOOST_AUTO_TEST_CASE(IsEmptyCell) {
     BOOST_CHECK(!is_empty_cell(pool.create(l)));
 }
 
+BOOST_AUTO_TEST_CASE(For_List) {
+    std::stringstream ss;
+    auto l = pool.create(
+        pool.create_atom(nuschl::number{1}),
+        pool.create(pool.create_atom(nuschl::number{2}),
+                    pool.create(nuschl::s_exp::nil, nuschl::s_exp::nil)));
+    for_list(l, [&ss](const nuschl::s_exp *l) { ss << l; });
+    BOOST_CHECK_EQUAL(ss.str(), "12");
+}
+
+BOOST_AUTO_TEST_CASE(For_ListEmpty) {
+    std::stringstream ss;
+    auto l = pool.create(nuschl::s_exp::nil, nuschl::s_exp::nil);
+    for_list(l, [&ss](const nuschl::s_exp *l) { ss << l; });
+    BOOST_CHECK_EQUAL(ss.str(), "");
+}
+
 BOOST_AUTO_TEST_SUITE_END()

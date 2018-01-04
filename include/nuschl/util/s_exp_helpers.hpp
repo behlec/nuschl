@@ -56,6 +56,17 @@ template <typename It> void list_to_cont(const s_exp *e, It it);
  * \tparam It Forward iterator.
  */
 template <typename It> const s_exp *to_list(It b, It e, memory::s_exp_pool *p);
+
+/** \brief Apply lambda to each element in a list.
+ *
+ * For each element that is not the emtpy cell, apply f to car, goto cdr,
+ * repeat.
+ *
+ * \tparam F The lambda typ
+ * \param l The pointer to the list. May be the empty cell.
+ * \aparam f The lambda to apply.
+ */
+template <typename F> void for_list(const s_exp *l, F f);
 }
 
 // - - - - - - - - - - - - - -
@@ -86,4 +97,11 @@ const nuschl::s_exp *nuschl::to_list(It b, It e, memory::s_exp_pool *pool) {
         s.pop();
     }
     return ret;
+}
+
+template <typename F> void nuschl::for_list(const nuschl::s_exp *l, F f) {
+    while (!is_empty_cell(l)) {
+        f(l->car());
+        l = l->cdr();
+    }
 }
