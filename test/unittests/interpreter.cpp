@@ -102,12 +102,29 @@ BOOST_AUTO_TEST_CASE(tlambda) {
     BOOST_CHECK(interp.proc(pres.ast)->is_lambda());
 }
 
+BOOST_AUTO_TEST_CASE(tlambdasim) {
+    std::string code = "((lambda (x) (* 2 x)) 2)";
+    nuschl::parsing::parser p(code, pool);
+    auto pres = p.parse();
+    nuschl::interpreter interp(nuschl::default_env.copy(), &pool);
+    BOOST_CHECK_EQUAL(*interp.proc(pres.ast),
+                      *pool.create_atom(nuschl::number{4}));
+}
+
 BOOST_AUTO_TEST_CASE(eqnil) {
     std::string code = "(eq nil nil)";
     nuschl::parsing::parser p(code, pool);
     auto pres = p.parse();
     nuschl::interpreter interp(nuschl::default_env.copy(), &pool);
-    BOOST_CHECK(nuschl::s_exp::tru == interp.proc(pres.ast));
+    BOOST_CHECK_EQUAL(nuschl::s_exp::tru, interp.proc(pres.ast));
+}
+
+BOOST_AUTO_TEST_CASE(eqnilel) {
+    std::string code = "(eq nil ())";
+    nuschl::parsing::parser p(code, pool);
+    auto pres = p.parse();
+    nuschl::interpreter interp(nuschl::default_env.copy(), &pool);
+    BOOST_CHECK_EQUAL(nuschl::s_exp::tru, interp.proc(pres.ast));
 }
 
 BOOST_AUTO_TEST_CASE(tlambda2) {
