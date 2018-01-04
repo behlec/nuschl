@@ -28,6 +28,8 @@ set(NUSCHL_LIB_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/src/lib/reverse_token_iterator.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/lib/token.cpp
   ${CMAKE_CURRENT_SOURCE_DIR}/src/lib/token_iterator.cpp
+
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/lib/interpreter.cpp
 )
 
 find_package(Boost 1.59.0 COMPONENTS unit_test_framework)
@@ -44,7 +46,7 @@ else()
   message("Boost not found")
 endif()
 
-add_library(nuschl ${NUSCHL_LIB_FILES})
+add_library(nuschl-lib ${NUSCHL_LIB_FILES})
 
 # clang need libc++ or boost
 if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
@@ -57,12 +59,15 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   endif()
 endif()
 
-target_include_directories(nuschl PUBLIC
+target_include_directories(nuschl-lib PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
 
 add_executable(lexer ${CMAKE_CURRENT_SOURCE_DIR}/src/bin/lexer.cpp)
-target_link_libraries(lexer PRIVATE nuschl)
+target_link_libraries(lexer PRIVATE nuschl-lib)
 
 add_executable(parser ${CMAKE_CURRENT_SOURCE_DIR}/src/bin/parser.cpp)
-target_link_libraries(parser PRIVATE nuschl)
+target_link_libraries(parser PRIVATE nuschl-lib)
+
+add_executable(nuschl ${CMAKE_CURRENT_SOURCE_DIR}/src/bin/nuschl.cpp)
+target_link_libraries(nuschl PRIVATE nuschl-lib)
