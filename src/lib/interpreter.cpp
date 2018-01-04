@@ -16,10 +16,7 @@ nuschl::interpreter::interpreter(env_ptr env, memory::s_exp_pool *pool)
 
 const nuschl::s_exp *nuschl::interpreter::proc(const s_exp *exp) {
     const s_exp *res = s_exp::nil;
-    while (!is_empty_cell(exp)) { // Go throug the list and eval each element.
-        res = eval(exp->car());
-        exp = exp->cdr();
-    }
+    for_list(exp, [&res, this](const s_exp *e) { res = eval(e); });
     return res;
 }
 
@@ -65,8 +62,8 @@ const nuschl::s_exp *nuschl::interpreter::eval_special(const s_exp *exp) {
     } else if (value == "let") {
         environment::table t;
         auto vars = exp->cdr()->car();
-        while (!is_empty_cell(vars)) {
-            auto p = vars->car();
+        for_list(vars, [&t, exp, this](const s_exp *var) {
+            auto p = var;
             if (list_size(p) != 2) {
                 std::stringstream s;
                 s << "Expected pair, got ";
@@ -82,8 +79,7 @@ const nuschl::s_exp *nuschl::interpreter::eval_special(const s_exp *exp) {
                 throw eval_error(s.str().c_str(), exp);
             }
             t.insert({v->get_atom()->get_symbol(), e});
-            vars = vars->cdr();
-        }
+        });
         push_new_env(t);
         auto ret = proc(exp->cdr()->cdr());
         m_env_stack.pop();
@@ -91,17 +87,14 @@ const nuschl::s_exp *nuschl::interpreter::eval_special(const s_exp *exp) {
     } else if (value == "lambda") {
         auto varlist = exp->cdr()->car();
         std::vector<symbol> vec;
-        auto var = varlist->car();
-        while (!is_empty_cell(var)) {
+        for_list(varlist, [&vec, exp](const s_exp *var) {
             if (!(var->is_atom() && var->get_atom()->is_symbol())) {
                 throw eval_error("Expected list of symbols as first "
                                  "argument to lambda",
                                  exp);
             }
             vec.push_back(var->get_atom()->get_symbol());
-            varlist = varlist->cdr();
-            var = varlist->car();
-        }
+        });
         auto f =
             std::make_shared<lambda>(vec, exp->cdr()->cdr(), m_env_stack.top());
         return m_pool->create(f);
