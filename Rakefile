@@ -252,14 +252,20 @@ CONFIG.builds.each { |k,v|
 desc 'Build with cmake'
 task :cmake => :cmakeconf do
     Rake.sh 'cd build/cmake && ninja'
+    Rake.sh 'cd build/cmakeclang && ninja'
 end
 
 file 'build/cmake' do
     FileUtils.mkdir 'build/cmake'
 end
 
-task 'cmakeconf' => 'build/cmake' do
+file 'build/cmakeclang' do
+    FileUtils.mkdir 'build/cmakeclang'
+end
+
+task 'cmakeconf' => ['build/cmake', 'build/cmakeclang'] do
     Rake.sh 'cd build/cmake && cmake -GNinja ../..'
+    Rake.sh 'cd build/cmakeclang && CXX=clang++-5.0 cmake -GNinja ../..'
 end
 
 desc 'Default task'
