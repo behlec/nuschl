@@ -30,6 +30,9 @@ bool is_empty_cell(const s_exp *) noexcept;
 //! \brief Test if lambda
 number to_number(const s_exp *);
 
+//! Print expression.
+void print_list(const s_exp *);
+
 /**
  * \brief Convert s_exp to Boolean.
  *
