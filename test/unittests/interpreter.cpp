@@ -19,8 +19,8 @@ BOOST_AUTO_TEST_CASE(tsymbol) {
     nuschl::parsing::parser p(code, pool);
     auto pres = p.parse();
     nuschl::interpreter interp(nuschl::default_env.copy(), &pool);
-    BOOST_CHECK(nuschl::s_exp(make_atom(nuschl::number{10})) ==
-                *interp.proc(pres.ast));
+    BOOST_CHECK_EQUAL(nuschl::s_exp(make_atom(nuschl::number{10})),
+                      *interp.proc(pres.ast));
 }
 
 BOOST_AUTO_TEST_CASE(tnum) {
@@ -28,8 +28,8 @@ BOOST_AUTO_TEST_CASE(tnum) {
     nuschl::parsing::parser p(code, pool);
     auto pres = p.parse();
     nuschl::interpreter interp(nuschl::default_env.copy(), &pool);
-    BOOST_CHECK(nuschl::s_exp(make_atom(nuschl::number{5})) ==
-                *interp.proc(pres.ast));
+    BOOST_CHECK_EQUAL(nuschl::s_exp(make_atom(nuschl::number{5})),
+                      *interp.proc(pres.ast));
 }
 
 BOOST_AUTO_TEST_CASE(tif) {
@@ -37,8 +37,8 @@ BOOST_AUTO_TEST_CASE(tif) {
     nuschl::parsing::parser p(code, pool);
     auto pres = p.parse();
     nuschl::interpreter interp(nuschl::default_env.copy(), &pool);
-    BOOST_CHECK(nuschl::s_exp(make_atom(nuschl::number{1})) ==
-                *interp.proc(pres.ast));
+    BOOST_CHECK_EQUAL(nuschl::s_exp(make_atom(nuschl::number{1})),
+                      *interp.proc(pres.ast));
 }
 
 BOOST_AUTO_TEST_CASE(tifna) {
@@ -46,8 +46,8 @@ BOOST_AUTO_TEST_CASE(tifna) {
     nuschl::parsing::parser p(code, pool);
     auto pres = p.parse();
     nuschl::interpreter interp(nuschl::default_env.copy(), &pool);
-    BOOST_CHECK(nuschl::s_exp(make_atom(nuschl::number{1})) ==
-                *interp.proc(pres.ast));
+    BOOST_CHECK_EQUAL(nuschl::s_exp(make_atom(nuschl::number{1})),
+                      *interp.proc(pres.ast));
 }
 
 BOOST_AUTO_TEST_CASE(tifa) {
@@ -55,8 +55,8 @@ BOOST_AUTO_TEST_CASE(tifa) {
     nuschl::parsing::parser p(code, pool);
     auto pres = p.parse();
     nuschl::interpreter interp(nuschl::default_env.copy(), &pool);
-    BOOST_CHECK(nuschl::s_exp(make_atom(nuschl::number{2})) ==
-                *interp.proc(pres.ast));
+    BOOST_CHECK_EQUAL(nuschl::s_exp(make_atom(nuschl::number{2})),
+                      *interp.proc(pres.ast));
 }
 
 BOOST_AUTO_TEST_CASE(tprim) {
@@ -64,7 +64,7 @@ BOOST_AUTO_TEST_CASE(tprim) {
     nuschl::parsing::parser p(code, pool);
     auto pres = p.parse();
     nuschl::interpreter interp(nuschl::default_env.copy(), &pool);
-    BOOST_TEST(interp.proc(pres.ast)->is_primitive());
+    BOOST_CHECK(interp.proc(pres.ast)->is_primitive());
 }
 
 BOOST_AUTO_TEST_CASE(tsum) {
@@ -72,8 +72,8 @@ BOOST_AUTO_TEST_CASE(tsum) {
     nuschl::parsing::parser p(code, pool);
     auto pres = p.parse();
     nuschl::interpreter interp(nuschl::default_env.copy(), &pool);
-    BOOST_CHECK(nuschl::s_exp(make_atom(nuschl::number{6})) ==
-                *interp.proc(pres.ast));
+    BOOST_CHECK_EQUAL(nuschl::s_exp(make_atom(nuschl::number{6})),
+                      *interp.proc(pres.ast));
 }
 
 BOOST_AUTO_TEST_CASE(tnil) {
@@ -90,8 +90,8 @@ BOOST_AUTO_TEST_CASE(EmptyList) {
     nuschl::parsing::parser p(code, pool);
     auto pres = p.parse();
     nuschl::interpreter interp(nuschl::default_env.copy(), &pool);
-    BOOST_CHECK(*pool.create(nuschl::s_exp::nil, nuschl::s_exp::nil) ==
-                *interp.proc(pres.ast));
+    BOOST_CHECK_EQUAL(*pool.create(nuschl::s_exp::nil, nuschl::s_exp::nil),
+                      *interp.proc(pres.ast));
 }
 
 BOOST_AUTO_TEST_CASE(tlet) {
@@ -99,8 +99,8 @@ BOOST_AUTO_TEST_CASE(tlet) {
     nuschl::parsing::parser p(code, pool);
     auto pres = p.parse();
     nuschl::interpreter interp(nuschl::default_env.copy(), &pool);
-    BOOST_CHECK(nuschl::s_exp(make_atom(nuschl::number{10})) ==
-                *interp.proc(pres.ast));
+    BOOST_CHECK_EQUAL(nuschl::s_exp(make_atom(nuschl::number{10})),
+                      *interp.proc(pres.ast));
 }
 
 BOOST_AUTO_TEST_CASE(tlambda) {
@@ -151,6 +151,6 @@ BOOST_AUTO_TEST_CASE(tlambda2) {
     auto pres = p.parse();
     nuschl::interpreter interp(nuschl::default_env.copy(), &pool);
     auto res = interp.proc(pres.ast);
-    BOOST_CHECK(nuschl::s_exp(make_atom(nuschl::number{3})) == *res);
+    BOOST_CHECK_EQUAL(nuschl::s_exp(make_atom(nuschl::number{3})), *res);
 }
 BOOST_AUTO_TEST_SUITE_END()
