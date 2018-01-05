@@ -67,7 +67,7 @@ template <typename It> const s_exp *to_list(It b, It e, memory::s_exp_pool *p);
  *
  * \tparam F The lambda typ
  * \param l The pointer to the list. May be the empty cell.
- * \aparam f The lambda to apply.
+ * \param f The lambda to apply.
  */
 template <typename F> void for_list(const s_exp *l, F f);
 }
