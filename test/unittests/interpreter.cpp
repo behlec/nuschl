@@ -85,6 +85,15 @@ BOOST_AUTO_TEST_CASE(tnil) {
     BOOST_CHECK(*nuschl::s_exp::nil == *interp.proc(pres.ast));
 }
 
+BOOST_AUTO_TEST_CASE(EmptyList) {
+    std::string code = "()";
+    nuschl::parsing::parser p(code, pool);
+    auto pres = p.parse();
+    nuschl::interpreter interp(nuschl::default_env.copy(), &pool);
+    BOOST_CHECK(*pool.create(nuschl::s_exp::nil, nuschl::s_exp::nil) ==
+                *interp.proc(pres.ast));
+}
+
 BOOST_AUTO_TEST_CASE(tlet) {
     std::string code = "(let ((a 10)) a)";
     nuschl::parsing::parser p(code, pool);
@@ -120,6 +129,14 @@ BOOST_AUTO_TEST_CASE(eqnil) {
 }
 
 BOOST_AUTO_TEST_CASE(eqnilel) {
+    std::string code = "(eq nil (list))";
+    nuschl::parsing::parser p(code, pool);
+    auto pres = p.parse();
+    nuschl::interpreter interp(nuschl::default_env.copy(), &pool);
+    BOOST_CHECK_EQUAL(nuschl::s_exp::tru, interp.proc(pres.ast));
+}
+
+BOOST_AUTO_TEST_CASE(eqnilel2) {
     std::string code = "(eq nil ())";
     nuschl::parsing::parser p(code, pool);
     auto pres = p.parse();

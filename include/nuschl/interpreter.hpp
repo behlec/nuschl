@@ -28,7 +28,7 @@ class interpreter {
   private:
     //! Evaluate an atom.
     const s_exp *eval_atom(const s_exp *);
-    //! Evaluate a list.
+    //! Evaluate a list. The result of the empty list is the empty list.
     const s_exp *eval_list(const s_exp *);
     //! Eval special builtin functions.
     const s_exp *eval_special(const s_exp *);

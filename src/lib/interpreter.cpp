@@ -4,6 +4,7 @@
 #include <nuschl/util/s_exp_helpers.hpp>
 
 #include <algorithm>
+#include <cassert>
 #include <iostream>
 #include <sstream>
 
@@ -15,12 +16,15 @@ nuschl::interpreter::interpreter(env_ptr env, memory::s_exp_pool *pool)
 }
 
 const nuschl::s_exp *nuschl::interpreter::proc(const s_exp *exp) {
-    const s_exp *res = s_exp::nil;
-    for_list(exp, [&res, this](const s_exp *e) { res = eval(e); });
-    return res;
+    assert(exp->is_cell());
+    const s_exp *ret = s_exp::nil; // By default the return is nil.
+    // Eval each item on the list, last result is the result.
+    for_list(exp, [&ret, this](const s_exp *e) { ret = eval(e); });
+    return ret;
 }
 
 const nuschl::s_exp *nuschl::interpreter::eval_atom(const s_exp *exp) {
+    assert(exp->is_atom());
     auto a = exp->get_atom();
     if (a->is_symbol()) {
         try {
@@ -38,7 +42,9 @@ bool nuschl::interpreter::is_special(const std::string &str) {
 }
 
 const nuschl::s_exp *nuschl::interpreter::eval_special(const s_exp *exp) {
+    assert(exp->is_cell());
     const s_exp *h = exp->car();
+    assert(is_symbol(h));
     std::string value = h->get_atom()->get_symbol().get_value();
     if ((value == "quote")) { // || (value == "'")) {
         return exp->cdr()->car();
@@ -105,6 +111,10 @@ const nuschl::s_exp *nuschl::interpreter::eval_special(const s_exp *exp) {
 }
 
 const nuschl::s_exp *nuschl::interpreter::eval_list(const s_exp *exp) {
+    assert(exp->is_cell());
+    if (is_empty_cell(exp)) {
+        return exp;
+    }
     const s_exp *h = exp->car();
     if (is_symbol(h)) { // Test if it is special
         std::string value = h->get_atom()->get_symbol().get_value();
@@ -116,23 +126,27 @@ const nuschl::s_exp *nuschl::interpreter::eval_list(const s_exp *exp) {
 }
 
 const nuschl::s_exp *nuschl::interpreter::eval_func(const s_exp *exp) {
+    assert(exp->is_cell());
+    // first element is function
     const s_exp *f = eval(exp->car());
     if (!(is_lambda(f) || is_primitive(f))) {
         throw eval_error("Expected function at first position", exp);
     }
     const s_exp *arg_list = exp->cdr();
-    std::vector<const s_exp *> args;
+    std::vector<const s_exp *> args; // The unevaluated arguments.
     list_to_cont(arg_list, std::back_inserter(args));
-    std::vector<const s_exp *> eval_args;
+    std::vector<const s_exp *> eval_args; // The evaluated arguments.
     std::transform(args.begin(), args.end(), std::back_inserter(eval_args),
                    [this](const s_exp *e) { return eval(e); });
     try {
         if (f->is_lambda()) {
             auto l = f->get_lambda();
+            // Create environment containing the arguments and pus it on the
+            // environment stack.
             env_for_args(eval_args, l);
             auto e = l->body();
             auto res = proc(e);
-            m_env_stack.pop();
+            m_env_stack.pop(); // Pop arguments
             return res;
 
         } else {
@@ -144,6 +158,7 @@ const nuschl::s_exp *nuschl::interpreter::eval_func(const s_exp *exp) {
 }
 
 const nuschl::s_exp *nuschl::interpreter::eval(const s_exp *exp) {
+    // Just switch on the case.
     switch (exp->get_kind()) {
     // An atom is just evaluated, either it is a value or a variable.
     case s_exp::kind::atom:
@@ -162,7 +177,7 @@ const nuschl::s_exp *nuschl::interpreter::eval(const s_exp *exp) {
         break;
     default:
         throw std::logic_error(
-            "Internel interpreter error. 0x23e"); // Should not happen
+            "Internal interpreter error. 0x23e"); // Should not happen
     }
 }
 
