@@ -43,7 +43,9 @@ unit_test_files = [
     'unittests/parser.cpp',
     'unittests/token.cpp',
     'unittests/token_iterator.cpp',
-    'unittests/reverse_token_iterator.cpp'
+    'unittests/reverse_token_iterator.cpp',
+
+    'unittests/interpreter.cpp'
 ]
 
 exe = executable('unittests', unit_test_files, dependencies: [nuschl_dep, boost_test_dep, nuschl_test_dep])

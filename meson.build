@@ -93,7 +93,9 @@ nuschl_files = files(
     'src/lib/parseerror.cpp',
     'src/lib/reverse_token_iterator.cpp',
     'src/lib/token.cpp',
-    'src/lib/token_iterator.cpp'
+    'src/lib/token_iterator.cpp',
+
+    'src/lib/interpreter.cpp'
 )
 
 nuschl_inc = include_directories('include')
@@ -108,6 +110,7 @@ nuschl_dep = declare_dependency(include_directories: nuschl_inc, link_with: nusc
 
 lexer = executable('lexer', 'src/bin/lexer.cpp', dependencies: nuschl_dep)
 lexer = executable('parser', 'src/bin/parser.cpp', dependencies: nuschl_dep)
+lexer = executable('nuschl', 'src/bin/nuschl.cpp', dependencies: nuschl_dep)
 
 ################################
 #
@@ -125,6 +128,11 @@ else
     boost_test_dep = dependency('boost', modules: ['unit_test_framework'], required: true, version: '>=1.59.0')
 endif
 
+################################
+#
+# Examples and Tests
+#
+################################
 
 subdir('test')
 

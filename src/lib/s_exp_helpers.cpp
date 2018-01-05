@@ -46,3 +46,5 @@ bool nuschl::is_empty_cell(const nuschl::s_exp *e) noexcept {
 nuschl::number nuschl::to_number(const nuschl::s_exp *e) {
     return e->get_atom()->get_number();
 }
+
+void nuschl::print_list(const nuschl::s_exp *e) { std::cout << e << '\n'; }

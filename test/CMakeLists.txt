@@ -9,7 +9,7 @@ set(NUSCHL_UNITTEST_LIB_SRC
 
 add_library(nuschltestlib ${NUSCHL_UNITTEST_LIB_SRC})
 target_include_directories(nuschltestlib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
-target_link_libraries(nuschltestlib PRIVATE nuschl)
+target_link_libraries(nuschltestlib PRIVATE nuschl-lib)
 
 
 set(NUSCHL_UNITTESTS_SRC
@@ -31,11 +31,11 @@ ${CMAKE_CURRENT_SOURCE_DIR}/unittests/parser.cpp
 ${CMAKE_CURRENT_SOURCE_DIR}/unittests/token.cpp
 ${CMAKE_CURRENT_SOURCE_DIR}/unittests/token_iterator.cpp
 ${CMAKE_CURRENT_SOURCE_DIR}/unittests/reverse_token_iterator.cpp
+
+${CMAKE_CURRENT_SOURCE_DIR}/unittests/interpreter.cpp
 )
 
 add_executable(nuschltests ${NUSCHL_UNITTESTS_SRC} )
-target_link_libraries(nuschltests PRIVATE nuschl)
-target_link_libraries(nuschltests PUBLIC nuschltestlib)
-target_link_libraries(nuschltests PRIVATE Boost::unit_test_framework)
+target_link_libraries(nuschltests PRIVATE nuschl-lib Boost::unit_test_framework nuschltestlib)
 
 add_test(testnuschl nuschltests)
