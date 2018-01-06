@@ -2,7 +2,7 @@
 
 #### Status
 
-[![Build Status](https://travis-ci.org/behlec/nuschl.svg?branch=develop)](https://travis-ci.org/behlec/nuschl)
+[![Build Status](https://travis-ci.org/behlec/nuschl.svg?branch=master)](https://travis-ci.org/behlec/nuschl)
 
 ### Overview
 
