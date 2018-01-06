@@ -24,9 +24,9 @@ class pseudo : public primitive {
 };
 }
 
-BOOST_AUTO_TEST_SUITE(primitive)
+BOOST_AUTO_TEST_SUITE(Primitive)
 
-BOOST_AUTO_TEST_CASE(ostream) {
+BOOST_AUTO_TEST_CASE(Ostream) {
     std::stringstream ss;
     ss << pseudo{};
     BOOST_CHECK_EQUAL(ss.str(), "nil_prim");
@@ -45,12 +45,12 @@ s_exp b(&e, s_exp::nil);
 lambda::argument_list args = {x};
 lambda l(args, &b, nullptr);
 
-BOOST_AUTO_TEST_CASE(constructor) {
+BOOST_AUTO_TEST_CASE(Constructor) {
     BOOST_CHECK(l.get_argument_names() == args);
     BOOST_CHECK(l.get_env() == nullptr);
 }
 
-BOOST_AUTO_TEST_CASE(ostream) {
+BOOST_AUTO_TEST_CASE(Ostream) {
     std::stringstream ss;
     ss << l;
     BOOST_CHECK_EQUAL(ss.str(), "lambda closure (1)(x, nil)");

@@ -35,7 +35,7 @@ BOOST_AUTO_TEST_CASE(Constructor_nullptr) {
     BOOST_CHECK(!e.defined_locally("nil"s));
 }
 
-BOOST_AUTO_TEST_CASE(simpl) {
+BOOST_AUTO_TEST_CASE(Simpl) {
     nuschl::environment::table t;
     auto a = nuschl::test::make_unique_num(1);
     auto b = nuschl::test::make_unique_num(2);
@@ -53,7 +53,7 @@ BOOST_AUTO_TEST_CASE(simpl) {
     BOOST_CHECK(*(env1["b"s]) == *nuschl::test::make_unique_num(2));
 }
 
-BOOST_AUTO_TEST_CASE(lookup) {
+BOOST_AUTO_TEST_CASE(Lookup) {
     nuschl::environment env(nullptr);
 
     nuschl::environment::table t;
