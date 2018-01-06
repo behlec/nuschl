@@ -1,4 +1,5 @@
 #define BOOST_TEST_DYN_LINK
+
 // clang-format off
 #include <boost/test/unit_test.hpp>
 #include <boost/test/data/test_case.hpp>
