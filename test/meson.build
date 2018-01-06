@@ -31,6 +31,7 @@ unit_test_files = [
     'unittests/atom.cpp',
     'unittests/builtins.cpp',
     'unittests/environment.cpp',
+    'unittests/exceptions.cpp',
     'unittests/function.cpp',
     'unittests/nil.cpp',
     'unittests/number.cpp',

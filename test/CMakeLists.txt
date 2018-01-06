@@ -18,6 +18,7 @@ ${CMAKE_CURRENT_SOURCE_DIR}/unittests/main.cpp
 ${CMAKE_CURRENT_SOURCE_DIR}/unittests/atom.cpp
 ${CMAKE_CURRENT_SOURCE_DIR}/unittests/builtins.cpp
 ${CMAKE_CURRENT_SOURCE_DIR}/unittests/environment.cpp
+${CMAKE_CURRENT_SOURCE_DIR}/unittests/exceptions.cpp
 ${CMAKE_CURRENT_SOURCE_DIR}/unittests/function.cpp
 ${CMAKE_CURRENT_SOURCE_DIR}/unittests/nil.cpp
 ${CMAKE_CURRENT_SOURCE_DIR}/unittests/number.cpp
