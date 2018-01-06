@@ -8,7 +8,7 @@
 #include <nuschl/parsing/parser.hpp>
 #include <nuschl/memory/s_exp_pool.hpp>
 
-#include <nuschl/unittests/parse_res.hpp>
+#include <nuschl/unittests/string_to_s_exp.hpp>
 #include <nuschl/unittests/print_test.hpp>
 #include <nuschl/unittests/vector_printer.hpp>
 
@@ -59,7 +59,7 @@ BOOST_AUTO_TEST_SUITE(NilParsing)
 
 memory::s_exp_pool pool;
 
-std::vector<testing::parse_example> examples = {
+std::vector<testing::string_to_s_exp> examples = {
     {""s, pool.create(s_exp::nil, s_exp::nil)},
     {"nil"s,
      pool.create(pool.create_atom("nil"), pool.create(s_exp::nil, s_exp::nil))},

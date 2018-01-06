@@ -14,32 +14,32 @@
 
 namespace nuschl::testing {
 
-struct parse_example {
+struct string_to_s_exp {
     std::string input;
     const s_exp *expected;
 };
 }
 
 std::ostream &operator<<(std::ostream &os,
-                         nuschl::testing::parse_example const &pe);
+                         nuschl::testing::string_to_s_exp const &pe);
 
 std::ostream &
 operator<<(std::ostream &os,
-           const std::vector<nuschl::testing::parse_example> &vec);
+           const std::vector<nuschl::testing::string_to_s_exp> &vec);
 
 namespace boost::test_tools::tt_detail {
 
-template <> struct print_log_value<nuschl::testing::parse_example> {
+template <> struct print_log_value<nuschl::testing::string_to_s_exp> {
     void operator()(std::ostream &os,
-                    nuschl::testing::parse_example const &vec) {
+                    nuschl::testing::string_to_s_exp const &vec) {
         ::operator<<(os, vec);
     }
 };
 
 template <>
-struct print_log_value<std::vector<nuschl::testing::parse_example>> {
+struct print_log_value<std::vector<nuschl::testing::string_to_s_exp>> {
     void operator()(std::ostream &os,
-                    std::vector<nuschl::testing::parse_example> const &vec) {
+                    std::vector<nuschl::testing::string_to_s_exp> const &vec) {
         ::operator<<(os, vec);
     }
 };

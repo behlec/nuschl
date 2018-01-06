@@ -9,7 +9,7 @@
 #include <nuschl/memory/s_exp_pool.hpp>
 #include <nuschl/util/s_exp_helpers.hpp>
 
-#include <nuschl/unittests/parse_res.hpp>
+#include <nuschl/unittests/string_to_s_exp.hpp>
 
 #include <sstream>
 
@@ -116,7 +116,7 @@ BOOST_AUTO_TEST_SUITE(ParserData)
 
 memory::s_exp_pool pool;
 
-std::vector<testing::parse_example> examples = {
+std::vector<testing::string_to_s_exp> examples = {
     {""s, pool.create(s_exp::nil, s_exp::nil)},
     {"nil"s,
      pool.create(pool.create_sym("nil"), pool.create(s_exp::nil, s_exp::nil))},
