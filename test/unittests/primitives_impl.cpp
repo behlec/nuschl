@@ -1,4 +1,5 @@
 #define BOOST_TEST_DYN_LINK
+
 // clang-format off
 #include <boost/test/unit_test.hpp>
 #include <boost/test/data/test_case.hpp>
@@ -16,7 +17,9 @@
 using namespace nuschl;
 
 BOOST_AUTO_TEST_SUITE(Primitives)
+
 memory::s_exp_pool pool;
+
 BOOST_AUTO_TEST_CASE(All_numbers) {
     auto n1 = make_atom(number{1});
     auto n2 = make_atom(number{2});

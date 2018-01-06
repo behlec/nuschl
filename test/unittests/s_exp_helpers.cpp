@@ -1,8 +1,7 @@
 #define BOOST_CHECK_DYN_LINK
+
 // clang-format off
 #include <boost/test/unit_test.hpp>
-#include <boost/test/data/test_case.hpp>
-#include <boost/test/data/monomorphic.hpp>
 // clang-format on
 
 #include <nuschl/builtins.hpp>
@@ -17,9 +16,6 @@
 #include <memory>
 
 using namespace std::string_literals;
-
-namespace bdata = boost::unit_test::data;
-namespace tt = boost::test_tools;
 
 BOOST_AUTO_TEST_SUITE(testS_Exp_Helpers)
 

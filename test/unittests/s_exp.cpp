@@ -1,4 +1,5 @@
 #define BOOST_TEST_DYN_LINK
+
 // clang-format off
 #include <boost/test/unit_test.hpp>
 // clang-format on
@@ -13,13 +14,14 @@
 using namespace nuschl;
 
 BOOST_AUTO_TEST_SUITE(S_Exp)
-BOOST_AUTO_TEST_CASE(nil) {
+
+BOOST_AUTO_TEST_CASE(Nil) {
     BOOST_CHECK(s_exp::nil->is_nil());
     BOOST_CHECK(!s_exp(s_exp::nil, s_exp::nil).is_nil());
     BOOST_CHECK(!s_exp(nullptr, nullptr).is_nil());
 }
 
-BOOST_AUTO_TEST_CASE(create_from_atom) {
+BOOST_AUTO_TEST_CASE(Create_from_atom) {
     const atom_ptr a = make_atom("hello");
     s_exp e(a);
 
@@ -32,7 +34,7 @@ BOOST_AUTO_TEST_CASE(create_from_atom) {
     BOOST_CHECK(!e.is_lambda());
 }
 
-BOOST_AUTO_TEST_CASE(create_list) {
+BOOST_AUTO_TEST_CASE(Create_list) {
     const atom_ptr a1 = make_atom(number{1});
     const atom_ptr a2 = make_atom(number{2});
     const atom_ptr a3 = make_atom(number{3});
@@ -59,13 +61,13 @@ BOOST_AUTO_TEST_CASE(create_list) {
     BOOST_CHECK(!l.is_lambda());
 }
 
-BOOST_AUTO_TEST_CASE(ostream_nil) {
+BOOST_AUTO_TEST_CASE(Ostream_nil) {
     std::stringstream ss;
     ss << s_exp::nil;
     BOOST_CHECK_EQUAL(ss.str(), "nil");
 }
 
-BOOST_AUTO_TEST_CASE(ostream_atom) {
+BOOST_AUTO_TEST_CASE(Ostream_atom) {
     std::stringstream ss;
     const atom_ptr a = make_atom("hello");
     s_exp e(a);
@@ -79,7 +81,7 @@ BOOST_AUTO_TEST_CASE(ostream_atom) {
     BOOST_CHECK_EQUAL(ss.str(), "1");
 }
 
-BOOST_AUTO_TEST_CASE(ostream_list) {
+BOOST_AUTO_TEST_CASE(Ostream_list) {
     std::stringstream ss;
 
     const atom_ptr a1 = make_atom(number{1});
