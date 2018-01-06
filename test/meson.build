@@ -18,6 +18,7 @@ test_lib_files = files(
     'lib/helper.cpp',
     'lib/parse_res.cpp',
     'lib/print_test.cpp',
+    'lib/unique.cpp',
     'lib/vector_printer.cpp'
 )
 
@@ -31,7 +32,6 @@ unit_test_files = [
     'unittests/builtins.cpp',
     'unittests/environment.cpp',
     'unittests/function.cpp',
-    'unittests/helper.cpp',
     'unittests/nil.cpp',
     'unittests/number.cpp',
     'unittests/primitives_impl.cpp',

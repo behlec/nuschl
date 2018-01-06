@@ -6,9 +6,9 @@
 #include <nuschl/s_exp.hpp>
 #include <nuschl/memory/s_exp_pool.hpp>
 
-#include <sstream>
+#include <nuschl/unittests/unique.hpp>
 
-#include "helper.hpp"
+#include <sstream>
 
 using namespace nuschl;
 
@@ -111,9 +111,9 @@ BOOST_AUTO_TEST_CASE(Equality_Empty) {
 }
 
 BOOST_AUTO_TEST_CASE(Equality_Atom) {
-    auto e1 = test::make_num(1);
-    auto e2 = test::make_num(1);
-    auto e3 = test::make_num(2);
+    auto e1 = test::make_unique_num(1);
+    auto e2 = test::make_unique_num(1);
+    auto e3 = test::make_unique_num(2);
 
     BOOST_CHECK(e1 != e2);
     BOOST_CHECK_EQUAL(*e1.get(), *e1.get());
