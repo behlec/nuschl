@@ -35,7 +35,7 @@ class eval_argument_error : public std::runtime_error {
 };
 
 //! \brief Variable not defined.
-class unbound_variable_error : public std::exception {
+class unbound_variable_error : public std::runtime_error {
   public:
     explicit unbound_variable_error(const std::string &name);
     explicit unbound_variable_error(const std::string &&name);

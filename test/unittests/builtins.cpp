@@ -1,4 +1,5 @@
 #define BOOST_TEST_DYN_LINK
+
 // clang-format off
 #include <boost/test/unit_test.hpp>
 #include <boost/test/data/test_case.hpp>
@@ -21,6 +22,15 @@ namespace bdata = boost::unit_test::data;
 BOOST_AUTO_TEST_SUITE(BuiltinsPlus)
 
 memory::s_exp_pool pool;
+
+BOOST_AUTO_TEST_CASE(Representation) {
+    BOOST_CHECK_EQUAL("+", primitives::plus.representation());
+}
+
+BOOST_AUTO_TEST_CASE(Destructor) {
+    auto p = new decltype(primitives::plus)(primitives::plus);
+    delete p;
+}
 
 BOOST_AUTO_TEST_CASE(Emtpy) {
     std::vector<s_exp_ptr> args;
@@ -66,7 +76,17 @@ BOOST_AUTO_TEST_CASE(NotANumber) {
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE(BuiltinsMinus)
+
 memory::s_exp_pool pool;
+
+BOOST_AUTO_TEST_CASE(Representation) {
+    BOOST_CHECK_EQUAL("-", primitives::minus.representation());
+}
+
+BOOST_AUTO_TEST_CASE(Destructor) {
+    auto p = new decltype(primitives::minus)(primitives::minus);
+    delete p;
+}
 
 BOOST_AUTO_TEST_CASE(Empty) {
     std::vector<s_exp_ptr> args;
@@ -120,7 +140,17 @@ BOOST_AUTO_TEST_CASE(NotANumber) {
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE(BuiltinsTimes)
+
 memory::s_exp_pool pool;
+
+BOOST_AUTO_TEST_CASE(Representation) {
+    BOOST_CHECK_EQUAL("*", primitives::times.representation());
+}
+
+BOOST_AUTO_TEST_CASE(Destructor) {
+    auto p = new decltype(primitives::times)(primitives::times);
+    delete p;
+}
 
 BOOST_AUTO_TEST_CASE(Empty) {
     std::vector<s_exp_ptr> args;
@@ -174,7 +204,17 @@ BOOST_AUTO_TEST_CASE(NotANumber) {
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE(BuiltinsDivide)
+
 memory::s_exp_pool pool;
+
+BOOST_AUTO_TEST_CASE(Representation) {
+    BOOST_CHECK_EQUAL("/", primitives::divide.representation());
+}
+
+BOOST_AUTO_TEST_CASE(Destructor) {
+    auto p = new decltype(primitives::divide)(primitives::divide);
+    delete p;
+}
 
 BOOST_AUTO_TEST_CASE(Empty) {
     std::vector<s_exp_ptr> args;
@@ -218,7 +258,17 @@ BOOST_AUTO_TEST_CASE(List) {
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE(BuiltinsEQ)
+
 memory::s_exp_pool pool;
+
+BOOST_AUTO_TEST_CASE(Representation) {
+    BOOST_CHECK_EQUAL("eq", primitives::eq.representation());
+}
+
+BOOST_AUTO_TEST_CASE(Destructor) {
+    auto p = new decltype(primitives::eq)(primitives::eq);
+    delete p;
+}
 
 BOOST_AUTO_TEST_CASE(Empty) {
     std::vector<s_exp_ptr> args;
@@ -324,7 +374,17 @@ BOOST_DATA_TEST_CASE(Mix, bdata::make(val) ^ bdata::make(exp), a, e) {
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE(BuiltinsLess)
+
 memory::s_exp_pool pool;
+
+BOOST_AUTO_TEST_CASE(Representation) {
+    BOOST_CHECK_EQUAL("<", primitives::less.representation());
+}
+
+BOOST_AUTO_TEST_CASE(Destructor) {
+    auto p = new decltype(primitives::less)(primitives::less);
+    delete p;
+}
 
 BOOST_AUTO_TEST_CASE(Empty) {
     std::vector<s_exp_ptr> args;
@@ -389,7 +449,17 @@ BOOST_AUTO_TEST_CASE(List) {
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE(BuiltinsGreater)
+
 memory::s_exp_pool pool;
+
+BOOST_AUTO_TEST_CASE(Representation) {
+    BOOST_CHECK_EQUAL(">", primitives::greater.representation());
+}
+
+BOOST_AUTO_TEST_CASE(Destructor) {
+    auto p = new decltype(primitives::greater)(primitives::greater);
+    delete p;
+}
 
 BOOST_AUTO_TEST_CASE(Empty) {
     std::vector<s_exp_ptr> args;
@@ -457,6 +527,15 @@ BOOST_AUTO_TEST_SUITE(BuiltinsCar)
 
 memory::s_exp_pool pool;
 
+BOOST_AUTO_TEST_CASE(Representation) {
+    BOOST_CHECK_EQUAL("car", primitives::car.representation());
+}
+
+BOOST_AUTO_TEST_CASE(Destructor) {
+    auto p = new decltype(primitives::car)(primitives::car);
+    delete p;
+}
+
 BOOST_AUTO_TEST_CASE(car) {
     std::vector<s_exp_ptr> args;
     args.push_back(pool.create(make_number(12, &pool), make_number(3, &pool)));
@@ -506,6 +585,15 @@ BOOST_AUTO_TEST_SUITE(BuiltinsCdr)
 
 memory::s_exp_pool pool;
 
+BOOST_AUTO_TEST_CASE(Representation) {
+    BOOST_CHECK_EQUAL("cdr", primitives::cdr.representation());
+}
+
+BOOST_AUTO_TEST_CASE(Destructor) {
+    auto p = new decltype(primitives::cdr)(primitives::cdr);
+    delete p;
+}
+
 BOOST_AUTO_TEST_CASE(cdr) {
     std::vector<s_exp_ptr> args;
     args.push_back(pool.create(make_number(12, &pool), make_number(3, &pool)));
@@ -554,6 +642,15 @@ BOOST_AUTO_TEST_SUITE_END()
 BOOST_AUTO_TEST_SUITE(BuiltinsCons)
 
 memory::s_exp_pool pool;
+
+BOOST_AUTO_TEST_CASE(Representation) {
+    BOOST_CHECK_EQUAL("cons", primitives::cons.representation());
+}
+
+BOOST_AUTO_TEST_CASE(Destructor) {
+    auto p = new decltype(primitives::cons)(primitives::cons);
+    delete p;
+}
 
 BOOST_AUTO_TEST_CASE(cons) {
     std::vector<s_exp_ptr> args;
@@ -609,6 +706,11 @@ BOOST_AUTO_TEST_SUITE_END()
 BOOST_AUTO_TEST_SUITE(BuiltinsList)
 
 memory::s_exp_pool pool;
+
+BOOST_AUTO_TEST_CASE(Destructor) {
+    auto p = new primitives::list_impl(primitives::list);
+    delete p;
+}
 
 auto one = make_number(1, &pool);
 auto two = make_number(2, &pool);

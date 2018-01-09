@@ -1,4 +1,5 @@
 #define BOOST_TEST_DYN_LINK
+
 // clang-format off
 #include <boost/test/unit_test.hpp>
 // clang-format on
@@ -6,20 +7,21 @@
 #include <nuschl/s_exp.hpp>
 #include <nuschl/memory/s_exp_pool.hpp>
 
-#include <sstream>
+#include <nuschl/unittests/unique.hpp>
 
-#include "helper.hpp"
+#include <sstream>
 
 using namespace nuschl;
 
 BOOST_AUTO_TEST_SUITE(S_Exp)
-BOOST_AUTO_TEST_CASE(nil) {
+
+BOOST_AUTO_TEST_CASE(Nil) {
     BOOST_CHECK(s_exp::nil->is_nil());
     BOOST_CHECK(!s_exp(s_exp::nil, s_exp::nil).is_nil());
     BOOST_CHECK(!s_exp(nullptr, nullptr).is_nil());
 }
 
-BOOST_AUTO_TEST_CASE(create_from_atom) {
+BOOST_AUTO_TEST_CASE(Create_from_atom) {
     const atom_ptr a = make_atom("hello");
     s_exp e(a);
 
@@ -32,7 +34,7 @@ BOOST_AUTO_TEST_CASE(create_from_atom) {
     BOOST_CHECK(!e.is_lambda());
 }
 
-BOOST_AUTO_TEST_CASE(create_list) {
+BOOST_AUTO_TEST_CASE(Create_list) {
     const atom_ptr a1 = make_atom(number{1});
     const atom_ptr a2 = make_atom(number{2});
     const atom_ptr a3 = make_atom(number{3});
@@ -59,13 +61,13 @@ BOOST_AUTO_TEST_CASE(create_list) {
     BOOST_CHECK(!l.is_lambda());
 }
 
-BOOST_AUTO_TEST_CASE(ostream_nil) {
+BOOST_AUTO_TEST_CASE(Ostream_nil) {
     std::stringstream ss;
     ss << s_exp::nil;
     BOOST_CHECK_EQUAL(ss.str(), "nil");
 }
 
-BOOST_AUTO_TEST_CASE(ostream_atom) {
+BOOST_AUTO_TEST_CASE(Ostream_atom) {
     std::stringstream ss;
     const atom_ptr a = make_atom("hello");
     s_exp e(a);
@@ -79,7 +81,7 @@ BOOST_AUTO_TEST_CASE(ostream_atom) {
     BOOST_CHECK_EQUAL(ss.str(), "1");
 }
 
-BOOST_AUTO_TEST_CASE(ostream_list) {
+BOOST_AUTO_TEST_CASE(Ostream_list) {
     std::stringstream ss;
 
     const atom_ptr a1 = make_atom(number{1});
@@ -111,9 +113,9 @@ BOOST_AUTO_TEST_CASE(Equality_Empty) {
 }
 
 BOOST_AUTO_TEST_CASE(Equality_Atom) {
-    auto e1 = test::make_num(1);
-    auto e2 = test::make_num(1);
-    auto e3 = test::make_num(2);
+    auto e1 = test::make_unique_num(1);
+    auto e2 = test::make_unique_num(1);
+    auto e3 = test::make_unique_num(2);
 
     BOOST_CHECK(e1 != e2);
     BOOST_CHECK_EQUAL(*e1.get(), *e1.get());

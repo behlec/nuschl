@@ -16,8 +16,9 @@ endif
 
 test_lib_files = files(
     'lib/helper.cpp',
-    'lib/parse_res.cpp',
-    'lib/print_test.cpp',
+    'lib/string_to_s_exp.cpp',
+    'lib/s_exp_to_string.cpp',
+    'lib/unique.cpp',
     'lib/vector_printer.cpp'
 )
 
@@ -30,8 +31,8 @@ unit_test_files = [
     'unittests/atom.cpp',
     'unittests/builtins.cpp',
     'unittests/environment.cpp',
+    'unittests/exceptions.cpp',
     'unittests/function.cpp',
-    'unittests/helper.cpp',
     'unittests/nil.cpp',
     'unittests/number.cpp',
     'unittests/primitives_impl.cpp',
@@ -40,6 +41,8 @@ unit_test_files = [
     'unittests/s_exp.cpp',
     'unittests/s_exp_helpers.cpp',
 
+    'unittests/input.cpp',
+    'unittests/parseerror.cpp',
     'unittests/parser.cpp',
     'unittests/token.cpp',
     'unittests/token_iterator.cpp',
