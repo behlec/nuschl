@@ -35,4 +35,13 @@ BOOST_AUTO_TEST_CASE(UnboundVariableError) {
     BOOST_CHECK_EQUAL("bar"s, e2.name());
 }
 
+BOOST_AUTO_TEST_CASE(DynamicDestructor) {
+    std::runtime_error *e = new nuschl::eval_error("foo", nuschl::s_exp::nil);
+    delete e;
+    e = new nuschl::eval_argument_error("foo");
+    delete e;
+    e = new nuschl::unbound_variable_error("foo");
+    delete e;
+}
+
 BOOST_AUTO_TEST_SUITE_END()
