@@ -59,6 +59,9 @@ template <typename It, typename Ot> void to_numbers(It b, It e, Ot out) {
  */
 template <typename F, typename T> class primitivebuilder : public primitive {
   public:
+    using executor = F;
+    using tester = T;
+
     /**
      * \brief Create a primitive.
      *
