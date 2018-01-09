@@ -28,6 +28,7 @@ ${CMAKE_CURRENT_SOURCE_DIR}/unittests/symbol.cpp
 ${CMAKE_CURRENT_SOURCE_DIR}/unittests/s_exp.cpp
 ${CMAKE_CURRENT_SOURCE_DIR}/unittests/s_exp_helpers.cpp
 
+${CMAKE_CURRENT_SOURCE_DIR}/unittests/input.cpp
 ${CMAKE_CURRENT_SOURCE_DIR}/unittests/parser.cpp
 ${CMAKE_CURRENT_SOURCE_DIR}/unittests/token.cpp
 ${CMAKE_CURRENT_SOURCE_DIR}/unittests/token_iterator.cpp

@@ -41,6 +41,7 @@ unit_test_files = [
     'unittests/s_exp.cpp',
     'unittests/s_exp_helpers.cpp',
 
+    'unittests/input.cpp',
     'unittests/parser.cpp',
     'unittests/token.cpp',
     'unittests/token_iterator.cpp',

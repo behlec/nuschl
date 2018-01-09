@@ -26,9 +26,13 @@ std::pair<std::size_t, std::size_t> to_line(It pos, It b, It e) {
     while (cur != e) {
         last_n = cur;
         cur = std::find(cur, e, '\n');
+        if (cur > pos) {
+            break;
+        }
+        ++cur;
         ++no_lines;
     }
-    return std::make_pair(no_lines - 1, pos - last_n);
+    return std::make_pair(no_lines, pos - last_n);
 }
 
 //! \brief Result of to_line as string.
