@@ -102,7 +102,16 @@ const nuschl::s_exp *nuschl::interpreter::eval_special(const s_exp *exp) {
         m_env_stack.pop();
         return ret;
     } else if (value == "lambda") {
-        auto varlist = exp->cdr()->car();
+        auto args = exp->cdr();
+        if (!is_cell(args) || list_size(args) < 2) {
+            throw eval_error("Expect at least two arguments to lambda", exp);
+        }
+        auto varlist = args->car();
+        if (!is_cell(varlist)) {
+            throw eval_error("Expected list as first "
+                             "argument to lambda",
+                             exp);
+        }
         std::vector<symbol> vec;
         for_list(varlist, [&vec, exp](const s_exp *var) {
             if (!(var->is_atom() && var->get_atom()->is_symbol())) {

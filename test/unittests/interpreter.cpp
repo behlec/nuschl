@@ -199,5 +199,41 @@ BOOST_AUTO_TEST_CASE(WrongLet4) {
                    e.what();
         });
 }
+BOOST_AUTO_TEST_CASE(WrongLambda) {
+    std::string code = "(lambda (3) 3)";
+    nuschl::parsing::parser p(code, pool);
+    auto pres = p.parse();
+    nuschl::interpreter interp(nuschl::default_env.copy(), &pool);
+    BOOST_CHECK_EXCEPTION(
+        interp.proc(pres.ast), nuschl::eval_error,
+        [](const nuschl::eval_error &e) {
+            return "Expected list of symbols as first argument to lambda"s ==
+                   e.what();
+        });
+}
+
+BOOST_AUTO_TEST_CASE(WrongLambda2) {
+    std::string code = "(lambda 3)";
+    nuschl::parsing::parser p(code, pool);
+    auto pres = p.parse();
+    nuschl::interpreter interp(nuschl::default_env.copy(), &pool);
+    BOOST_CHECK_EXCEPTION(
+        interp.proc(pres.ast), nuschl::eval_error,
+        [](const nuschl::eval_error &e) {
+            return "Expect at least two arguments to lambda"s == e.what();
+        });
+}
+
+BOOST_AUTO_TEST_CASE(WrongLambda3) {
+    std::string code = "(lambda 3 4)";
+    nuschl::parsing::parser p(code, pool);
+    auto pres = p.parse();
+    nuschl::interpreter interp(nuschl::default_env.copy(), &pool);
+    BOOST_CHECK_EXCEPTION(
+        interp.proc(pres.ast), nuschl::eval_error,
+        [](const nuschl::eval_error &e) {
+            return "Expected list as first argument to lambda"s == e.what();
+        });
+}
 
 BOOST_AUTO_TEST_SUITE_END()
