@@ -67,31 +67,51 @@ const nuschl::s_exp *nuschl::interpreter::eval_special(const s_exp *exp) {
         return e;
     } else if (value == "let") {
         environment::table t;
-        auto vars = exp->cdr()->car();
-        for_list(vars, [&t, exp, this](const s_exp *var) {
-            auto p = var;
-            if (list_size(p) != 2) {
+        assert(is_cell(exp));
+        auto args = exp->cdr();
+        if (!is_cell(args) || list_size(args) < 2) {
+            throw eval_error(
+                "Let requires one argument with the list of pairs and the body",
+                exp);
+        }
+        auto defines = args->car();
+        auto body = args->cdr();
+        if (!is_cell(defines)) {
+            throw eval_error("Let requires list as first arguments", exp);
+        }
+        // if (!is_cell(body)) {
+        //    throw eval_error("Let requires list as second arguments", exp);
+        //}
+        for_list(defines, [&t, exp, this](const s_exp *pair) {
+            if (!is_cell(pair) || list_size(pair) != 2) {
+                throw eval_error("Let requires list of pairs as argument", exp);
+            }
+            auto var = pair->car();
+            assert(is_cell(pair->cdr()));
+            auto e = eval(pair->cdr()->car());
+            if (!(var->is_atom() && var->get_atom()->is_symbol())) {
                 std::stringstream s;
-                s << "Expected pair, got ";
-                s << *p;
+                s << "Expected symbol as first part of pair, got ";
+                s << *var;
                 throw eval_error(s.str().c_str(), exp);
             }
-            auto v = p->car();
-            auto e = eval(p->cdr()->car());
-            if (!(v->is_atom() && v->get_atom()->is_symbol())) {
-                std::stringstream s;
-                s << "Expected symbol, got ";
-                s << *v;
-                throw eval_error(s.str().c_str(), exp);
-            }
-            t.insert({v->get_atom()->get_symbol(), e});
+            t.insert({var->get_atom()->get_symbol(), e});
         });
         push_new_env(t);
-        auto ret = proc(exp->cdr()->cdr());
+        auto ret = proc(body);
         m_env_stack.pop();
         return ret;
     } else if (value == "lambda") {
-        auto varlist = exp->cdr()->car();
+        auto args = exp->cdr();
+        if (!is_cell(args) || list_size(args) < 2) {
+            throw eval_error("Expect at least two arguments to lambda", exp);
+        }
+        auto varlist = args->car();
+        if (!is_cell(varlist)) {
+            throw eval_error("Expected list as first "
+                             "argument to lambda",
+                             exp);
+        }
         std::vector<symbol> vec;
         for_list(varlist, [&vec, exp](const s_exp *var) {
             if (!(var->is_atom() && var->get_atom()->is_symbol())) {
@@ -141,9 +161,13 @@ const nuschl::s_exp *nuschl::interpreter::eval_func(const s_exp *exp) {
     try {
         if (f->is_lambda()) {
             auto l = f->get_lambda();
-            // Create environment containing the arguments and pus it on the
-            // environment stack.
-            env_for_args(eval_args, l);
+            try {
+                // Create environment containing the arguments and pus it on the
+                // environment stack.
+                env_for_args(eval_args, l);
+            } catch (const std::logic_error &e) {
+                throw eval_error(e.what(), exp);
+            }
             auto e = l->body();
             auto res = proc(e);
             m_env_stack.pop(); // Pop arguments
@@ -187,9 +211,9 @@ const std::vector<std::string> nuschl::interpreter::specials = {
 void nuschl::interpreter::env_for_args(const std::vector<const s_exp *> &args,
                                        lambda_ptr l) {
     lambda::argument_list arg_names(l->get_argument_names());
-    if (args.size() > args.size()) {
+    if (args.size() > arg_names.size()) {
         throw std::logic_error("Too many arguments for lambda");
-    } else if (args.size() < args.size()) {
+    } else if (args.size() < arg_names.size()) {
         throw std::logic_error("Too few arguments for lambda");
     }
     environment::table t;

@@ -131,8 +131,7 @@ BOOST_AUTO_TEST_CASE(primitive_builder) {
     BOOST_CHECK(*id.execute(l4, &pool) == e2);
     BOOST_CHECK_THROW(id.execute(l2, &pool), nuschl::eval_argument_error);
     BOOST_CHECK_THROW(id.execute(l3, &pool), nuschl::eval_argument_error);
-    auto e = new (decltype(id))(id);
-    delete e;
+    std::make_unique<decltype(id)>(id);
 }
 
 BOOST_AUTO_TEST_CASE(primitive_builder2) {
@@ -152,8 +151,7 @@ BOOST_AUTO_TEST_CASE(primitive_builder2) {
     std::vector<s_exp_ptr> l2 = {&e1, &e2};
     BOOST_CHECK_NO_THROW(foo.execute(l1, &pool));
     BOOST_CHECK_NO_THROW(foo.execute(l2, &pool));
-    auto e = new (decltype(foo))(foo);
-    delete e;
+    std::make_unique<decltype(foo)>(foo);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

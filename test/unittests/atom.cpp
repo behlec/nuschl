@@ -53,6 +53,16 @@ BOOST_AUTO_TEST_CASE(Comparison) {
     BOOST_CHECK(a != d);
 }
 
+BOOST_AUTO_TEST_CASE(MakeAtom) {
+    nuschl::symbol s("foo");
+    auto a1 = make_atom(s);
+    auto a2 = make_atom(nuschl::symbol{"bar"});
+    auto a3 = make_atom(nuschl::number{42});
+    BOOST_CHECK_EQUAL(a1->get_symbol(), "foo");
+    BOOST_CHECK_EQUAL(a2->get_symbol(), "bar");
+    BOOST_CHECK_EQUAL(a3->get_number(), nuschl::number{42});
+}
+
 BOOST_AUTO_TEST_CASE(Ostream) {
     std::stringstream ss;
     ss << a;
@@ -60,6 +70,10 @@ BOOST_AUTO_TEST_CASE(Ostream) {
     ss.str("");
     ss << d;
     BOOST_CHECK_EQUAL(ss.str(), "23");
+    ss.str("");
+    nuschl::symbol s("foo");
+    ss << make_atom(s);
+    BOOST_CHECK_EQUAL(ss.str(), "foo");
 }
 
 BOOST_AUTO_TEST_SUITE_END()

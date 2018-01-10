@@ -14,6 +14,7 @@
 #include <nuschl/unittests/vector_printer.hpp>
 
 #include <sstream>
+#include <memory>
 
 using namespace nuschl;
 using namespace std::string_literals;
@@ -28,8 +29,7 @@ BOOST_AUTO_TEST_CASE(Representation) {
 }
 
 BOOST_AUTO_TEST_CASE(Destructor) {
-    auto p = new decltype(primitives::plus)(primitives::plus);
-    delete p;
+    std::make_unique<decltype(primitives::plus)>(primitives::plus);
 }
 
 BOOST_AUTO_TEST_CASE(Emtpy) {
@@ -84,8 +84,7 @@ BOOST_AUTO_TEST_CASE(Representation) {
 }
 
 BOOST_AUTO_TEST_CASE(Destructor) {
-    auto p = new decltype(primitives::minus)(primitives::minus);
-    delete p;
+    std::make_unique<decltype(primitives::minus)>(primitives::minus);
 }
 
 BOOST_AUTO_TEST_CASE(Empty) {
@@ -148,8 +147,7 @@ BOOST_AUTO_TEST_CASE(Representation) {
 }
 
 BOOST_AUTO_TEST_CASE(Destructor) {
-    auto p = new decltype(primitives::times)(primitives::times);
-    delete p;
+    std::make_unique<decltype(primitives::times)>(primitives::times);
 }
 
 BOOST_AUTO_TEST_CASE(Empty) {
@@ -212,8 +210,7 @@ BOOST_AUTO_TEST_CASE(Representation) {
 }
 
 BOOST_AUTO_TEST_CASE(Destructor) {
-    auto p = new decltype(primitives::divide)(primitives::divide);
-    delete p;
+    std::make_unique<decltype(primitives::divide)>(primitives::divide);
 }
 
 BOOST_AUTO_TEST_CASE(Empty) {
@@ -266,8 +263,7 @@ BOOST_AUTO_TEST_CASE(Representation) {
 }
 
 BOOST_AUTO_TEST_CASE(Destructor) {
-    auto p = new decltype(primitives::eq)(primitives::eq);
-    delete p;
+    std::make_unique<decltype(primitives::eq)>(primitives::eq);
 }
 
 BOOST_AUTO_TEST_CASE(Empty) {
@@ -382,8 +378,7 @@ BOOST_AUTO_TEST_CASE(Representation) {
 }
 
 BOOST_AUTO_TEST_CASE(Destructor) {
-    auto p = new decltype(primitives::less)(primitives::less);
-    delete p;
+    std::make_unique<decltype(primitives::less)>(primitives::less);
 }
 
 BOOST_AUTO_TEST_CASE(Empty) {
@@ -457,8 +452,7 @@ BOOST_AUTO_TEST_CASE(Representation) {
 }
 
 BOOST_AUTO_TEST_CASE(Destructor) {
-    auto p = new decltype(primitives::greater)(primitives::greater);
-    delete p;
+    std::make_unique<decltype(primitives::greater)>(primitives::greater);
 }
 
 BOOST_AUTO_TEST_CASE(Empty) {
@@ -532,8 +526,7 @@ BOOST_AUTO_TEST_CASE(Representation) {
 }
 
 BOOST_AUTO_TEST_CASE(Destructor) {
-    auto p = new decltype(primitives::car)(primitives::car);
-    delete p;
+    std::make_unique<decltype(primitives::car)>(primitives::car);
 }
 
 BOOST_AUTO_TEST_CASE(car) {
@@ -590,8 +583,7 @@ BOOST_AUTO_TEST_CASE(Representation) {
 }
 
 BOOST_AUTO_TEST_CASE(Destructor) {
-    auto p = new decltype(primitives::cdr)(primitives::cdr);
-    delete p;
+    std::make_unique<decltype(primitives::cdr)>(primitives::cdr);
 }
 
 BOOST_AUTO_TEST_CASE(cdr) {
@@ -648,8 +640,7 @@ BOOST_AUTO_TEST_CASE(Representation) {
 }
 
 BOOST_AUTO_TEST_CASE(Destructor) {
-    auto p = new decltype(primitives::cons)(primitives::cons);
-    delete p;
+    std::make_unique<decltype(primitives::cons)>(primitives::cons);
 }
 
 BOOST_AUTO_TEST_CASE(cons) {
@@ -707,9 +698,10 @@ BOOST_AUTO_TEST_SUITE(BuiltinsList)
 
 memory::s_exp_pool pool;
 
-BOOST_AUTO_TEST_CASE(Destructor) {
-    auto p = new primitives::list_impl(primitives::list);
-    delete p;
+BOOST_AUTO_TEST_CASE(Destructor) { std::make_unique<primitives::list_impl>(); }
+
+BOOST_AUTO_TEST_CASE(Representation) {
+    BOOST_CHECK_EQUAL(primitives::list_impl{}.representation(), "list");
 }
 
 auto one = make_number(1, &pool);
