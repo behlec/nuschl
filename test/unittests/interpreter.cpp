@@ -237,6 +237,30 @@ BOOST_AUTO_TEST_CASE(WrongLambda3) {
         });
 }
 
+BOOST_AUTO_TEST_CASE(WrongLambdaInvocation) {
+    std::string code = "((lambda (x) 3) 1 2)";
+    nuschl::parsing::parser p(code, pool);
+    auto pres = p.parse();
+    nuschl::interpreter interp(nuschl::default_env.copy(), &pool);
+    BOOST_CHECK_EXCEPTION(interp.proc(pres.ast), nuschl::eval_error,
+                          [](const nuschl::eval_error &e) {
+                              return "Too many arguments for lambda"s ==
+                                     e.what();
+                          });
+}
+
+BOOST_AUTO_TEST_CASE(WrongLambdaInvocation2) {
+    std::string code = "((lambda (x y) (+ x 1)) 2)";
+    nuschl::parsing::parser p(code, pool);
+    auto pres = p.parse();
+    nuschl::interpreter interp(nuschl::default_env.copy(), &pool);
+    BOOST_CHECK_EXCEPTION(interp.proc(pres.ast), nuschl::eval_error,
+                          [](const nuschl::eval_error &e) {
+                              return "Too few arguments for lambda"s ==
+                                     e.what();
+                          });
+}
+
 BOOST_AUTO_TEST_CASE(WrongPrimitiveInvocation) {
     std::string code = "(+ (quote x))";
     nuschl::parsing::parser p(code, pool);

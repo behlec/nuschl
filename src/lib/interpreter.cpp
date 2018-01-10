@@ -161,9 +161,13 @@ const nuschl::s_exp *nuschl::interpreter::eval_func(const s_exp *exp) {
     try {
         if (f->is_lambda()) {
             auto l = f->get_lambda();
-            // Create environment containing the arguments and pus it on the
-            // environment stack.
-            env_for_args(eval_args, l);
+            try {
+                // Create environment containing the arguments and pus it on the
+                // environment stack.
+                env_for_args(eval_args, l);
+            } catch (const std::logic_error &e) {
+                throw eval_error(e.what(), exp);
+            }
             auto e = l->body();
             auto res = proc(e);
             m_env_stack.pop(); // Pop arguments
@@ -207,9 +211,9 @@ const std::vector<std::string> nuschl::interpreter::specials = {
 void nuschl::interpreter::env_for_args(const std::vector<const s_exp *> &args,
                                        lambda_ptr l) {
     lambda::argument_list arg_names(l->get_argument_names());
-    if (args.size() > args.size()) {
+    if (args.size() > arg_names.size()) {
         throw std::logic_error("Too many arguments for lambda");
-    } else if (args.size() < args.size()) {
+    } else if (args.size() < arg_names.size()) {
         throw std::logic_error("Too few arguments for lambda");
     }
     environment::table t;
