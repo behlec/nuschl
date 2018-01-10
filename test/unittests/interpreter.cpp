@@ -33,6 +33,7 @@ std::vector<nuschl::testing::string_to_s_exp> examples = {
     {"(+ 1 2 3)"s, pool.create(make_atom(nuschl::number{6}))},
     {"(quote 3)"s, pool.create(make_atom(nuschl::number{3}))},
     {"(quote x)"s, pool.create(make_atom(nuschl::symbol{"x"}))},
+    {"(begin 1 4 3)"s, pool.create(make_atom(nuschl::number{3}))},
     {"()"s, pool.create(nuschl::s_exp::nil, nuschl::s_exp::nil)},
     {"(let ((a 10)) a)"s, pool.create(make_atom(nuschl::number{10}))},
     {"(let ((a 10)) 3 a)"s, pool.create(make_atom(nuschl::number{10}))},
@@ -234,6 +235,18 @@ BOOST_AUTO_TEST_CASE(WrongLambda3) {
         [](const nuschl::eval_error &e) {
             return "Expected list as first argument to lambda"s == e.what();
         });
+}
+
+BOOST_AUTO_TEST_CASE(WrongPrimitiveInvocation) {
+    std::string code = "(+ (quote x))";
+    nuschl::parsing::parser p(code, pool);
+    auto pres = p.parse();
+    nuschl::interpreter interp(nuschl::default_env.copy(), &pool);
+    BOOST_CHECK_EXCEPTION(interp.proc(pres.ast), nuschl::eval_error,
+                          [](const nuschl::eval_error &e) {
+                              return "+ expects only numbers as arguments."s ==
+                                     e.what();
+                          });
 }
 
 BOOST_AUTO_TEST_SUITE_END()
