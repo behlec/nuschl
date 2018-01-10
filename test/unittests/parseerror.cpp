@@ -7,6 +7,7 @@
 #include <nuschl/parsing/parseerror.hpp>
 
 #include <string>
+#include <memory>
 
 using namespace std::string_literals;
 
@@ -23,8 +24,7 @@ BOOST_AUTO_TEST_CASE(ParseError) {
 
 BOOST_AUTO_TEST_CASE(Foo) {
     std::string foo("foo");
-    auto e = new nuschl::parsing::parse_error("bar", foo.begin());
-    delete e;
+    std::make_unique<nuschl::parsing::parse_error>("bar", foo.begin());
 }
 
 BOOST_AUTO_TEST_SUITE_END()
