@@ -12,6 +12,8 @@
 #include <nuschl/parsing/parser.hpp>
 
 #include <nuschl/unittests/string_to_s_exp.hpp>
+#include <nuschl/exceptions.hpp>
+#include <nuschl/util/s_exp_helpers.hpp>
 
 using namespace std::string_literals;
 
@@ -31,6 +33,7 @@ std::vector<nuschl::testing::string_to_s_exp> examples = {
     {"(+ 1 2 3)"s, pool.create(make_atom(nuschl::number{6}))},
     {"()"s, pool.create(nuschl::s_exp::nil, nuschl::s_exp::nil)},
     {"(let ((a 10)) a)"s, pool.create(make_atom(nuschl::number{10}))},
+    {"(let ((a 10)) 3 a)"s, pool.create(make_atom(nuschl::number{10}))},
     {"((lambda (x) (* 2 x)) 2)"s, pool.create_atom(nuschl::number{4})},
     {"(define length (lambda (l) (if (eq nil l) 0 (+ 1 (length (cdr l)))))) (length (list 1 2 3))"s,
      pool.create(make_atom(nuschl::number{3}))}};
@@ -90,6 +93,109 @@ BOOST_AUTO_TEST_CASE(Eqnilel2) {
     auto pres = p.parse();
     nuschl::interpreter interp(nuschl::default_env.copy(), &pool);
     BOOST_CHECK_EQUAL(nuschl::s_exp::tru, interp.proc(pres.ast));
+}
+
+BOOST_AUTO_TEST_CASE(Quote) {
+    std::string code = "(quote 5)";
+    nuschl::parsing::parser p(code, pool);
+    auto pres = p.parse();
+    nuschl::interpreter interp(nuschl::default_env.copy(), &pool);
+    BOOST_CHECK_EQUAL(*pool.create_atom(nuschl::number{5}),
+                      *interp.proc(pres.ast));
+}
+
+BOOST_AUTO_TEST_CASE(UnboundVariable) {
+    std::string code = "x";
+    nuschl::parsing::parser p(code, pool);
+    auto pres = p.parse();
+    nuschl::interpreter interp(nuschl::default_env.copy(), &pool);
+    BOOST_CHECK_EXCEPTION(interp.proc(pres.ast), nuschl::eval_error,
+                          [](const nuschl::eval_error &e) {
+                              return "Unbound variable: x"s == e.what();
+                          });
+}
+
+BOOST_AUTO_TEST_CASE(WrongDefine) {
+    std::string code = "(define 3 4)";
+    nuschl::parsing::parser p(code, pool);
+    auto pres = p.parse();
+    nuschl::interpreter interp(nuschl::default_env.copy(), &pool);
+    BOOST_CHECK_EXCEPTION(interp.proc(pres.ast), nuschl::eval_error,
+                          [](const nuschl::eval_error &e) {
+                              return "Expected symbol as first argument"s ==
+                                     e.what();
+                          });
+}
+
+BOOST_AUTO_TEST_CASE(GoodLet) {
+    std::string code = "(let ((a 4)(b 2)) a)";
+    nuschl::parsing::parser p(code, pool);
+    auto pres = p.parse();
+    nuschl::interpreter interp(nuschl::default_env.copy(), &pool);
+    BOOST_CHECK_EQUAL(*pool.create_atom(nuschl::number{4}),
+                      *interp.proc(pres.ast));
+}
+
+BOOST_AUTO_TEST_CASE(WrongLet) {
+    std::string code = "(let 3)";
+    nuschl::parsing::parser p(code, pool);
+    auto pres = p.parse();
+    nuschl::interpreter interp(nuschl::default_env.copy(), &pool);
+    BOOST_CHECK_EXCEPTION(
+        interp.proc(pres.ast), nuschl::eval_error,
+        [](const nuschl::eval_error &e) {
+            return "Let requires one argument with the list of pairs and the body"s ==
+                   e.what();
+        });
+}
+
+BOOST_AUTO_TEST_CASE(WrongLet1) {
+    std::string code = "(let 3 4)";
+    nuschl::parsing::parser p(code, pool);
+    auto pres = p.parse();
+    nuschl::interpreter interp(nuschl::default_env.copy(), &pool);
+    BOOST_CHECK_EXCEPTION(interp.proc(pres.ast), nuschl::eval_error,
+                          [](const nuschl::eval_error &e) {
+                              return "Let requires list as first arguments"s ==
+                                     e.what();
+                          });
+}
+
+BOOST_AUTO_TEST_CASE(WrongLet2) {
+    std::string code = "(let ((3 4)) a)";
+    nuschl::parsing::parser p(code, pool);
+    auto pres = p.parse();
+    nuschl::interpreter interp(nuschl::default_env.copy(), &pool);
+    BOOST_CHECK_EXCEPTION(
+        interp.proc(pres.ast), nuschl::eval_error,
+        [](const nuschl::eval_error &e) {
+            return "Expected symbol as first part of pair, got 3"s == e.what();
+        });
+}
+
+BOOST_AUTO_TEST_CASE(WrongLet3) {
+    std::string code = "(let ((a 3 4)) a)";
+    nuschl::parsing::parser p(code, pool);
+    auto pres = p.parse();
+    nuschl::interpreter interp(nuschl::default_env.copy(), &pool);
+    BOOST_CHECK_EXCEPTION(
+        interp.proc(pres.ast), nuschl::eval_error,
+        [](const nuschl::eval_error &e) {
+            return "Let requires list of pairs as argument"s == e.what();
+        });
+}
+
+BOOST_AUTO_TEST_CASE(WrongLet4) {
+    std::string code = "(let)";
+    nuschl::parsing::parser p(code, pool);
+    auto pres = p.parse();
+    nuschl::interpreter interp(nuschl::default_env.copy(), &pool);
+    BOOST_CHECK_EXCEPTION(
+        interp.proc(pres.ast), nuschl::eval_error,
+        [](const nuschl::eval_error &e) {
+            return "Let requires one argument with the list of pairs and the body"s ==
+                   e.what();
+        });
 }
 
 BOOST_AUTO_TEST_SUITE_END()
