@@ -31,6 +31,8 @@ std::vector<nuschl::testing::string_to_s_exp> examples = {
     {"(if (eq 0 0) 1)"s, pool.create(make_atom(nuschl::number{1}))},
     {"(if (eq 0 1) 1 2)"s, pool.create(make_atom(nuschl::number{2}))},
     {"(+ 1 2 3)"s, pool.create(make_atom(nuschl::number{6}))},
+    {"(quote 3)"s, pool.create(make_atom(nuschl::number{3}))},
+    {"(quote x)"s, pool.create(make_atom(nuschl::symbol{"x"}))},
     {"()"s, pool.create(nuschl::s_exp::nil, nuschl::s_exp::nil)},
     {"(let ((a 10)) a)"s, pool.create(make_atom(nuschl::number{10}))},
     {"(let ((a 10)) 3 a)"s, pool.create(make_atom(nuschl::number{10}))},
