@@ -700,6 +700,10 @@ memory::s_exp_pool pool;
 
 BOOST_AUTO_TEST_CASE(Destructor) { std::make_unique<primitives::list_impl>(); }
 
+BOOST_AUTO_TEST_CASE(Representation) {
+    BOOST_CHECK_EQUAL(primitives::list_impl{}.representation(), "list");
+}
+
 auto one = make_number(1, &pool);
 auto two = make_number(2, &pool);
 auto three = make_number(3, &pool);
