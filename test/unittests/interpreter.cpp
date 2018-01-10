@@ -153,6 +153,19 @@ BOOST_AUTO_TEST_CASE(WrongPrimitiveInvocation) {
                           });
 }
 
+BOOST_AUTO_TEST_CASE(NoFunction) {
+    std::string code = "(1 2)";
+    nuschl::parsing::parser p(code, pool);
+    auto pres = p.parse();
+    nuschl::interpreter interp(nuschl::default_env.copy(), &pool);
+    BOOST_CHECK_EXCEPTION(interp.proc(pres.ast), nuschl::eval_error,
+                          [](const nuschl::eval_error &e) {
+                              std::cerr << e.what();
+                              return "Expected function at first position"s ==
+                                     e.what();
+                          });
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE(TestLet)

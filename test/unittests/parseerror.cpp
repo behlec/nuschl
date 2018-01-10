@@ -15,11 +15,19 @@ using namespace nuschl;
 
 BOOST_AUTO_TEST_SUITE(ParseError)
 
-BOOST_AUTO_TEST_CASE(ParseError) {
+BOOST_AUTO_TEST_CASE(Constructor1) {
     std::string input("input");
     nuschl::parsing::parse_error e("reason", input.cbegin());
     BOOST_CHECK_EQUAL("reason"s, e.what());
     BOOST_CHECK(e.where() == input.cbegin());
+}
+
+BOOST_AUTO_TEST_CASE(Constructor2) {
+    std::string input("input");
+    std::string reason("reason");
+    nuschl::parsing::parse_error e2(reason, input.cbegin());
+    BOOST_CHECK_EQUAL("reason"s, e2.what());
+    BOOST_CHECK(e2.where() == input.cbegin());
 }
 
 BOOST_AUTO_TEST_CASE(Foo) {
