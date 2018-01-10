@@ -12,6 +12,8 @@
 #include <nuschl/parsing/parser.hpp>
 
 #include <nuschl/unittests/string_to_s_exp.hpp>
+#include <nuschl/unittests/string_to_string.hpp>
+
 #include <nuschl/exceptions.hpp>
 #include <nuschl/util/s_exp_helpers.hpp>
 
@@ -20,7 +22,7 @@ using namespace std::string_literals;
 namespace bdata = boost::unit_test::data;
 namespace tt = boost::test_tools;
 
-BOOST_AUTO_TEST_SUITE(testInterpreter)
+BOOST_AUTO_TEST_SUITE(TestInterpreter)
 
 nuschl::memory::s_exp_pool pool;
 
@@ -139,128 +141,6 @@ BOOST_AUTO_TEST_CASE(GoodLet) {
                       *interp.proc(pres.ast));
 }
 
-BOOST_AUTO_TEST_CASE(WrongLet) {
-    std::string code = "(let 3)";
-    nuschl::parsing::parser p(code, pool);
-    auto pres = p.parse();
-    nuschl::interpreter interp(nuschl::default_env.copy(), &pool);
-    BOOST_CHECK_EXCEPTION(
-        interp.proc(pres.ast), nuschl::eval_error,
-        [](const nuschl::eval_error &e) {
-            return "Let requires one argument with the list of pairs and the body"s ==
-                   e.what();
-        });
-}
-
-BOOST_AUTO_TEST_CASE(WrongLet1) {
-    std::string code = "(let 3 4)";
-    nuschl::parsing::parser p(code, pool);
-    auto pres = p.parse();
-    nuschl::interpreter interp(nuschl::default_env.copy(), &pool);
-    BOOST_CHECK_EXCEPTION(interp.proc(pres.ast), nuschl::eval_error,
-                          [](const nuschl::eval_error &e) {
-                              return "Let requires list as first arguments"s ==
-                                     e.what();
-                          });
-}
-
-BOOST_AUTO_TEST_CASE(WrongLet2) {
-    std::string code = "(let ((3 4)) a)";
-    nuschl::parsing::parser p(code, pool);
-    auto pres = p.parse();
-    nuschl::interpreter interp(nuschl::default_env.copy(), &pool);
-    BOOST_CHECK_EXCEPTION(
-        interp.proc(pres.ast), nuschl::eval_error,
-        [](const nuschl::eval_error &e) {
-            return "Expected symbol as first part of pair, got 3"s == e.what();
-        });
-}
-
-BOOST_AUTO_TEST_CASE(WrongLet3) {
-    std::string code = "(let ((a 3 4)) a)";
-    nuschl::parsing::parser p(code, pool);
-    auto pres = p.parse();
-    nuschl::interpreter interp(nuschl::default_env.copy(), &pool);
-    BOOST_CHECK_EXCEPTION(
-        interp.proc(pres.ast), nuschl::eval_error,
-        [](const nuschl::eval_error &e) {
-            return "Let requires list of pairs as argument"s == e.what();
-        });
-}
-
-BOOST_AUTO_TEST_CASE(WrongLet4) {
-    std::string code = "(let)";
-    nuschl::parsing::parser p(code, pool);
-    auto pres = p.parse();
-    nuschl::interpreter interp(nuschl::default_env.copy(), &pool);
-    BOOST_CHECK_EXCEPTION(
-        interp.proc(pres.ast), nuschl::eval_error,
-        [](const nuschl::eval_error &e) {
-            return "Let requires one argument with the list of pairs and the body"s ==
-                   e.what();
-        });
-}
-BOOST_AUTO_TEST_CASE(WrongLambda) {
-    std::string code = "(lambda (3) 3)";
-    nuschl::parsing::parser p(code, pool);
-    auto pres = p.parse();
-    nuschl::interpreter interp(nuschl::default_env.copy(), &pool);
-    BOOST_CHECK_EXCEPTION(
-        interp.proc(pres.ast), nuschl::eval_error,
-        [](const nuschl::eval_error &e) {
-            return "Expected list of symbols as first argument to lambda"s ==
-                   e.what();
-        });
-}
-
-BOOST_AUTO_TEST_CASE(WrongLambda2) {
-    std::string code = "(lambda 3)";
-    nuschl::parsing::parser p(code, pool);
-    auto pres = p.parse();
-    nuschl::interpreter interp(nuschl::default_env.copy(), &pool);
-    BOOST_CHECK_EXCEPTION(
-        interp.proc(pres.ast), nuschl::eval_error,
-        [](const nuschl::eval_error &e) {
-            return "Expect at least two arguments to lambda"s == e.what();
-        });
-}
-
-BOOST_AUTO_TEST_CASE(WrongLambda3) {
-    std::string code = "(lambda 3 4)";
-    nuschl::parsing::parser p(code, pool);
-    auto pres = p.parse();
-    nuschl::interpreter interp(nuschl::default_env.copy(), &pool);
-    BOOST_CHECK_EXCEPTION(
-        interp.proc(pres.ast), nuschl::eval_error,
-        [](const nuschl::eval_error &e) {
-            return "Expected list as first argument to lambda"s == e.what();
-        });
-}
-
-BOOST_AUTO_TEST_CASE(WrongLambdaInvocation) {
-    std::string code = "((lambda (x) 3) 1 2)";
-    nuschl::parsing::parser p(code, pool);
-    auto pres = p.parse();
-    nuschl::interpreter interp(nuschl::default_env.copy(), &pool);
-    BOOST_CHECK_EXCEPTION(interp.proc(pres.ast), nuschl::eval_error,
-                          [](const nuschl::eval_error &e) {
-                              return "Too many arguments for lambda"s ==
-                                     e.what();
-                          });
-}
-
-BOOST_AUTO_TEST_CASE(WrongLambdaInvocation2) {
-    std::string code = "((lambda (x y) (+ x 1)) 2)";
-    nuschl::parsing::parser p(code, pool);
-    auto pres = p.parse();
-    nuschl::interpreter interp(nuschl::default_env.copy(), &pool);
-    BOOST_CHECK_EXCEPTION(interp.proc(pres.ast), nuschl::eval_error,
-                          [](const nuschl::eval_error &e) {
-                              return "Too few arguments for lambda"s ==
-                                     e.what();
-                          });
-}
-
 BOOST_AUTO_TEST_CASE(WrongPrimitiveInvocation) {
     std::string code = "(+ (quote x))";
     nuschl::parsing::parser p(code, pool);
@@ -270,6 +150,57 @@ BOOST_AUTO_TEST_CASE(WrongPrimitiveInvocation) {
                           [](const nuschl::eval_error &e) {
                               return "+ expects only numbers as arguments."s ==
                                      e.what();
+                          });
+}
+
+BOOST_AUTO_TEST_SUITE_END()
+
+BOOST_AUTO_TEST_SUITE(TestLet)
+
+nuschl::memory::s_exp_pool pool;
+
+std::vector<nuschl::testing::string_to_string> examples = {
+    {"(let)"s,
+     "Let requires one argument with the list of pairs and the body"s},
+    {"(let 2)"s,
+     "Let requires one argument with the list of pairs and the body"s},
+    {"(let ((3 4)) a)"s, "Expected symbol as first part of pair, got 3"s},
+    {"(let 3 4)"s, "Let requires list as first arguments"s},
+    {"(let ((a 3 4)) a)"s, "Let requires list of pairs as argument"s}};
+
+BOOST_DATA_TEST_CASE(WrongLambda, bdata::make(examples), example) {
+    std::string code = example.input;
+    nuschl::parsing::parser p(code, pool);
+    auto pres = p.parse();
+    nuschl::interpreter interp(nuschl::default_env.copy(), &pool);
+    BOOST_CHECK_EXCEPTION(interp.proc(pres.ast), nuschl::eval_error,
+                          [&example](const nuschl::eval_error &e) {
+                              return example.expected == e.what();
+                          });
+}
+
+BOOST_AUTO_TEST_SUITE_END()
+
+BOOST_AUTO_TEST_SUITE(TestLambda)
+
+nuschl::memory::s_exp_pool pool;
+
+std::vector<nuschl::testing::string_to_string> examples = {
+    {"(lambda 3)"s, "Expect at least two arguments to lambda"s},
+    {"(lambda (3) 3)"s,
+     "Expected list of symbols as first argument to lambda"s},
+    {"((lambda (x y) (+ x 1)) 2)"s, "Too few arguments for lambda"s},
+    {"(lambda 3 4)"s, "Expected list as first argument to lambda"s},
+    {"((lambda (x) 3) 1 2)"s, "Too many arguments for lambda"s}};
+
+BOOST_DATA_TEST_CASE(WrongLambda, bdata::make(examples), example) {
+    std::string code = example.input;
+    nuschl::parsing::parser p(code, pool);
+    auto pres = p.parse();
+    nuschl::interpreter interp(nuschl::default_env.copy(), &pool);
+    BOOST_CHECK_EXCEPTION(interp.proc(pres.ast), nuschl::eval_error,
+                          [&example](const nuschl::eval_error &e) {
+                              return example.expected == e.what();
                           });
 }
 
