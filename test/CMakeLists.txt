@@ -28,6 +28,7 @@ ${CMAKE_CURRENT_SOURCE_DIR}/unittests/readfile.cpp
 ${CMAKE_CURRENT_SOURCE_DIR}/unittests/symbol.cpp
 ${CMAKE_CURRENT_SOURCE_DIR}/unittests/s_exp.cpp
 ${CMAKE_CURRENT_SOURCE_DIR}/unittests/s_exp_helpers.cpp
+${CMAKE_CURRENT_SOURCE_DIR}/unittests/s_exp_pool.cpp
 
 ${CMAKE_CURRENT_SOURCE_DIR}/unittests/input.cpp
 ${CMAKE_CURRENT_SOURCE_DIR}/unittests/parseerror.cpp

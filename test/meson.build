@@ -41,6 +41,7 @@ unit_test_files = [
     'unittests/symbol.cpp',
     'unittests/s_exp.cpp',
     'unittests/s_exp_helpers.cpp',
+    'unittests/s_exp_pool.cpp',
 
     'unittests/input.cpp',
     'unittests/parseerror.cpp',
