@@ -1,4 +1,5 @@
 #define BOOST_TEST_DYN_LINK
+
 // clang-format off
 #include <boost/test/unit_test.hpp>
 #include <boost/test/data/test_case.hpp>
@@ -12,11 +13,16 @@
 #include <nuschl/unittests/helper.hpp>
 
 #include <sstream>
+#include <string>
+
+using namespace std::string_literals;
 
 using namespace nuschl;
 
 BOOST_AUTO_TEST_SUITE(Primitives)
+
 memory::s_exp_pool pool;
+
 BOOST_AUTO_TEST_CASE(All_numbers) {
     auto n1 = make_atom(number{1});
     auto n2 = make_atom(number{2});
@@ -110,6 +116,8 @@ BOOST_AUTO_TEST_CASE(primitive_builder) {
         },
         nuschl::primitive_impl::exact_n_args(1));
 
+    BOOST_CHECK_EQUAL("id"s, id.representation());
+
     auto n1 = make_atom(number{1});
     auto n2 = make_atom(number{1});
     s_exp e1(n1);
@@ -123,6 +131,7 @@ BOOST_AUTO_TEST_CASE(primitive_builder) {
     BOOST_CHECK(*id.execute(l4, &pool) == e2);
     BOOST_CHECK_THROW(id.execute(l2, &pool), nuschl::eval_argument_error);
     BOOST_CHECK_THROW(id.execute(l3, &pool), nuschl::eval_argument_error);
+    std::make_unique<decltype(id)>(id);
 }
 
 BOOST_AUTO_TEST_CASE(primitive_builder2) {
@@ -132,6 +141,8 @@ BOOST_AUTO_TEST_CASE(primitive_builder2) {
                   memory::s_exp_pool *) { return s_exp::nil; },
         primitive_impl::checker_function{primitive_impl::all_numbers()});
 
+    BOOST_CHECK_EQUAL("foo"s, foo.representation());
+
     auto n1 = make_atom(number{1});
     auto n2 = make_atom(number{1});
     s_exp e1(n1);
@@ -140,6 +151,7 @@ BOOST_AUTO_TEST_CASE(primitive_builder2) {
     std::vector<s_exp_ptr> l2 = {&e1, &e2};
     BOOST_CHECK_NO_THROW(foo.execute(l1, &pool));
     BOOST_CHECK_NO_THROW(foo.execute(l2, &pool));
+    std::make_unique<decltype(foo)>(foo);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

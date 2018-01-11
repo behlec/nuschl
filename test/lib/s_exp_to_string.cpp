@@ -1,13 +1,14 @@
-#include <nuschl/unittests/print_test.hpp>
+#include <nuschl/unittests/s_exp_to_string.hpp>
 
 std::ostream &operator<<(std::ostream &os,
-                         nuschl::testing::print_test const &pe) {
+                         nuschl::testing::s_exp_to_string const &pe) {
     os << "{ \"" << *pe.input << "\", " << pe.expected << "}";
     return os;
 }
 
-std::ostream &operator<<(std::ostream &os,
-                         const std::vector<nuschl::testing::print_test> &vec) {
+std::ostream &
+operator<<(std::ostream &os,
+           const std::vector<nuschl::testing::s_exp_to_string> &vec) {
     os << '[';
     bool first = true;
     for (auto const &i : vec) {

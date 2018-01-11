@@ -14,32 +14,32 @@
 
 namespace nuschl::testing {
 
-struct parse_example {
-    std::string input;
-    const s_exp *expected;
+struct s_exp_to_string {
+    const s_exp *input;
+    std::string expected;
 };
 }
 
 std::ostream &operator<<(std::ostream &os,
-                         nuschl::testing::parse_example const &pe);
+                         nuschl::testing::s_exp_to_string const &pe);
 
 std::ostream &
 operator<<(std::ostream &os,
-           const std::vector<nuschl::testing::parse_example> &vec);
+           const std::vector<nuschl::testing::s_exp_to_string> &vec);
 
 namespace boost::test_tools::tt_detail {
 
-template <> struct print_log_value<nuschl::testing::parse_example> {
+template <> struct print_log_value<nuschl::testing::s_exp_to_string> {
     void operator()(std::ostream &os,
-                    nuschl::testing::parse_example const &vec) {
+                    nuschl::testing::s_exp_to_string const &vec) {
         ::operator<<(os, vec);
     }
 };
 
 template <>
-struct print_log_value<std::vector<nuschl::testing::parse_example>> {
+struct print_log_value<std::vector<nuschl::testing::s_exp_to_string>> {
     void operator()(std::ostream &os,
-                    std::vector<nuschl::testing::parse_example> const &vec) {
+                    std::vector<nuschl::testing::s_exp_to_string> const &vec) {
         ::operator<<(os, vec);
     }
 };

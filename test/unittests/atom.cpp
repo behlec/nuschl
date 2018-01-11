@@ -1,8 +1,6 @@
 #define BOOST_TEST_DYN_LINK
 // clang-format off
 #include <boost/test/unit_test.hpp>
-#include <boost/test/data/test_case.hpp>
-#include <boost/test/data/monomorphic.hpp>
 // clang-format on
 
 #include <nuschl/atom.hpp>
@@ -24,7 +22,7 @@ nuschl::atom d(n);
 nuschl::atom e(m);
 nuschl::atom f(o);
 
-BOOST_AUTO_TEST_CASE(creation) {
+BOOST_AUTO_TEST_CASE(Creation) {
     BOOST_REQUIRE(a.is_symbol());
     BOOST_REQUIRE(b.is_symbol());
     BOOST_REQUIRE(c.is_symbol());
@@ -40,7 +38,7 @@ BOOST_AUTO_TEST_CASE(creation) {
     BOOST_CHECK_EQUAL(f.get_number().get_value(), 42);
 }
 
-BOOST_AUTO_TEST_CASE(comparison) {
+BOOST_AUTO_TEST_CASE(Comparison) {
     BOOST_CHECK_EQUAL(a, a);
     BOOST_CHECK_EQUAL(a, b);
     BOOST_CHECK_EQUAL(b, a);
@@ -55,13 +53,27 @@ BOOST_AUTO_TEST_CASE(comparison) {
     BOOST_CHECK(a != d);
 }
 
-BOOST_AUTO_TEST_CASE(ostream) {
+BOOST_AUTO_TEST_CASE(MakeAtom) {
+    nuschl::symbol s("foo");
+    auto a1 = make_atom(s);
+    auto a2 = make_atom(nuschl::symbol{"bar"});
+    auto a3 = make_atom(nuschl::number{42});
+    BOOST_CHECK_EQUAL(a1->get_symbol(), "foo");
+    BOOST_CHECK_EQUAL(a2->get_symbol(), "bar");
+    BOOST_CHECK_EQUAL(a3->get_number(), nuschl::number{42});
+}
+
+BOOST_AUTO_TEST_CASE(Ostream) {
     std::stringstream ss;
     ss << a;
     BOOST_CHECK_EQUAL(ss.str(), "hallo");
     ss.str("");
     ss << d;
     BOOST_CHECK_EQUAL(ss.str(), "23");
+    ss.str("");
+    nuschl::symbol s("foo");
+    ss << make_atom(s);
+    BOOST_CHECK_EQUAL(ss.str(), "foo");
 }
 
 BOOST_AUTO_TEST_SUITE_END()

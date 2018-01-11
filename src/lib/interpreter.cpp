@@ -41,6 +41,92 @@ bool nuschl::interpreter::is_special(const std::string &str) {
     return specials.end() != std::find(specials.begin(), specials.end(), str);
 }
 
+const nuschl::s_exp *nuschl::interpreter::eval_special_if(const s_exp *exp) {
+    assert(is_cell(exp));
+    auto args = exp->cdr();
+    // Check arguments.
+    if (!(is_cell(args) && list_size(args) > 1 && list_size(args) <= 3)) {
+        throw eval_error("if requires two or three arguments", exp);
+    }
+    auto cond = (args->car());        // condition
+    auto cons = (args->cdr()->car()); // consequent
+    auto alt = s_exp::nil;            // Default alternate is nil
+    if (list_size(args) == 3) {       // Check if altenate exists.
+        alt = (args->cdr()->cdr()->car());
+    }
+    if (to_bool(eval(cond))) { // Evaluate condition
+        return eval(cons);
+    } else {
+        return eval(alt);
+    }
+}
+
+const nuschl::s_exp *nuschl::interpreter::eval_special_let(const s_exp *exp) {
+    environment::table t; // For the newly bound variables.
+    assert(is_cell(exp));
+    // Check arguments.
+    auto args = exp->cdr();
+    if (!is_cell(args) || list_size(args) < 2) {
+        throw eval_error(
+            "Let requires one argument with the list of pairs and the body",
+            exp);
+    }
+    auto defines = args->car();
+    auto body = args->cdr();
+    if (!is_cell(defines)) {
+        throw eval_error("Let requires list as first arguments", exp);
+    }
+    // For each pair, create new binding.
+    for_list(defines, [&t, exp, this](const s_exp *pair) {
+        if (!is_cell(pair) || list_size(pair) != 2) {
+            throw eval_error("Let requires list of pairs as argument", exp);
+        }
+        auto var = pair->car();
+        assert(is_cell(pair->cdr()));
+        auto e = eval(pair->cdr()->car());
+        if (!(var->is_atom() && var->get_atom()->is_symbol())) {
+            std::stringstream s;
+            s << "Expected symbol as first part of pair, got ";
+            s << *var;
+            throw eval_error(s.str().c_str(), exp);
+        }
+        t.insert({var->get_atom()->get_symbol(), e});
+    });
+    // set up new environment.
+    push_new_env(t);
+    // Eval body
+    auto ret = proc(body);
+    m_env_stack.pop();
+    return ret;
+}
+
+const nuschl::s_exp *
+nuschl::interpreter::eval_special_lambda(const s_exp *exp) {
+    auto args = exp->cdr();
+    if (!is_cell(args) || list_size(args) < 2) {
+        throw eval_error("Expect at least two arguments to lambda", exp);
+    }
+    auto varlist = args->car();
+    if (!is_cell(varlist)) {
+        throw eval_error("Expected list as first "
+                         "argument to lambda",
+                         exp);
+    }
+    std::vector<symbol> vec;
+    // Get variable names.
+    for_list(varlist, [&vec, exp](const s_exp *var) {
+        if (!(var->is_atom() && var->get_atom()->is_symbol())) {
+            throw eval_error("Expected list of symbols as first "
+                             "argument to lambda",
+                             exp);
+        }
+        vec.push_back(var->get_atom()->get_symbol());
+    });
+    auto f =
+        std::make_shared<lambda>(vec, exp->cdr()->cdr(), m_env_stack.top());
+    return m_pool->create(f);
+}
+
 const nuschl::s_exp *nuschl::interpreter::eval_special(const s_exp *exp) {
     assert(exp->is_cell());
     const s_exp *h = exp->car();
@@ -49,61 +135,23 @@ const nuschl::s_exp *nuschl::interpreter::eval_special(const s_exp *exp) {
     if ((value == "quote")) { // || (value == "'")) {
         return exp->cdr()->car();
     } else if (value == "if") {
-        auto cond = (exp->cdr()->car());
-        auto cons = (exp->cdr()->cdr()->car());
-        auto alt = (exp->cdr()->cdr()->cdr()->car());
-        if (to_bool(eval(cond))) {
-            return eval(cons);
-        } else {
-            return eval(alt);
-        }
+        return eval_special_if(exp);
     } else if (value == "define") {
-        const s_exp *var = exp->cdr()->car();
-        const s_exp *e = eval(exp->cdr()->cdr()->car());
+        auto args = exp->cdr();
+        if (!(is_cell(args) && list_size(args) > 1)) {
+            throw eval_error("Define requires two arguments", exp);
+        }
+        const s_exp *var = args->car();
+        const s_exp *e = eval(args->cdr()->car());
         if (!(var->is_atom() && var->get_atom()->is_symbol())) {
             throw eval_error("Expected symbol as first argument", exp);
         }
         m_env_stack.top()->set(var->get_atom()->get_symbol(), e);
         return e;
     } else if (value == "let") {
-        environment::table t;
-        auto vars = exp->cdr()->car();
-        for_list(vars, [&t, exp, this](const s_exp *var) {
-            auto p = var;
-            if (list_size(p) != 2) {
-                std::stringstream s;
-                s << "Expected pair, got ";
-                s << *p;
-                throw eval_error(s.str().c_str(), exp);
-            }
-            auto v = p->car();
-            auto e = eval(p->cdr()->car());
-            if (!(v->is_atom() && v->get_atom()->is_symbol())) {
-                std::stringstream s;
-                s << "Expected symbol, got ";
-                s << *v;
-                throw eval_error(s.str().c_str(), exp);
-            }
-            t.insert({v->get_atom()->get_symbol(), e});
-        });
-        push_new_env(t);
-        auto ret = proc(exp->cdr()->cdr());
-        m_env_stack.pop();
-        return ret;
+        return eval_special_let(exp);
     } else if (value == "lambda") {
-        auto varlist = exp->cdr()->car();
-        std::vector<symbol> vec;
-        for_list(varlist, [&vec, exp](const s_exp *var) {
-            if (!(var->is_atom() && var->get_atom()->is_symbol())) {
-                throw eval_error("Expected list of symbols as first "
-                                 "argument to lambda",
-                                 exp);
-            }
-            vec.push_back(var->get_atom()->get_symbol());
-        });
-        auto f =
-            std::make_shared<lambda>(vec, exp->cdr()->cdr(), m_env_stack.top());
-        return m_pool->create(f);
+        return eval_special_lambda(exp);
     } else if (value == "begin") {
         return proc(exp->cdr());
     }
@@ -111,10 +159,10 @@ const nuschl::s_exp *nuschl::interpreter::eval_special(const s_exp *exp) {
 }
 
 const nuschl::s_exp *nuschl::interpreter::eval_list(const s_exp *exp) {
-    assert(exp->is_cell());
     if (is_empty_cell(exp)) {
         return exp;
     }
+    assert(exp->is_cell());
     const s_exp *h = exp->car();
     if (is_symbol(h)) { // Test if it is special
         std::string value = h->get_atom()->get_symbol().get_value();
@@ -141,9 +189,13 @@ const nuschl::s_exp *nuschl::interpreter::eval_func(const s_exp *exp) {
     try {
         if (f->is_lambda()) {
             auto l = f->get_lambda();
-            // Create environment containing the arguments and pus it on the
-            // environment stack.
-            env_for_args(eval_args, l);
+            try {
+                // Create environment containing the arguments and pus it on the
+                // environment stack.
+                env_for_args(eval_args, l);
+            } catch (const std::logic_error &e) {
+                throw eval_error(e.what(), exp);
+            }
             auto e = l->body();
             auto res = proc(e);
             m_env_stack.pop(); // Pop arguments
@@ -187,9 +239,9 @@ const std::vector<std::string> nuschl::interpreter::specials = {
 void nuschl::interpreter::env_for_args(const std::vector<const s_exp *> &args,
                                        lambda_ptr l) {
     lambda::argument_list arg_names(l->get_argument_names());
-    if (args.size() > args.size()) {
+    if (args.size() > arg_names.size()) {
         throw std::logic_error("Too many arguments for lambda");
-    } else if (args.size() < args.size()) {
+    } else if (args.size() < arg_names.size()) {
         throw std::logic_error("Too few arguments for lambda");
     }
     environment::table t;

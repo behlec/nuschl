@@ -1,4 +1,5 @@
 #define BOOST_TEST_DYN_LINK
+
 // clang-format off
 #include <boost/test/unit_test.hpp>
 #include <boost/test/data/test_case.hpp>
@@ -13,6 +14,7 @@
 #include <nuschl/unittests/vector_printer.hpp>
 
 #include <sstream>
+#include <memory>
 
 using namespace nuschl;
 using namespace std::string_literals;
@@ -21,6 +23,14 @@ namespace bdata = boost::unit_test::data;
 BOOST_AUTO_TEST_SUITE(BuiltinsPlus)
 
 memory::s_exp_pool pool;
+
+BOOST_AUTO_TEST_CASE(Representation) {
+    BOOST_CHECK_EQUAL("+", primitives::plus.representation());
+}
+
+BOOST_AUTO_TEST_CASE(Destructor) {
+    std::make_unique<decltype(primitives::plus)>(primitives::plus);
+}
 
 BOOST_AUTO_TEST_CASE(Emtpy) {
     std::vector<s_exp_ptr> args;
@@ -66,7 +76,16 @@ BOOST_AUTO_TEST_CASE(NotANumber) {
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE(BuiltinsMinus)
+
 memory::s_exp_pool pool;
+
+BOOST_AUTO_TEST_CASE(Representation) {
+    BOOST_CHECK_EQUAL("-", primitives::minus.representation());
+}
+
+BOOST_AUTO_TEST_CASE(Destructor) {
+    std::make_unique<decltype(primitives::minus)>(primitives::minus);
+}
 
 BOOST_AUTO_TEST_CASE(Empty) {
     std::vector<s_exp_ptr> args;
@@ -120,7 +139,16 @@ BOOST_AUTO_TEST_CASE(NotANumber) {
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE(BuiltinsTimes)
+
 memory::s_exp_pool pool;
+
+BOOST_AUTO_TEST_CASE(Representation) {
+    BOOST_CHECK_EQUAL("*", primitives::times.representation());
+}
+
+BOOST_AUTO_TEST_CASE(Destructor) {
+    std::make_unique<decltype(primitives::times)>(primitives::times);
+}
 
 BOOST_AUTO_TEST_CASE(Empty) {
     std::vector<s_exp_ptr> args;
@@ -174,7 +202,16 @@ BOOST_AUTO_TEST_CASE(NotANumber) {
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE(BuiltinsDivide)
+
 memory::s_exp_pool pool;
+
+BOOST_AUTO_TEST_CASE(Representation) {
+    BOOST_CHECK_EQUAL("/", primitives::divide.representation());
+}
+
+BOOST_AUTO_TEST_CASE(Destructor) {
+    std::make_unique<decltype(primitives::divide)>(primitives::divide);
+}
 
 BOOST_AUTO_TEST_CASE(Empty) {
     std::vector<s_exp_ptr> args;
@@ -218,7 +255,16 @@ BOOST_AUTO_TEST_CASE(List) {
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE(BuiltinsEQ)
+
 memory::s_exp_pool pool;
+
+BOOST_AUTO_TEST_CASE(Representation) {
+    BOOST_CHECK_EQUAL("eq", primitives::eq.representation());
+}
+
+BOOST_AUTO_TEST_CASE(Destructor) {
+    std::make_unique<decltype(primitives::eq)>(primitives::eq);
+}
 
 BOOST_AUTO_TEST_CASE(Empty) {
     std::vector<s_exp_ptr> args;
@@ -324,7 +370,16 @@ BOOST_DATA_TEST_CASE(Mix, bdata::make(val) ^ bdata::make(exp), a, e) {
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE(BuiltinsLess)
+
 memory::s_exp_pool pool;
+
+BOOST_AUTO_TEST_CASE(Representation) {
+    BOOST_CHECK_EQUAL("<", primitives::less.representation());
+}
+
+BOOST_AUTO_TEST_CASE(Destructor) {
+    std::make_unique<decltype(primitives::less)>(primitives::less);
+}
 
 BOOST_AUTO_TEST_CASE(Empty) {
     std::vector<s_exp_ptr> args;
@@ -389,7 +444,16 @@ BOOST_AUTO_TEST_CASE(List) {
 BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE(BuiltinsGreater)
+
 memory::s_exp_pool pool;
+
+BOOST_AUTO_TEST_CASE(Representation) {
+    BOOST_CHECK_EQUAL(">", primitives::greater.representation());
+}
+
+BOOST_AUTO_TEST_CASE(Destructor) {
+    std::make_unique<decltype(primitives::greater)>(primitives::greater);
+}
 
 BOOST_AUTO_TEST_CASE(Empty) {
     std::vector<s_exp_ptr> args;
@@ -457,6 +521,14 @@ BOOST_AUTO_TEST_SUITE(BuiltinsCar)
 
 memory::s_exp_pool pool;
 
+BOOST_AUTO_TEST_CASE(Representation) {
+    BOOST_CHECK_EQUAL("car", primitives::car.representation());
+}
+
+BOOST_AUTO_TEST_CASE(Destructor) {
+    std::make_unique<decltype(primitives::car)>(primitives::car);
+}
+
 BOOST_AUTO_TEST_CASE(car) {
     std::vector<s_exp_ptr> args;
     args.push_back(pool.create(make_number(12, &pool), make_number(3, &pool)));
@@ -506,6 +578,14 @@ BOOST_AUTO_TEST_SUITE(BuiltinsCdr)
 
 memory::s_exp_pool pool;
 
+BOOST_AUTO_TEST_CASE(Representation) {
+    BOOST_CHECK_EQUAL("cdr", primitives::cdr.representation());
+}
+
+BOOST_AUTO_TEST_CASE(Destructor) {
+    std::make_unique<decltype(primitives::cdr)>(primitives::cdr);
+}
+
 BOOST_AUTO_TEST_CASE(cdr) {
     std::vector<s_exp_ptr> args;
     args.push_back(pool.create(make_number(12, &pool), make_number(3, &pool)));
@@ -554,6 +634,14 @@ BOOST_AUTO_TEST_SUITE_END()
 BOOST_AUTO_TEST_SUITE(BuiltinsCons)
 
 memory::s_exp_pool pool;
+
+BOOST_AUTO_TEST_CASE(Representation) {
+    BOOST_CHECK_EQUAL("cons", primitives::cons.representation());
+}
+
+BOOST_AUTO_TEST_CASE(Destructor) {
+    std::make_unique<decltype(primitives::cons)>(primitives::cons);
+}
 
 BOOST_AUTO_TEST_CASE(cons) {
     std::vector<s_exp_ptr> args;
@@ -609,6 +697,12 @@ BOOST_AUTO_TEST_SUITE_END()
 BOOST_AUTO_TEST_SUITE(BuiltinsList)
 
 memory::s_exp_pool pool;
+
+BOOST_AUTO_TEST_CASE(Destructor) { std::make_unique<primitives::list_impl>(); }
+
+BOOST_AUTO_TEST_CASE(Representation) {
+    BOOST_CHECK_EQUAL(primitives::list_impl{}.representation(), "list");
+}
 
 auto one = make_number(1, &pool);
 auto two = make_number(2, &pool);
