@@ -35,7 +35,10 @@ class interpreter {
     //! Call lambda or primitive.
     const s_exp *eval_func(const s_exp *);
 
+    //! Handle if
     const s_exp *eval_special_if(const s_exp *);
+    //! Handle let
+    const s_exp *eval_special_let(const s_exp *);
 
     //! Take the arguments to a lambda with the lambda and pushes a new
     //! environment with the arguments set on the environment stack.

@@ -59,6 +59,42 @@ const nuschl::s_exp *nuschl::interpreter::eval_special_if(const s_exp *exp) {
         return eval(alt);
     }
 }
+
+const nuschl::s_exp *nuschl::interpreter::eval_special_let(const s_exp *exp) {
+    environment::table t;
+    assert(is_cell(exp));
+    auto args = exp->cdr();
+    if (!is_cell(args) || list_size(args) < 2) {
+        throw eval_error(
+            "Let requires one argument with the list of pairs and the body",
+            exp);
+    }
+    auto defines = args->car();
+    auto body = args->cdr();
+    if (!is_cell(defines)) {
+        throw eval_error("Let requires list as first arguments", exp);
+    }
+    for_list(defines, [&t, exp, this](const s_exp *pair) {
+        if (!is_cell(pair) || list_size(pair) != 2) {
+            throw eval_error("Let requires list of pairs as argument", exp);
+        }
+        auto var = pair->car();
+        assert(is_cell(pair->cdr()));
+        auto e = eval(pair->cdr()->car());
+        if (!(var->is_atom() && var->get_atom()->is_symbol())) {
+            std::stringstream s;
+            s << "Expected symbol as first part of pair, got ";
+            s << *var;
+            throw eval_error(s.str().c_str(), exp);
+        }
+        t.insert({var->get_atom()->get_symbol(), e});
+    });
+    push_new_env(t);
+    auto ret = proc(body);
+    m_env_stack.pop();
+    return ret;
+}
+
 const nuschl::s_exp *nuschl::interpreter::eval_special(const s_exp *exp) {
     assert(exp->is_cell());
     const s_exp *h = exp->car();
@@ -81,38 +117,7 @@ const nuschl::s_exp *nuschl::interpreter::eval_special(const s_exp *exp) {
         m_env_stack.top()->set(var->get_atom()->get_symbol(), e);
         return e;
     } else if (value == "let") {
-        environment::table t;
-        assert(is_cell(exp));
-        auto args = exp->cdr();
-        if (!is_cell(args) || list_size(args) < 2) {
-            throw eval_error(
-                "Let requires one argument with the list of pairs and the body",
-                exp);
-        }
-        auto defines = args->car();
-        auto body = args->cdr();
-        if (!is_cell(defines)) {
-            throw eval_error("Let requires list as first arguments", exp);
-        }
-        for_list(defines, [&t, exp, this](const s_exp *pair) {
-            if (!is_cell(pair) || list_size(pair) != 2) {
-                throw eval_error("Let requires list of pairs as argument", exp);
-            }
-            auto var = pair->car();
-            assert(is_cell(pair->cdr()));
-            auto e = eval(pair->cdr()->car());
-            if (!(var->is_atom() && var->get_atom()->is_symbol())) {
-                std::stringstream s;
-                s << "Expected symbol as first part of pair, got ";
-                s << *var;
-                throw eval_error(s.str().c_str(), exp);
-            }
-            t.insert({var->get_atom()->get_symbol(), e});
-        });
-        push_new_env(t);
-        auto ret = proc(body);
-        m_env_stack.pop();
-        return ret;
+        return eval_special_let(exp);
     } else if (value == "lambda") {
         auto args = exp->cdr();
         if (!is_cell(args) || list_size(args) < 2) {
