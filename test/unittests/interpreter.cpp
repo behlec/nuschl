@@ -29,9 +29,10 @@ nuschl::memory::s_exp_pool pool;
 std::vector<nuschl::testing::string_to_s_exp> examples = {
     {"(define a 10) a"s, pool.create(make_atom(nuschl::number{10}))},
     {"5"s, pool.create(make_atom(nuschl::number{5}))},
-    {"(if (eq 0 0) 1 2)"s, pool.create(make_atom(nuschl::number{1}))},
-    {"(if (eq 0 0) 1)"s, pool.create(make_atom(nuschl::number{1}))},
-    {"(if (eq 0 1) 1 2)"s, pool.create(make_atom(nuschl::number{2}))},
+    {"(if #t 1 2)"s, pool.create(make_atom(nuschl::number{1}))},
+    {"(if #f 1 2)"s, pool.create(make_atom(nuschl::number{2}))},
+    {"(if #t 1)"s, pool.create(make_atom(nuschl::number{1}))},
+    {"(if #f 1)"s, nuschl::s_exp::nil},
     {"(+ 1 2 3)"s, pool.create(make_atom(nuschl::number{6}))},
     {"(quote 3)"s, pool.create(make_atom(nuschl::number{3}))},
     {"(quote x)"s, pool.create(make_atom(nuschl::symbol{"x"}))},
@@ -160,7 +161,6 @@ BOOST_AUTO_TEST_CASE(NoFunction) {
     nuschl::interpreter interp(nuschl::default_env.copy(), &pool);
     BOOST_CHECK_EXCEPTION(interp.proc(pres.ast), nuschl::eval_error,
                           [](const nuschl::eval_error &e) {
-                              std::cerr << e.what();
                               return "Expected function at first position"s ==
                                      e.what();
                           });
@@ -207,6 +207,28 @@ std::vector<nuschl::testing::string_to_string> examples = {
     {"((lambda (x) 3) 1 2)"s, "Too many arguments for lambda"s}};
 
 BOOST_DATA_TEST_CASE(WrongLambda, bdata::make(examples), example) {
+    std::string code = example.input;
+    nuschl::parsing::parser p(code, pool);
+    auto pres = p.parse();
+    nuschl::interpreter interp(nuschl::default_env.copy(), &pool);
+    BOOST_CHECK_EXCEPTION(interp.proc(pres.ast), nuschl::eval_error,
+                          [&example](const nuschl::eval_error &e) {
+                              return example.expected == e.what();
+                          });
+}
+
+BOOST_AUTO_TEST_SUITE_END()
+
+BOOST_AUTO_TEST_SUITE(TestIf)
+
+nuschl::memory::s_exp_pool pool;
+
+std::vector<nuschl::testing::string_to_string> examples = {
+    {"(if)"s, "if requires two or three arguments"s},
+    {"(if 1)"s, "if requires two or three arguments"s},
+    {"(if 1 2 3 4)"s, "if requires two or three arguments"s}};
+
+BOOST_DATA_TEST_CASE(WrongIf, bdata::make(examples), example) {
     std::string code = example.input;
     nuschl::parsing::parser p(code, pool);
     auto pres = p.parse();

@@ -41,6 +41,24 @@ bool nuschl::interpreter::is_special(const std::string &str) {
     return specials.end() != std::find(specials.begin(), specials.end(), str);
 }
 
+const nuschl::s_exp *nuschl::interpreter::eval_special_if(const s_exp *exp) {
+    assert(is_cell(exp));
+    auto args = exp->cdr();
+    if (!(is_cell(args) && list_size(args) > 1 && list_size(args) <= 3)) {
+        throw eval_error("if requires two or three arguments", exp);
+    }
+    auto cond = (args->car());
+    auto cons = (args->cdr()->car());
+    auto alt = s_exp::nil;
+    if (list_size(args) == 3) {
+        alt = (args->cdr()->cdr()->car());
+    }
+    if (to_bool(eval(cond))) {
+        return eval(cons);
+    } else {
+        return eval(alt);
+    }
+}
 const nuschl::s_exp *nuschl::interpreter::eval_special(const s_exp *exp) {
     assert(exp->is_cell());
     const s_exp *h = exp->car();
@@ -49,14 +67,7 @@ const nuschl::s_exp *nuschl::interpreter::eval_special(const s_exp *exp) {
     if ((value == "quote")) { // || (value == "'")) {
         return exp->cdr()->car();
     } else if (value == "if") {
-        auto cond = (exp->cdr()->car());
-        auto cons = (exp->cdr()->cdr()->car());
-        auto alt = (exp->cdr()->cdr()->cdr()->car());
-        if (to_bool(eval(cond))) {
-            return eval(cons);
-        } else {
-            return eval(alt);
-        }
+        return eval_special_if(exp);
     } else if (value == "define") {
         const s_exp *var = exp->cdr()->car();
         const s_exp *e = eval(exp->cdr()->cdr()->car());
