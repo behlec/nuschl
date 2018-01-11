@@ -69,8 +69,12 @@ const nuschl::s_exp *nuschl::interpreter::eval_special(const s_exp *exp) {
     } else if (value == "if") {
         return eval_special_if(exp);
     } else if (value == "define") {
-        const s_exp *var = exp->cdr()->car();
-        const s_exp *e = eval(exp->cdr()->cdr()->car());
+        auto args = exp->cdr();
+        if (!(is_cell(args) && list_size(args) > 1)) {
+            throw eval_error("Define requires two arguments", exp);
+        }
+        const s_exp *var = args->car();
+        const s_exp *e = eval(args->cdr()->car());
         if (!(var->is_atom() && var->get_atom()->is_symbol())) {
             throw eval_error("Expected symbol as first argument", exp);
         }
