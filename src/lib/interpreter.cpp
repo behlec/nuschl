@@ -79,9 +79,6 @@ const nuschl::s_exp *nuschl::interpreter::eval_special(const s_exp *exp) {
         if (!is_cell(defines)) {
             throw eval_error("Let requires list as first arguments", exp);
         }
-        // if (!is_cell(body)) {
-        //    throw eval_error("Let requires list as second arguments", exp);
-        //}
         for_list(defines, [&t, exp, this](const s_exp *pair) {
             if (!is_cell(pair) || list_size(pair) != 2) {
                 throw eval_error("Let requires list of pairs as argument", exp);
@@ -131,10 +128,10 @@ const nuschl::s_exp *nuschl::interpreter::eval_special(const s_exp *exp) {
 }
 
 const nuschl::s_exp *nuschl::interpreter::eval_list(const s_exp *exp) {
-    assert(exp->is_cell());
     if (is_empty_cell(exp)) {
         return exp;
     }
+    assert(exp->is_cell());
     const s_exp *h = exp->car();
     if (is_symbol(h)) { // Test if it is special
         std::string value = h->get_atom()->get_symbol().get_value();
