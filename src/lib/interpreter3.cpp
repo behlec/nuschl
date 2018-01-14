@@ -125,9 +125,13 @@ void nuschl::interpreter3::eval_special() {
         m_regs.acc = exp->cdr()->car();
         return;
     } else if (value == "if") {
-        auto cond = (exp->cdr()->car());
-        auto cons = (exp->cdr()->cdr()->car());
-        auto alt = (exp->cdr()->cdr()->cdr()->car());
+        auto args = exp->cdr();
+        if (!(args->is_cell() && list_size(args) > 1 && list_size(args) < 4)) {
+            throw eval_error("if requires two or three arguments", exp);
+        }
+        auto cond = (args->car());
+        auto cons = (args->cdr()->car());
+        auto alt = (args->cdr()->cdr()->car());
         m_regs.pc = cond;
         m_uneval_stack.push(alt);
         m_uneval_stack.push(cons);

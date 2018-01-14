@@ -214,3 +214,25 @@ BOOST_DATA_TEST_CASE(Int3WrongLambda, bdata::make(examples), example) {
 }
 
 BOOST_AUTO_TEST_SUITE_END()
+
+BOOST_AUTO_TEST_SUITE(Int3TestIf)
+
+nuschl::memory::s_exp_pool pool;
+
+std::vector<nuschl::testing::string_to_string> examples = {
+    {"(if)"s, "if requires two or three arguments"s},
+    {"(if 1)"s, "if requires two or three arguments"s},
+    {"(if 1 2 3 4)"s, "if requires two or three arguments"s}};
+
+BOOST_DATA_TEST_CASE(Int3WrongIf, bdata::make(examples), example) {
+    std::string code = example.input;
+    nuschl::parsing::parser p(code, pool);
+    auto pres = p.parse();
+    nuschl::interpreter3 interp(pres.ast, nuschl::default_env.copy(), &pool);
+    BOOST_CHECK_EXCEPTION(interp.run(), nuschl::eval_error,
+                          [&example](const nuschl::eval_error &e) {
+                              return example.expected == e.what();
+                          });
+}
+
+BOOST_AUTO_TEST_SUITE_END()
