@@ -154,24 +154,30 @@ void nuschl::interpreter3::eval_special() {
         push_stacks();
         assert(m_uneval_stack.empty());
         assert(m_arg_stack.empty());
-        m_regs.pc = exp->cdr()->cdr();
+        auto args = exp->cdr();
+        if (list_size(args) < 2) {
+            throw eval_error(
+                "Let requires one argument with the list of pairs and the body",
+                exp);
+        }
+        m_regs.pc = args->cdr();
         compile_proc();
         auto tail = m_ops;
         m_ops.clear();
-        auto vars = exp->cdr()->car();
+        auto vars = args->car();
+        if (!vars->is_cell()) {
+            throw eval_error("Let requires list as first arguments", exp);
+        }
         std::vector<const s_exp *> var_names;
         for_list(vars, [&](const nuschl::s_exp *pair) {
             if (list_size(pair) != 2) {
-                std::stringstream s;
-                s << "Expected pair, got ";
-                s << *pair;
-                throw eval_error(s.str().c_str(), exp);
+                throw eval_error("Let requires list of pairs as argument", exp);
             }
 
             auto v = pair->car();
             if (!(v->is_atom() && v->get_atom()->is_symbol())) {
                 std::stringstream s;
-                s << "Expected symbol, got ";
+                s << "Expected symbol as first part of pair, got ";
                 s << *v;
                 throw eval_error(s.str().c_str(), exp);
             }

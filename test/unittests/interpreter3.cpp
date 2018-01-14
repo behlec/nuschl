@@ -164,3 +164,28 @@ BOOST_AUTO_TEST_CASE(NoFunction) {
 
 BOOST_AUTO_TEST_SUITE_END()
 
+BOOST_AUTO_TEST_SUITE(Int3TestLet)
+
+nuschl::memory::s_exp_pool pool;
+
+std::vector<nuschl::testing::string_to_string> examples = {
+    {"(let)"s,
+     "Let requires one argument with the list of pairs and the body"s},
+    {"(let 2)"s,
+     "Let requires one argument with the list of pairs and the body"s},
+    {"(let ((3 4)) a)"s, "Expected symbol as first part of pair, got 3"s},
+    {"(let 3 4)"s, "Let requires list as first arguments"s},
+    {"(let ((a 3 4)) a)"s, "Let requires list of pairs as argument"s}};
+
+BOOST_DATA_TEST_CASE(Int3WrongLambda, bdata::make(examples), example) {
+    std::string code = example.input;
+    nuschl::parsing::parser p(code, pool);
+    auto pres = p.parse();
+    nuschl::interpreter3 interp(pres.ast, nuschl::default_env.copy(), &pool);
+    BOOST_CHECK_EXCEPTION(interp.run(), nuschl::eval_error,
+                          [&example](const nuschl::eval_error &e) {
+                              return example.expected == e.what();
+                          });
+}
+
+BOOST_AUTO_TEST_SUITE_END()
