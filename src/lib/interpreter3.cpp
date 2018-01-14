@@ -192,7 +192,14 @@ void nuschl::interpreter3::eval_special() {
         m_ops.push_back(op::ret);
         return;
     } else if (value == "lambda") {
+        auto args = exp->cdr();
+        if (!(args->is_cell() && list_size(args) > 1)) {
+            throw eval_error("Expect at least two arguments to lambda", exp);
+        }
         auto varlist = exp->cdr()->car();
+        if (!varlist->is_cell()) {
+            throw eval_error("Expected list as first argument to lambda", exp);
+        }
         std::vector<symbol> vec;
         for_list(varlist, [&vec, exp](const s_exp *var) {
             if (!(var->is_atom() && var->get_atom()->is_symbol())) {
@@ -354,17 +361,19 @@ start:
                 }
                 m_ops.push_back(op::ret);
             } else if (is_lambda(m_regs.pc)) {
-                std::vector<const s_exp *> args;
+                std::vector<const s_exp *> args; // The argument values
                 while (!m_arg_stack.empty()) {
                     args.push_back(m_arg_stack.top());
                     m_arg_stack.pop();
                 }
                 // auto env = m_regs.pc->get_lambda()->get_env(args);
                 auto l = m_regs.pc->get_lambda();
-                auto vars = l->get_argument_names();
-                if (vars.size() != args.size()) {
-                    throw eval_error("Wrong number of arguments to lambda",
+                auto vars = l->get_argument_names(); // The parameter names
+                if (vars.size() < args.size()) {
+                    throw eval_error("Too many arguments for lambda",
                                      m_regs.pc);
+                } else if (vars.size() > args.size()) {
+                    throw eval_error("Too few arguments for lambda", m_regs.pc);
                 }
                 environment::table t;
                 for (decltype(vars)::size_type i = 0; i < vars.size(); ++i) {

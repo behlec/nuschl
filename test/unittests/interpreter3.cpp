@@ -189,3 +189,28 @@ BOOST_DATA_TEST_CASE(Int3WrongLambda, bdata::make(examples), example) {
 }
 
 BOOST_AUTO_TEST_SUITE_END()
+
+BOOST_AUTO_TEST_SUITE(Int3TestLambda)
+
+nuschl::memory::s_exp_pool pool;
+
+std::vector<nuschl::testing::string_to_string> examples = {
+    {"(lambda 3)"s, "Expect at least two arguments to lambda"s},
+    {"(lambda (3) 3)"s,
+     "Expected list of symbols as first argument to lambda"s},
+    {"((lambda (x y) (+ x 1)) 2)"s, "Too few arguments for lambda"s},
+    {"(lambda 3 4)"s, "Expected list as first argument to lambda"s},
+    {"((lambda (x) 3) 1 2)"s, "Too many arguments for lambda"s}};
+
+BOOST_DATA_TEST_CASE(Int3WrongLambda, bdata::make(examples), example) {
+    std::string code = example.input;
+    nuschl::parsing::parser p(code, pool);
+    auto pres = p.parse();
+    nuschl::interpreter3 interp(pres.ast, nuschl::default_env.copy(), &pool);
+    BOOST_CHECK_EXCEPTION(interp.run(), nuschl::eval_error,
+                          [&example](const nuschl::eval_error &e) {
+                              return example.expected == e.what();
+                          });
+}
+
+BOOST_AUTO_TEST_SUITE_END()
