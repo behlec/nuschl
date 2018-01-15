@@ -38,6 +38,7 @@ ${CMAKE_CURRENT_SOURCE_DIR}/unittests/token_iterator.cpp
 ${CMAKE_CURRENT_SOURCE_DIR}/unittests/reverse_token_iterator.cpp
 
 ${CMAKE_CURRENT_SOURCE_DIR}/unittests/interpreter.cpp
+${CMAKE_CURRENT_SOURCE_DIR}/unittests/interpreter3.cpp
 )
 
 add_executable(nuschltests ${NUSCHL_UNITTESTS_SRC} )

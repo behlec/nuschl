@@ -30,6 +30,7 @@ set(NUSCHL_LIB_FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/src/lib/token_iterator.cpp
 
   ${CMAKE_CURRENT_SOURCE_DIR}/src/lib/interpreter.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/lib/interpreter3.cpp
 )
 
 find_package(Boost 1.59.0 COMPONENTS unit_test_framework)
@@ -71,3 +72,6 @@ target_link_libraries(parser PRIVATE nuschl-lib)
 
 add_executable(nuschl ${CMAKE_CURRENT_SOURCE_DIR}/src/bin/nuschl.cpp)
 target_link_libraries(nuschl PRIVATE nuschl-lib)
+
+add_executable(nuschl3 ${CMAKE_CURRENT_SOURCE_DIR}/src/bin/nuschl3.cpp)
+target_link_libraries(nuschl3 PRIVATE nuschl-lib)
