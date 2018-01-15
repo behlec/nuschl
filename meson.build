@@ -95,7 +95,8 @@ nuschl_files = files(
     'src/lib/token.cpp',
     'src/lib/token_iterator.cpp',
 
-    'src/lib/interpreter.cpp'
+    'src/lib/interpreter.cpp',
+    'src/lib/interpreter3.cpp'
 )
 
 nuschl_inc = include_directories('include')
@@ -111,6 +112,7 @@ nuschl_dep = declare_dependency(include_directories: nuschl_inc, link_with: nusc
 lexer = executable('lexer', 'src/bin/lexer.cpp', dependencies: nuschl_dep)
 lexer = executable('parser', 'src/bin/parser.cpp', dependencies: nuschl_dep)
 lexer = executable('nuschl', 'src/bin/nuschl.cpp', dependencies: nuschl_dep)
+lexer = executable('nuschl3', 'src/bin/nuschl3.cpp', dependencies: nuschl_dep)
 
 ################################
 #
