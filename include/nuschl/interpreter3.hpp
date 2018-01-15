@@ -51,20 +51,48 @@ class interpreter3 {
     };
 
   private:
+    /**
+     * \brief Reset interpreter.
+     *
+     * Set program counter to program, clear accumulator and all stacks.
+     */
     void reset();
 
     //! Evaluate opcodes.
     void eval();
+    //! Evaluate either atom or list.
     void eval_sexp();
+    //! Evaluate atom.
     void eval_atom();
+    //! Evaluate a list.
     void eval_list();
+    //! Evaluate a special instruction.
     void eval_special();
-
+    //! Evaluate if
+    void eval_special_if();
+    //! Evaluate define
+    void eval_special_define();
+    //! Evaluate lambda
+    void eval_special_lambda();
+    //! Evaluate let
+    void eval_special_let();
+    //! Compile the evaluation of a single list.
     void compile_func();
+    /**
+     * \brief Compile the execution of a list of expressions.
+     *
+     * Put the elements of the list onto the uneval stack and add for each an
+     * evalarg to program.
+     */
     void compile_proc();
-
+    /**
+     * \brief Create an empty environment as newest environment and push it on
+     * the environment stack.
+     */
     void push_empty_env();
+    //! Push the current operation list on the op stack and clear the list.
     void push_ops();
+    //! Pop operations list from the op stack.
     void pop_ops();
 
     //! Check if s is a special function that is handled by the interpreter.
@@ -138,9 +166,11 @@ class interpreter3 {
     };
     //! A stack of the argument stacks.
     std::stack<stacks> m_stack_stack;
+    //! Push arguments, uneval, and operation stack.
     void push_stacks();
+    //! Pop arguments, uneval, and operation stack.
     void pop_stacks();
-
+    //! Stack for the operation list.
     std::stack<op_list> m_op_stack;
 
     friend std::ostream &operator<<(std::ostream &, interpreter3::op);

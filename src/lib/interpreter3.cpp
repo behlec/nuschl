@@ -46,7 +46,6 @@ const nuschl::s_exp *nuschl::interpreter3::run() {
 }
 
 void nuschl::interpreter3::compile_proc() {
-    // assert(m_arg_stack.empty());
     auto old_stack_size = m_arg_stack.size();
     auto l = list_size(m_regs.pc);
     push_list_on_stack(m_regs.pc, m_arg_stack);
@@ -55,7 +54,6 @@ void nuschl::interpreter3::compile_proc() {
         m_arg_stack.pop();
         m_ops.push_back(op::evalarg);
     }
-    // assert(m_arg_stack.empty());
     assert(m_arg_stack.size() == old_stack_size);
 }
 
@@ -117,6 +115,107 @@ bool nuschl::interpreter3::is_special(const std::string &str) {
     return specials.end() != std::find(specials.begin(), specials.end(), str);
 }
 
+void nuschl::interpreter3::eval_special_if() {
+    auto exp = m_regs.pc;
+    auto args = exp->cdr();
+    if (!(args->is_cell() && list_size(args) > 1 && list_size(args) < 4)) {
+        throw eval_error("if requires two or three arguments", exp);
+    }
+    auto cond = (args->car());
+    auto cons = (args->cdr()->car());
+    auto alt = (args->cdr()->cdr()->car());
+    m_regs.pc = cond;
+    m_uneval_stack.push(alt);
+    m_uneval_stack.push(cons);
+    m_uneval_stack.push(cond);
+    push_ops();
+    m_ops.push_back(op::evalarg);
+    m_ops.push_back(op::ifexp);
+}
+
+void nuschl::interpreter3::eval_special_define() {
+    auto exp = m_regs.pc;
+    auto args = exp->cdr();
+    const s_exp *var = args->car();
+    m_regs.pc = args->cdr()->car();
+    if (!(var->is_atom() && var->get_atom()->is_symbol())) {
+        throw eval_error("Expected symbol as first argument", exp);
+    }
+    m_arg_stack.push(var);
+    m_uneval_stack.push(m_regs.pc);
+    push_ops();
+    m_ops.push_back(op::evalarg);
+    m_ops.push_back(op::define);
+}
+
+void nuschl::interpreter3::eval_special_let() {
+    // push_regs();
+    push_stacks();
+    assert(m_uneval_stack.empty());
+    assert(m_arg_stack.empty());
+    auto exp = m_regs.pc;
+    auto args = exp->cdr();
+    if (list_size(args) < 2) {
+        throw eval_error(
+            "Let requires one argument with the list of pairs and the body",
+            exp);
+    }
+    m_regs.pc = args->cdr();
+    compile_proc();
+    auto tail = m_ops;
+    m_ops.clear();
+    auto vars = args->car();
+    if (!vars->is_cell()) {
+        throw eval_error("Let requires list as first arguments", exp);
+    }
+    std::vector<const s_exp *> var_names;
+    for_list(vars, [&](const nuschl::s_exp *pair) {
+        if (list_size(pair) != 2) {
+            throw eval_error("Let requires list of pairs as argument", exp);
+        }
+
+        auto v = pair->car();
+        if (!(v->is_atom() && v->get_atom()->is_symbol())) {
+            std::stringstream s;
+            s << "Expected symbol as first part of pair, got ";
+            s << *v;
+            throw eval_error(s.str().c_str(), exp);
+        }
+        var_names.push_back(v);
+        m_uneval_stack.push(pair->cdr()->car());
+        m_ops.push_back(op::evalarg);
+        m_ops.push_back(op::pusharg);
+    });
+    m_arg_stack.push(to_list(var_names.begin(), var_names.end(), m_pool));
+    m_ops.push_back(op::makeenv);
+    std::copy(tail.begin(), tail.end(), std::back_inserter(m_ops));
+    m_ops.push_back(op::ret);
+}
+
+void nuschl::interpreter3::eval_special_lambda() {
+    auto exp = m_regs.pc;
+    auto args = exp->cdr();
+    if (!(args->is_cell() && list_size(args) > 1)) {
+        throw eval_error("Expect at least two arguments to lambda", exp);
+    }
+    auto varlist = exp->cdr()->car();
+    if (!varlist->is_cell()) {
+        throw eval_error("Expected list as first argument to lambda", exp);
+    }
+    std::vector<symbol> vec;
+    for_list(varlist, [&vec, exp](const s_exp *var) {
+        if (!(var->is_atom() && var->get_atom()->is_symbol())) {
+            throw eval_error("Expected list of symbols as first "
+                             "argument to lambda",
+                             exp);
+        }
+        vec.push_back(var->get_atom()->get_symbol());
+    });
+    auto f =
+        std::make_shared<lambda>(vec, exp->cdr()->cdr(), m_env_stack.top());
+    m_regs.acc = m_pool->create(f);
+}
+
 void nuschl::interpreter3::eval_special() {
     auto exp = m_regs.pc;
     const s_exp *h = exp->car();
@@ -125,97 +224,16 @@ void nuschl::interpreter3::eval_special() {
         m_regs.acc = exp->cdr()->car();
         return;
     } else if (value == "if") {
-        auto args = exp->cdr();
-        if (!(args->is_cell() && list_size(args) > 1 && list_size(args) < 4)) {
-            throw eval_error("if requires two or three arguments", exp);
-        }
-        auto cond = (args->car());
-        auto cons = (args->cdr()->car());
-        auto alt = (args->cdr()->cdr()->car());
-        m_regs.pc = cond;
-        m_uneval_stack.push(alt);
-        m_uneval_stack.push(cons);
-        m_uneval_stack.push(cond);
-        push_ops();
-        m_ops.push_back(op::evalarg);
-        m_ops.push_back(op::ifexp);
+        eval_special_if();
         return;
     } else if (value == "define") {
-        const s_exp *var = exp->cdr()->car();
-        m_regs.pc = exp->cdr()->cdr()->car();
-        eval_sexp();
-        if (!(var->is_atom() && var->get_atom()->is_symbol())) {
-            throw eval_error("Expected symbol as first argument", exp);
-        }
-        m_arg_stack.push(var);
-        m_uneval_stack.push(m_regs.pc);
-        push_ops();
-        m_ops.push_back(op::evalarg);
-        m_ops.push_back(op::define);
+        eval_special_define();
         return;
     } else if (value == "let") {
-        // push_regs();
-        push_stacks();
-        assert(m_uneval_stack.empty());
-        assert(m_arg_stack.empty());
-        auto args = exp->cdr();
-        if (list_size(args) < 2) {
-            throw eval_error(
-                "Let requires one argument with the list of pairs and the body",
-                exp);
-        }
-        m_regs.pc = args->cdr();
-        compile_proc();
-        auto tail = m_ops;
-        m_ops.clear();
-        auto vars = args->car();
-        if (!vars->is_cell()) {
-            throw eval_error("Let requires list as first arguments", exp);
-        }
-        std::vector<const s_exp *> var_names;
-        for_list(vars, [&](const nuschl::s_exp *pair) {
-            if (list_size(pair) != 2) {
-                throw eval_error("Let requires list of pairs as argument", exp);
-            }
-
-            auto v = pair->car();
-            if (!(v->is_atom() && v->get_atom()->is_symbol())) {
-                std::stringstream s;
-                s << "Expected symbol as first part of pair, got ";
-                s << *v;
-                throw eval_error(s.str().c_str(), exp);
-            }
-            var_names.push_back(v);
-            m_uneval_stack.push(pair->cdr()->car());
-            m_ops.push_back(op::evalarg);
-            m_ops.push_back(op::pusharg);
-        });
-        m_arg_stack.push(to_list(var_names.begin(), var_names.end(), m_pool));
-        m_ops.push_back(op::makeenv);
-        std::copy(tail.begin(), tail.end(), std::back_inserter(m_ops));
-        m_ops.push_back(op::ret);
+        eval_special_let();
         return;
     } else if (value == "lambda") {
-        auto args = exp->cdr();
-        if (!(args->is_cell() && list_size(args) > 1)) {
-            throw eval_error("Expect at least two arguments to lambda", exp);
-        }
-        auto varlist = exp->cdr()->car();
-        if (!varlist->is_cell()) {
-            throw eval_error("Expected list as first argument to lambda", exp);
-        }
-        std::vector<symbol> vec;
-        for_list(varlist, [&vec, exp](const s_exp *var) {
-            if (!(var->is_atom() && var->get_atom()->is_symbol())) {
-                throw eval_error("Expected list of symbols as first "
-                                 "argument to lambda",
-                                 exp);
-            }
-            vec.push_back(var->get_atom()->get_symbol());
-        });
-        auto f =
-            std::make_shared<lambda>(vec, exp->cdr()->cdr(), m_env_stack.top());
-        m_regs.acc = m_pool->create(f);
+        eval_special_lambda();
         return;
     } else if (value == "begin") {
         m_regs.pc = exp->cdr();
