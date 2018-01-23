@@ -72,7 +72,7 @@ void nuschl::interpreter3::reset() {
     clear_stack(m_stack_stack);
     clear_stack(m_op_stack);
     // Set up initial environment
-    m_env_stack.push(m_start_env);
+    m_env_stack.push(m_start_env->copy());
     // Reset registers
     m_regs = {m_prog, nuschl::s_exp::nil};
 }
