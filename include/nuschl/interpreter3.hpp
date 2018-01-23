@@ -48,7 +48,11 @@ class interpreter3 {
      */
     class interpreter_error : public std::runtime_error {
       public:
+        //! Create error.
+        //! @param what The error message.
         interpreter_error(const char *what);
+        //! Create error.
+        //! @param what The error message.
         interpreter_error(const std::string &what);
     };
 
@@ -183,6 +187,9 @@ class interpreter3 {
     std::stack<stacks> m_stack_stack;
     //! Stack for the operation list.
     std::stack<op_list> m_op_stack;
+
+    void internal_assert(bool condition, const std::string &message);
+    void internal_assert(bool condition, const char *message);
 };
 
 //! Print an opcode.

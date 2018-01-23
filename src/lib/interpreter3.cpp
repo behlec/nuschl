@@ -7,7 +7,6 @@
 #include <nuschl/util/s_exp_helpers.hpp>
 
 #include <algorithm>
-#include <cassert>
 
 using namespace std::literals::string_literals;
 
@@ -44,7 +43,8 @@ nuschl::interpreter3::interpreter3(const s_exp *prog, env_ptr env,
 const nuschl::s_exp *nuschl::interpreter3::run() {
     reset();
     compile_proc();
-    assert(m_env_stack.size() == 1);
+    internal_assert(m_env_stack.size() == 1,
+                    "Huh, woody Hedghog? Env stack should be reset.");
     eval();
     return m_regs.acc;
 }
@@ -58,7 +58,9 @@ void nuschl::interpreter3::compile_proc() {
         m_arg_stack.pop();
         m_ops.push_back(op::evalarg);
     }
-    assert(m_arg_stack.size() == old_stack_size);
+    internal_assert(
+        m_arg_stack.size() == old_stack_size,
+        "Huh, purple Ramblings? Argument stack size should not have changed.");
 }
 
 void nuschl::interpreter3::reset() {
@@ -83,12 +85,15 @@ void nuschl::interpreter3::push_stacks() {
     tmp.uneval_stack.swap(m_uneval_stack);
     m_stack_stack.push(tmp);
     push_ops();
-    assert(m_uneval_stack.empty());
-    assert(m_arg_stack.empty());
+    internal_assert(m_uneval_stack.empty(),
+                    "Huh, rainbow Carrot? Uneval stack should be empty.");
+    internal_assert(m_arg_stack.empty(),
+                    "Huh, honky trident? Eval stack should be empty.");
 }
 
 void nuschl::interpreter3::pop_stacks() {
-    assert(!m_stack_stack.empty());
+    internal_assert(!m_stack_stack.empty(),
+                    "Huh, Happy Toad? Why pop empty stacks?");
     m_arg_stack.swap(m_stack_stack.top().arg_stack);
     m_uneval_stack.swap(m_stack_stack.top().uneval_stack);
     m_stack_stack.pop();
@@ -101,14 +106,17 @@ void nuschl::interpreter3::push_ops() {
 }
 
 void nuschl::interpreter3::pop_ops() {
-    assert(m_ops.empty());
-    assert(!m_op_stack.empty());
+    internal_assert(m_ops.empty(), "Huh, Irritating Cry? Poping even though "
+                                   "the operation list is not empty?");
+    internal_assert(!m_op_stack.empty(),
+                    "Huh, Wry Dog?. Why pop empty operation stack?");
     m_ops = m_op_stack.top();
     m_op_stack.pop();
 }
 
 void nuschl::interpreter3::eval_atom() {
-    assert(m_regs.pc->is_atom());
+    internal_assert(m_regs.pc->is_atom(),
+                    "Huh, Solid Stitch? Atom expected in eval_atom.");
     auto a = m_regs.pc->get_atom();
     if (a->is_symbol()) {
         try {
@@ -164,8 +172,8 @@ void nuschl::interpreter3::eval_special_define() {
 void nuschl::interpreter3::eval_special_let() {
     // push_regs();
     push_stacks();
-    assert(m_uneval_stack.empty());
-    assert(m_arg_stack.empty());
+    internal_assert(m_uneval_stack.empty(), "Huh, Ludicrous Lead?");
+    internal_assert(m_arg_stack.empty(), "Huh, Psychedelic Plough?");
     auto exp = m_regs.pc;
     auto args = exp->cdr();
     if (list_size(args) < 2) {
@@ -254,8 +262,7 @@ void nuschl::interpreter3::eval_special() {
         compile_proc();
         return;
     }
-    throw interpreter_error(
-        "Internal interpreter error. Special command not implemented.");
+    throw interpreter_error("Special command not implemented.");
 }
 
 void nuschl::interpreter3::eval_list() {
@@ -299,7 +306,8 @@ start:
         m_ops.pop_front();
         switch (o) {
         case op::popargs:
-            assert(!m_arg_stack.empty());
+            internal_assert(!m_arg_stack.empty(),
+                            "Huh, Deadpan Dad? Pop the empty operation stack?");
             m_regs.acc = m_arg_stack.top();
             clear_stack(m_arg_stack);
             break;
@@ -310,7 +318,8 @@ start:
             m_call_stack.push(m_regs.acc);
             break;
         case op::evalarg:
-            assert(!m_uneval_stack.empty());
+            internal_assert(!m_uneval_stack.empty(),
+                            "Huh, Alike Alley? Pop the empty operation stack?");
             m_regs.pc = m_uneval_stack.top();
             m_uneval_stack.pop();
             eval_sexp();
@@ -325,9 +334,8 @@ start:
             break;
         }
         case op::makeenv: {
-            // assert(m_uneval_stack.empty());
             auto unevalsize = m_uneval_stack.size();
-            assert(m_arg_stack.size() > 0);
+            internal_assert(m_arg_stack.size() > 0, "Huh, Smooth Snakes?");
             while (m_arg_stack.size() > 1) {
                 auto t = m_arg_stack.top();
                 m_arg_stack.pop();
@@ -336,12 +344,13 @@ start:
             std::vector<const s_exp *> var_names;
             list_to_cont(m_arg_stack.top(), std::back_inserter(var_names));
             m_arg_stack.pop();
-            assert(m_arg_stack.empty());
-            assert(var_names.size() == m_uneval_stack.size() - unevalsize);
+            internal_assert(m_arg_stack.empty(), "Huh, Ripe Robin?");
+            internal_assert(
+                var_names.size() == m_uneval_stack.size() - unevalsize,
+                "Huh, Accessible Attraction? Names and values should match.");
             if (!std::all_of(var_names.begin(), var_names.end(),
                              [](const s_exp *e) { return is_symbol(e); })) {
-                throw interpreter_error(
-                    "Number of variable names does not match number of values");
+                throw interpreter_error("Variable names must be symbols");
             }
             std::reverse(var_names.begin(), var_names.end());
             environment::table t;
@@ -349,14 +358,16 @@ start:
                 t.insert({e->get_atom()->get_symbol(), m_uneval_stack.top()});
                 m_uneval_stack.pop();
             }
-            // assert(m_uneval_stack.empty());
-            assert(m_uneval_stack.size() == unevalsize);
+            internal_assert(m_uneval_stack.size() == unevalsize,
+                            "Huh, Uptight Uncle?");
             env_ptr env = std::make_shared<environment>(t, m_env_stack.top());
             m_env_stack.push(env);
             break;
         }
         case op::ret:
-            assert(!m_op_stack.empty());
+            internal_assert(
+                !m_op_stack.empty(),
+                "Huh, Barbarous Brain? How to pop the empty operation stack?");
             pop_stacks();
             m_env_stack.pop();
             break;
@@ -414,11 +425,11 @@ start:
                 auto env =
                     std::make_shared<nuschl::environment>(t, m_env_stack.top());
                 m_env_stack.push(env);
-                assert(m_arg_stack.empty());
-                assert(m_uneval_stack.empty());
+                internal_assert(m_arg_stack.empty(), "Huh, Shallow Scale?");
+                internal_assert(m_uneval_stack.empty(), "Huh, Fancy Fall?");
                 m_regs.acc = s_exp::nil;
                 m_regs.pc = m_regs.pc->get_lambda()->body();
-                assert(m_ops.empty());
+                internal_assert(m_ops.empty(), "Huh, Sparkling Stem?");
                 compile_proc();
                 m_ops.push_back(op::ret);
             } else {
@@ -429,12 +440,14 @@ start:
             throw interpreter_error("Opcode not implemented or invalid");
         }
     }
-    assert(m_ops.empty());
+    internal_assert(m_ops.empty(), "Huh, Spotless Soap?");
     if (!m_op_stack.empty()) {
         pop_ops();
         goto start;
     }
-    assert(m_env_stack.size() == 1);
+    internal_assert(
+        m_env_stack.size() == 1,
+        "Huh, Scandalous Suggestion? Expect environment to be back to normal?");
 }
 
 void nuschl::interpreter3::eval_sexp() {
@@ -445,13 +458,19 @@ void nuschl::interpreter3::eval_sexp() {
         return;
         break;
     case s_exp::kind::primitive: // TODO why is this never triggered?
-        throw eval_error("Do not know what to do with primitive",
-                         m_regs.pc); // TODO correct? Or rather:
+        throw interpreter_error(
+            "Do not know what "
+            "to do with primitive in "
+            "eval_sexp(). Supreme Lettuce"); // TODO correct? Or
+                                             // rather:
         m_regs.acc = m_regs.pc;
         return;
     case s_exp::kind::lambda: // TODO why is this never triggered?
-        throw eval_error("Do not know what to do with lambda",
-                         m_regs.pc); // TODO correct? Or rather:
+        throw interpreter_error(
+            "Do not know what "
+            "to do with lambda in eval_sexp(). Abortive Friends"); // TODO
+        // correct?
+        // Or rather:
         m_regs.acc = m_regs.pc;
         return;
     case s_exp::kind::cell:
@@ -459,14 +478,25 @@ void nuschl::interpreter3::eval_sexp() {
         return;
         break;
     default:
-        throw interpreter_error(
-            "Internel interpreter error. 0x23e"); // Should not happen
+        throw interpreter_error("Crude Rhino."); // Should not happen
     }
 }
 
 void nuschl::interpreter3::push_empty_env() {
     env_ptr ignore = std::make_shared<environment>(m_env_stack.top());
     m_env_stack.push(ignore);
+}
+
+void nuschl::interpreter3::internal_assert(bool condition,
+                                           const std::string &message) {
+    if (!condition)
+        throw interpreter_error("Internal interpreter error: "s + message);
+}
+
+void nuschl::interpreter3::internal_assert(bool condition,
+                                           const char *message) {
+    if (!condition)
+        throw interpreter_error("Internal interpreter error: "s + message);
 }
 
 const std::vector<std::string> nuschl::interpreter3::specials = {
