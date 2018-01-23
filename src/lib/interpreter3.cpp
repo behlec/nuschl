@@ -58,11 +58,18 @@ void nuschl::interpreter3::compile_proc() {
 }
 
 void nuschl::interpreter3::reset() {
+    // Clear compiled options
+    m_ops.clear();
+    // Clear all stacks
     clear_stack(m_env_stack);
-    m_env_stack.push(m_start_env);
     clear_stack(m_arg_stack);
     clear_stack(m_uneval_stack);
+    clear_stack(m_call_stack);
+    clear_stack(m_stack_stack);
     clear_stack(m_op_stack);
+    // Set up initial environment
+    m_env_stack.push(m_start_env);
+    // Reset registers
     m_regs = {m_prog, nuschl::s_exp::nil};
 }
 
@@ -91,11 +98,13 @@ void nuschl::interpreter3::push_ops() {
 
 void nuschl::interpreter3::pop_ops() {
     assert(m_ops.empty());
+    assert(!m_op_stack.empty());
     m_ops = m_op_stack.top();
     m_op_stack.pop();
 }
 
 void nuschl::interpreter3::eval_atom() {
+    assert(m_regs.pc->is_atom());
     auto a = m_regs.pc->get_atom();
     if (a->is_symbol()) {
         try {
@@ -253,9 +262,9 @@ void nuschl::interpreter3::eval_list() {
         m_regs.acc = m_regs.pc;
         return;
     }
-    const s_exp *h = exp->car();
-    if (h->is_atom() && h->get_atom()->is_symbol()) { // Test if it is special
-        std::string value = h->get_atom()->get_symbol().get_value();
+    const s_exp *head = exp->car();
+    if (is_symbol(head)) { // Test if it is special
+        std::string value = head->get_atom()->get_symbol().get_value();
         if (is_special(value)) {
             eval_special();
             return;
@@ -279,7 +288,6 @@ void nuschl::interpreter3::compile_func() {
     m_regs.pc = exp->car();
     m_uneval_stack.push(m_regs.pc);
     m_ops.push_back(op::call);
-    // m_ops.push_back(op::ret);
 }
 
 void nuschl::interpreter3::eval() {
