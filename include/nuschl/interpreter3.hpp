@@ -48,7 +48,8 @@ class interpreter3 {
      */
     class interpreter_error : public std::runtime_error {
       public:
-        interpreter_error(const char *);
+        interpreter_error(const char *what);
+        interpreter_error(const std::string &what);
     };
 
     //! The internal instruction set.

@@ -33,6 +33,10 @@ void push_list_on_stack(const nuschl::s_exp *l,
 nuschl::interpreter3::interpreter_error::interpreter_error(const char *what)
     : runtime_error(what) {}
 
+nuschl::interpreter3::interpreter_error::interpreter_error(
+    const std::string &what)
+    : runtime_error(what) {}
+
 nuschl::interpreter3::interpreter3(const s_exp *prog, env_ptr env,
                                    memory::s_exp_pool *pool)
     : m_pool(pool), m_prog(prog), m_start_env(env) {}
@@ -250,8 +254,6 @@ void nuschl::interpreter3::eval_special() {
         compile_proc();
         return;
     }
-    std::cerr << "Error: <" << value
-              << "> not implemented as special command\n";
     throw interpreter_error(
         "Internal interpreter error. Special command not implemented.");
 }
@@ -424,7 +426,6 @@ start:
             }
             break;
         default:
-            std::cerr << "Opcode invalid or not implemented: " << o << '\n';
             throw interpreter_error("Opcode not implemented or invalid");
         }
     }
