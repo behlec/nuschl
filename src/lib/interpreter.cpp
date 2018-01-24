@@ -127,6 +127,24 @@ nuschl::interpreter::eval_special_lambda(const s_exp *exp) {
     return m_pool->create(f);
 }
 
+const nuschl::s_exp *
+nuschl::interpreter::eval_special_define(const s_exp *exp) {
+    auto args = exp->cdr();
+    if (!(is_cell(args) && list_size(args) > 1)) {
+        throw eval_error("Define requires two arguments, got too few.", exp);
+    }
+    if (list_size(args) > 2) {
+        throw eval_error("Define requires two arguments, got too many.", exp);
+    }
+    const s_exp *var = args->car();
+    const s_exp *e = eval(args->cdr()->car());
+    if (!(var->is_atom() && var->get_atom()->is_symbol())) {
+        throw eval_error("Expected symbol as first argument", exp);
+    }
+    m_env_stack.top()->set(var->get_atom()->get_symbol(), e);
+    return e;
+}
+
 const nuschl::s_exp *nuschl::interpreter::eval_special(const s_exp *exp) {
     assert(exp->is_cell());
     const s_exp *h = exp->car();
@@ -137,22 +155,7 @@ const nuschl::s_exp *nuschl::interpreter::eval_special(const s_exp *exp) {
     } else if (value == "if") {
         return eval_special_if(exp);
     } else if (value == "define") {
-        auto args = exp->cdr();
-        if (!(is_cell(args) && list_size(args) > 1)) {
-            throw eval_error("Define requires two arguments, got too few.",
-                             exp);
-        }
-        if (list_size(args) > 2) {
-            throw eval_error("Define requires two arguments, got too many.",
-                             exp);
-        }
-        const s_exp *var = args->car();
-        const s_exp *e = eval(args->cdr()->car());
-        if (!(var->is_atom() && var->get_atom()->is_symbol())) {
-            throw eval_error("Expected symbol as first argument", exp);
-        }
-        m_env_stack.top()->set(var->get_atom()->get_symbol(), e);
-        return e;
+        return eval_special_define(exp);
     } else if (value == "let") {
         return eval_special_let(exp);
     } else if (value == "lambda") {
