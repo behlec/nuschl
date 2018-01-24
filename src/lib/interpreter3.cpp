@@ -80,10 +80,10 @@ void nuschl::interpreter3::reset() {
 }
 
 void nuschl::interpreter3::push_stacks() {
-    stacks tmp;
-    tmp.arg_stack.swap(m_arg_stack);
-    tmp.uneval_stack.swap(m_uneval_stack);
-    m_stack_stack.push(tmp);
+    stacks new_top;
+    new_top.arg_stack.swap(m_arg_stack);
+    new_top.uneval_stack.swap(m_uneval_stack);
+    m_stack_stack.push(new_top);
     push_ops();
     internal_assert(m_uneval_stack.empty(),
                     "Huh, rainbow Carrot? Uneval stack should be empty.");
@@ -338,6 +338,9 @@ start:
             break;
         case op::define: {
             auto var = m_arg_stack.top();
+            internal_assert(is_symbol(var),
+                            "Huh, Earsplitting Muscle? Expected "
+                            "variable name on argument stack.");
             m_arg_stack.pop();
             m_env_stack.top()->set(var->get_atom()->get_symbol(), m_regs.acc);
             break;

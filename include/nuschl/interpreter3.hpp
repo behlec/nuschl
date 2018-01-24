@@ -58,13 +58,13 @@ class interpreter3 {
 
     //! The internal instruction set.
     enum class op {
-        //! Evaluate the top argument on the unevaluated stack.
+        //! Evaluate the top argument on the unevaluated stack. Must be an
+        //! S-expression.
         evalarg,
         //! Push the contents of the accumulator on the unevaluated stack.
         pusharg,
-        /**
-         * Load top of argument stack into accumulator and clear argument stack.
-         */
+        //! Load top of argument stack into accumulator and clear argument
+        //! stack.
         popargs,
         //! Evaluate an if expression.
         ifexp,
@@ -81,7 +81,8 @@ class interpreter3 {
          * argument stack. I.e. it has to be a list of symbol names.
          */
         makeenv,
-        //! Set variable to value.
+        //! Set variable to value. Value must be in the accumulator, variable
+        //! name is on argument stack.
         define
     };
 
