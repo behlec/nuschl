@@ -139,7 +139,12 @@ const nuschl::s_exp *nuschl::interpreter::eval_special(const s_exp *exp) {
     } else if (value == "define") {
         auto args = exp->cdr();
         if (!(is_cell(args) && list_size(args) > 1)) {
-            throw eval_error("Define requires two arguments", exp);
+            throw eval_error("Define requires two arguments, got too few.",
+                             exp);
+        }
+        if (list_size(args) > 2) {
+            throw eval_error("Define requires two arguments, got too many.",
+                             exp);
         }
         const s_exp *var = args->car();
         const s_exp *e = eval(args->cdr()->car());
