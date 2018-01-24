@@ -121,7 +121,7 @@ BOOST_AUTO_TEST_CASE(UnboundVariable) {
                           });
 }
 
-BOOST_AUTO_TEST_CASE(WrongDefine) {
+BOOST_AUTO_TEST_CASE(WrongDefine_NeedSymbol) {
     std::string code = "(define 3 4)";
     nuschl::parsing::parser p(code, pool);
     auto pres = p.parse();
@@ -129,6 +129,28 @@ BOOST_AUTO_TEST_CASE(WrongDefine) {
     BOOST_CHECK_EXCEPTION(
         interp.run(), nuschl::eval_error, [](const nuschl::eval_error &e) {
             return "Expected symbol as first argument"s == e.what();
+        });
+}
+
+BOOST_AUTO_TEST_CASE(WrongDefineTooManyArguments) {
+    std::string code = "(define a 4 b 2)";
+    nuschl::parsing::parser p(code, pool);
+    auto pres = p.parse();
+    nuschl::interpreter3 interp(pres.ast, nuschl::default_env.copy(), &pool);
+    BOOST_CHECK_EXCEPTION(
+        interp.run(), nuschl::eval_error, [](const nuschl::eval_error &e) {
+            return "Define requires two arguments, got too many."s == e.what();
+        });
+}
+
+BOOST_AUTO_TEST_CASE(WrongDefineTooFewArguments) {
+    std::string code = "(define a)";
+    nuschl::parsing::parser p(code, pool);
+    auto pres = p.parse();
+    nuschl::interpreter3 interp(pres.ast, nuschl::default_env.copy(), &pool);
+    BOOST_CHECK_EXCEPTION(
+        interp.run(), nuschl::eval_error, [](const nuschl::eval_error &e) {
+            return "Define requires two arguments, got too few."s == e.what();
         });
 }
 

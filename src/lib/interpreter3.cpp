@@ -157,6 +157,15 @@ void nuschl::interpreter3::eval_special_if() {
 void nuschl::interpreter3::eval_special_define() {
     auto exp = m_regs.pc;
     auto args = exp->cdr();
+    if (!is_cell(args)) {
+        throw eval_error("Define expects list as arguments", exp);
+    }
+    if (list_size(args) < 2) {
+        throw eval_error("Define requires two arguments, got too few.", exp);
+    }
+    if (list_size(args) > 2) {
+        throw eval_error("Define requires two arguments, got too many.", exp);
+    }
     const s_exp *var = args->car();
     m_regs.pc = args->cdr()->car();
     if (!(var->is_atom() && var->get_atom()->is_symbol())) {
