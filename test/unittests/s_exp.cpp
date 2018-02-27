@@ -32,6 +32,7 @@ BOOST_AUTO_TEST_CASE(Create_from_atom) {
     BOOST_CHECK(!e.is_cell());
     BOOST_CHECK(!e.is_primitive());
     BOOST_CHECK(!e.is_lambda());
+    BOOST_CHECK(!e.is_nil());
 }
 
 BOOST_AUTO_TEST_CASE(Create_list) {
