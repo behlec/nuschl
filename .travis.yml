@@ -39,9 +39,9 @@ before_install:
 install:
   - cp helper/getboost.sh .
   - ./getboost.sh
-  - tar xzf download/boost_1_59_0.tar.gz
-  - cp helper/buildboost.sh boost_1_59_0/
-  - cd boost_1_59_0/
+  - tar xzf download/boost-1.59.0.tar.gz
+  - cp helper/buildboost.sh boost-boost-1.59.0/
+  - cd boost-boost-1.59.0/
   - ./bootstrap.sh
   - ./buildboost.sh
   - cd ..

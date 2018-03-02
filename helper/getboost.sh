@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ -e download/boost_1_59_0.tar.gz ]; then
+if [ -e download/boost-1.59.0.tar.gz ]; then
   echo 'Boost is already there'
   exit
 fi
