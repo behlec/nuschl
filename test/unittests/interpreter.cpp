@@ -22,6 +22,11 @@ using namespace std::string_literals;
 namespace bdata = boost::unit_test::data;
 namespace tt = boost::test_tools;
 
+#define PARSE_AND_SETUP                                                        \
+    nuschl::parsing::parser p(code, pool);                                     \
+    auto pres = p.parse();                                                     \
+    nuschl::interpreter interp(nuschl::default_env.copy(), &pool);
+
 BOOST_AUTO_TEST_SUITE(TestInterpreter)
 
 nuschl::memory::s_exp_pool pool;
@@ -46,86 +51,66 @@ std::vector<nuschl::testing::string_to_s_exp> examples = {
 
 BOOST_DATA_TEST_CASE(Data, bdata::make(examples), example) {
     std::string code = example.input;
-    nuschl::parsing::parser p(code, pool);
-    auto pres = p.parse();
-    nuschl::interpreter interp(nuschl::default_env.copy(), &pool);
+    PARSE_AND_SETUP
     BOOST_CHECK_EQUAL(*example.expected, *interp.proc(pres.ast));
 }
 
 BOOST_AUTO_TEST_CASE(Tprim) {
     std::string code = "+";
-    nuschl::parsing::parser p(code, pool);
-    auto pres = p.parse();
-    nuschl::interpreter interp(nuschl::default_env.copy(), &pool);
+    PARSE_AND_SETUP
     BOOST_CHECK(interp.proc(pres.ast)->is_primitive());
 }
 
 BOOST_AUTO_TEST_CASE(Tnil) {
     std::string code = "nil";
-    nuschl::parsing::parser p(code, pool);
-    auto pres = p.parse();
-    nuschl::interpreter interp(nuschl::default_env.copy(), &pool);
+    PARSE_AND_SETUP
     BOOST_CHECK(nuschl::s_exp::nil == interp.proc(pres.ast));
     BOOST_CHECK(*nuschl::s_exp::nil == *interp.proc(pres.ast));
 }
 
 BOOST_AUTO_TEST_CASE(Tlambda) {
     std::string code = "(lambda (x) x)";
-    nuschl::parsing::parser p(code, pool);
-    auto pres = p.parse();
-    nuschl::interpreter interp(nuschl::default_env.copy(), &pool);
+    PARSE_AND_SETUP
     BOOST_CHECK(interp.proc(pres.ast)->is_lambda());
 }
 
 BOOST_AUTO_TEST_CASE(Eqnil) {
     std::string code = "(eq nil nil)";
-    nuschl::parsing::parser p(code, pool);
-    auto pres = p.parse();
-    nuschl::interpreter interp(nuschl::default_env.copy(), &pool);
+    PARSE_AND_SETUP
     BOOST_CHECK_EQUAL(nuschl::s_exp::tru, interp.proc(pres.ast));
 }
 
 BOOST_AUTO_TEST_CASE(Eqnilel) {
     std::string code = "(eq nil (list))";
-    nuschl::parsing::parser p(code, pool);
-    auto pres = p.parse();
-    nuschl::interpreter interp(nuschl::default_env.copy(), &pool);
+    PARSE_AND_SETUP
     BOOST_CHECK_EQUAL(nuschl::s_exp::tru, interp.proc(pres.ast));
 }
 
 BOOST_AUTO_TEST_CASE(Eqnilel2) {
     std::string code = "(eq nil ())";
-    nuschl::parsing::parser p(code, pool);
-    auto pres = p.parse();
-    nuschl::interpreter interp(nuschl::default_env.copy(), &pool);
+    PARSE_AND_SETUP
     BOOST_CHECK_EQUAL(nuschl::s_exp::tru, interp.proc(pres.ast));
 }
 
 BOOST_AUTO_TEST_CASE(Quote) {
     std::string code = "(quote 5)";
-    nuschl::parsing::parser p(code, pool);
-    auto pres = p.parse();
-    nuschl::interpreter interp(nuschl::default_env.copy(), &pool);
+    PARSE_AND_SETUP
     BOOST_CHECK_EQUAL(*pool.create_atom(nuschl::number{5}),
                       *interp.proc(pres.ast));
 }
 
 BOOST_AUTO_TEST_CASE(UnboundVariable) {
     std::string code = "x";
-    nuschl::parsing::parser p(code, pool);
-    auto pres = p.parse();
-    nuschl::interpreter interp(nuschl::default_env.copy(), &pool);
+    PARSE_AND_SETUP
     BOOST_CHECK_EXCEPTION(interp.proc(pres.ast), nuschl::eval_error,
                           [](const nuschl::eval_error &e) {
                               return "Unbound variable: x"s == e.what();
                           });
 }
 
-BOOST_AUTO_TEST_CASE(WrongDefine) {
+BOOST_AUTO_TEST_CASE(WrongDefine_NeedSymbol) {
     std::string code = "(define 3 4)";
-    nuschl::parsing::parser p(code, pool);
-    auto pres = p.parse();
-    nuschl::interpreter interp(nuschl::default_env.copy(), &pool);
+    PARSE_AND_SETUP
     BOOST_CHECK_EXCEPTION(interp.proc(pres.ast), nuschl::eval_error,
                           [](const nuschl::eval_error &e) {
                               return "Expected symbol as first argument"s ==
@@ -133,20 +118,40 @@ BOOST_AUTO_TEST_CASE(WrongDefine) {
                           });
 }
 
-BOOST_AUTO_TEST_CASE(GoodLet) {
-    std::string code = "(let ((a 4)(b 2)) a)";
+BOOST_AUTO_TEST_CASE(WrongDefineTooManyArguments) {
+    std::string code = "(define a 4 b 2)";
     nuschl::parsing::parser p(code, pool);
     auto pres = p.parse();
     nuschl::interpreter interp(nuschl::default_env.copy(), &pool);
+    BOOST_CHECK_EXCEPTION(
+        interp.proc(pres.ast), nuschl::eval_error,
+        [](const nuschl::eval_error &e) {
+            return "Define requires two arguments, got too many."s == e.what();
+        });
+}
+
+BOOST_AUTO_TEST_CASE(WrongDefineTooFewArguments) {
+    std::string code = "(define a)";
+    nuschl::parsing::parser p(code, pool);
+    auto pres = p.parse();
+    nuschl::interpreter interp(nuschl::default_env.copy(), &pool);
+    BOOST_CHECK_EXCEPTION(
+        interp.proc(pres.ast), nuschl::eval_error,
+        [](const nuschl::eval_error &e) {
+            return "Define requires two arguments, got too few."s == e.what();
+        });
+}
+
+BOOST_AUTO_TEST_CASE(GoodLet) {
+    std::string code = "(let ((a 4)(b 2)) a)";
+    PARSE_AND_SETUP
     BOOST_CHECK_EQUAL(*pool.create_atom(nuschl::number{4}),
                       *interp.proc(pres.ast));
 }
 
 BOOST_AUTO_TEST_CASE(WrongPrimitiveInvocation) {
     std::string code = "(+ (quote x))";
-    nuschl::parsing::parser p(code, pool);
-    auto pres = p.parse();
-    nuschl::interpreter interp(nuschl::default_env.copy(), &pool);
+    PARSE_AND_SETUP
     BOOST_CHECK_EXCEPTION(interp.proc(pres.ast), nuschl::eval_error,
                           [](const nuschl::eval_error &e) {
                               return "+ expects only numbers as arguments."s ==
@@ -156,9 +161,7 @@ BOOST_AUTO_TEST_CASE(WrongPrimitiveInvocation) {
 
 BOOST_AUTO_TEST_CASE(NoFunction) {
     std::string code = "(1 2)";
-    nuschl::parsing::parser p(code, pool);
-    auto pres = p.parse();
-    nuschl::interpreter interp(nuschl::default_env.copy(), &pool);
+    PARSE_AND_SETUP
     BOOST_CHECK_EXCEPTION(interp.proc(pres.ast), nuschl::eval_error,
                           [](const nuschl::eval_error &e) {
                               return "Expected function at first position"s ==
@@ -183,9 +186,7 @@ std::vector<nuschl::testing::string_to_string> examples = {
 
 BOOST_DATA_TEST_CASE(WrongLambda, bdata::make(examples), example) {
     std::string code = example.input;
-    nuschl::parsing::parser p(code, pool);
-    auto pres = p.parse();
-    nuschl::interpreter interp(nuschl::default_env.copy(), &pool);
+    PARSE_AND_SETUP
     BOOST_CHECK_EXCEPTION(interp.proc(pres.ast), nuschl::eval_error,
                           [&example](const nuschl::eval_error &e) {
                               return example.expected == e.what();
@@ -208,9 +209,7 @@ std::vector<nuschl::testing::string_to_string> examples = {
 
 BOOST_DATA_TEST_CASE(WrongLambda, bdata::make(examples), example) {
     std::string code = example.input;
-    nuschl::parsing::parser p(code, pool);
-    auto pres = p.parse();
-    nuschl::interpreter interp(nuschl::default_env.copy(), &pool);
+    PARSE_AND_SETUP
     BOOST_CHECK_EXCEPTION(interp.proc(pres.ast), nuschl::eval_error,
                           [&example](const nuschl::eval_error &e) {
                               return example.expected == e.what();
@@ -230,9 +229,7 @@ std::vector<nuschl::testing::string_to_string> examples = {
 
 BOOST_DATA_TEST_CASE(WrongIf, bdata::make(examples), example) {
     std::string code = example.input;
-    nuschl::parsing::parser p(code, pool);
-    auto pres = p.parse();
-    nuschl::interpreter interp(nuschl::default_env.copy(), &pool);
+    PARSE_AND_SETUP
     BOOST_CHECK_EXCEPTION(interp.proc(pres.ast), nuschl::eval_error,
                           [&example](const nuschl::eval_error &e) {
                               return example.expected == e.what();

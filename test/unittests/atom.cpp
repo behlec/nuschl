@@ -29,6 +29,9 @@ BOOST_AUTO_TEST_CASE(Creation) {
     BOOST_CHECK_EQUAL(a.get_symbol().get_value(), "hallo");
     BOOST_CHECK_EQUAL(b.get_symbol().get_value(), "hallo");
     BOOST_CHECK_EQUAL(c.get_symbol().get_value(), "hello");
+    BOOST_REQUIRE(!a.is_number());
+    BOOST_REQUIRE(!b.is_number());
+    BOOST_REQUIRE(!c.is_number());
 
     BOOST_REQUIRE(d.is_number());
     BOOST_REQUIRE(e.is_number());
@@ -36,6 +39,9 @@ BOOST_AUTO_TEST_CASE(Creation) {
     BOOST_CHECK_EQUAL(d.get_number().get_value(), 23);
     BOOST_CHECK_EQUAL(e.get_number().get_value(), 23);
     BOOST_CHECK_EQUAL(f.get_number().get_value(), 42);
+    BOOST_REQUIRE(!d.is_symbol());
+    BOOST_REQUIRE(!e.is_symbol());
+    BOOST_REQUIRE(!f.is_symbol());
 }
 
 BOOST_AUTO_TEST_CASE(Comparison) {
