@@ -11,6 +11,7 @@
 #include <nuschl/util/s_exp_helpers.hpp>
 
 #include <nuschl/unittests/string_to_s_exp.hpp>
+#include <nuschl/unittests/parsestring.hpp>
 
 #include <sstream>
 
@@ -19,12 +20,12 @@ using namespace std::string_literals;
 namespace bdata = boost::unit_test::data;
 namespace tt = boost::test_tools;
 
+using nuschl::testing::parse_string;
+
 BOOST_AUTO_TEST_SUITE(Parser)
 BOOST_AUTO_TEST_CASE(Symbol) {
-    nuschl::memory::s_exp_pool pool;
-    std::string code = "foo";
-    nuschl::parsing::parser p(code, pool);
-    auto a = p.parse().ast;
+    parse_string v("foo");
+    auto a = v();
     BOOST_REQUIRE(a);
     BOOST_REQUIRE(a->is_cell());
     BOOST_REQUIRE(a->car()->is_atom());
@@ -33,10 +34,8 @@ BOOST_AUTO_TEST_CASE(Symbol) {
 }
 
 BOOST_AUTO_TEST_CASE(Number) {
-    nuschl::memory::s_exp_pool pool;
-    std::string code = "23";
-    nuschl::parsing::parser p(code, pool);
-    auto a = p.parse().ast;
+    parse_string v("23");
+    auto a = v();
     BOOST_REQUIRE(a);
     BOOST_REQUIRE(a->is_cell());
     BOOST_REQUIRE(a->car()->is_atom());
@@ -45,10 +44,8 @@ BOOST_AUTO_TEST_CASE(Number) {
 }
 
 BOOST_AUTO_TEST_CASE(List) {
-    nuschl::memory::s_exp_pool pool;
-    std::string code = "1 2 3";
-    nuschl::parsing::parser p(code, pool);
-    auto a = p.parse().ast;
+    parse_string v("1 2 3");
+    auto a = v();
     for (int i = 1; i < 4; ++i) {
         BOOST_REQUIRE(a);
         BOOST_REQUIRE(a->is_cell());
@@ -60,10 +57,8 @@ BOOST_AUTO_TEST_CASE(List) {
 }
 
 BOOST_AUTO_TEST_CASE(List2) {
-    nuschl::memory::s_exp_pool pool;
-    std::string code = "(1 2 3)";
-    nuschl::parsing::parser p(code, pool);
-    auto a = p.parse().ast;
+    parse_string v("(1 2 3)");
+    auto a = v();
     BOOST_REQUIRE(a);
     BOOST_REQUIRE(a->is_cell());
     a = a->car();
@@ -78,10 +73,8 @@ BOOST_AUTO_TEST_CASE(List2) {
     BOOST_CHECK(nuschl::is_empty_cell(a));
 }
 BOOST_AUTO_TEST_CASE(List3) {
-    nuschl::memory::s_exp_pool pool;
-    std::string code = "(1 2) (3 4)";
-    nuschl::parsing::parser p(code, pool);
-    auto l = p.parse().ast;
+    parse_string v("(1 2) (3 4)");
+    auto l = v();
     BOOST_REQUIRE(l);
     BOOST_REQUIRE(l->is_cell());
     auto a = l->car();
