@@ -16,6 +16,7 @@ endif
 
 test_lib_files = files(
     'lib/helper.cpp',
+    'lib/parsestring.cpp',
     'lib/string_to_s_exp.cpp',
     'lib/s_exp_to_string.cpp',
     'lib/unique.cpp',
