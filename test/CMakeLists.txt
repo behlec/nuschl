@@ -1,3 +1,10 @@
+
+# Compile time tests
+
+add_executable(is_printable compiletime/is_printable.cpp )
+target_include_directories(is_printable PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+
+
 # Unittests
 
 find_package(Boost 1.59.0 COMPONENTS unit_test_framework)
