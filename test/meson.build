@@ -56,3 +56,9 @@ unit_test_files = [
 
 exe = executable('unittests', unit_test_files, dependencies: [nuschl_dep, boost_test_dep, nuschl_test_dep])
 test('unittests', exe)
+
+#####################
+# Compile time tests
+#####################
+
+exe = executable('is_printable', 'compiletime/is_printable.cpp', include_directories: nuschl_test_inc )

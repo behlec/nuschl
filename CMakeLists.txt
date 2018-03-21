@@ -35,17 +35,7 @@ set(NUSCHL_LIB_FILES
 
 find_package(Boost 1.59.0 COMPONENTS unit_test_framework)
 
-if(Boost_FOUND)
-  if (Boost_UNIT_TEST_FRAMEWORK_FOUND)
-    message("Tests enabled")
-    enable_testing()
-    add_subdirectory("test")
-  else()
-    message("Tests disabled, boost unit testing framework required")
-  endif()
-else()
-  message("Boost not found")
-endif()
+add_subdirectory("test")
 
 add_library(nuschl-lib ${NUSCHL_LIB_FILES})
 

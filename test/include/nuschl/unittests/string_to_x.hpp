@@ -8,8 +8,10 @@
 #include <nuschl/s_exp.hpp>
 
 #include <nuschl/unittests/vector_printer.hpp>
+#include <nuschl/unittests/is_printable.hpp>
 
 #include <iostream>
+#include <type_traits>
 #include <vector>
 
 namespace nuschl::testing {
@@ -17,14 +19,18 @@ namespace nuschl::testing {
 template <typename T> struct string_to_x {
     std::string input;
     T expected;
+
+    static_assert(tmetap::is_printable<T>::value,
+                  "Template parameter for string_to_x must be printable");
 };
 }
 
 template <typename T>
-std::ostream &operator<<(std::ostream &os,
-                         nuschl::testing::string_to_x<T> const &pe) {
-    static_assert(decltype(os << pe.expected, std::true_type())::value,
-                  "Must be able to print pe.expected");
+typename std::enable_if<std::is_same<decltype(std::declval<std::ostream &>()
+                                              << std::declval<const T &>()),
+                                     std::ostream &>::value,
+                        std::ostream &>::type
+operator<<(std::ostream &os, nuschl::testing::string_to_x<T> const &pe) {
     os << "{ \"" << pe.input << "\", " << pe.expected << "}";
     return os;
 }

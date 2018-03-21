@@ -130,11 +130,9 @@ else
     boost_test_dep = dependency('boost', modules: ['unit_test_framework'], required: true, version: '>=1.59.0')
 endif
 
-################################
-#
-# Examples and Tests
-#
-################################
+########
+# Tests
+########
 
 subdir('test')
 
