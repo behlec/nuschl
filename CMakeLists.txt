@@ -36,6 +36,7 @@ set(NUSCHL_LIB_FILES
 find_package(Boost 1.59.0 COMPONENTS unit_test_framework)
 
 add_subdirectory("test")
+enable_testing()
 
 add_library(nuschl-lib ${NUSCHL_LIB_FILES})
 
