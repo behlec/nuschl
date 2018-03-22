@@ -5,6 +5,8 @@
 
 #include <cassert>
 #include <stack>
+#include <string>
+#include <string_view>
 
 nuschl::parsing::parser::parser(const std::string &input,
                                 memory::s_exp_pool &pool)
@@ -45,8 +47,7 @@ nuschl::parsing::parse_result nuschl::parsing::parser::parse() {
         } else if (it->is_atom()) {
             atom_ptr a;
             assert(it->value().size() > 0);
-            // FIXME this is fragile.
-            if (isdigit(it->value()[0])) {
+            if (is_number(it->value())) {
                 a = make_atom(number(stoi(it->value())));
             } else {
                 a = make_atom(it->value());
@@ -71,4 +72,22 @@ nuschl::parsing::parse_result nuschl::parsing::parser::parse() {
     stack.pop();
     assert(stack.empty());
     return parse_result{ret};
+}
+
+bool nuschl::parsing::parser::is_number(const std::string &s) {
+    if (s.empty()) {
+        return false;
+    }
+    std::string_view to_test(s);
+    if ((s[0] == '+') || (s[0] == '-')) {
+        to_test = std::string_view(s.c_str() + 1, s.size() - 1);
+    }
+    if (to_test.empty()) {
+        return false;
+    }
+    if (to_test.find_first_not_of("0123456789") == std::string_view::npos) {
+        return true;
+    } else {
+        return false;
+    }
 }

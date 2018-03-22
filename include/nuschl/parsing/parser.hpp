@@ -18,6 +18,14 @@ class parser {
 
     parse_result parse();
 
+    /**
+     * \brief Check if a token is a number.
+     *
+     * Returns true if the string is of the form [+-]?[0-9]+.
+     * Returns false if the string is not a number or empty.
+     */
+    static bool is_number(const std::string &s);
+
   private:
     const std::string &m_input;
     memory::s_exp_pool &m_pool;

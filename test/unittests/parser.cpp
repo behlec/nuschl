@@ -11,6 +11,7 @@
 #include <nuschl/util/s_exp_helpers.hpp>
 
 #include <nuschl/unittests/string_to_s_exp.hpp>
+#include <nuschl/unittests/string_to_x.hpp>
 #include <nuschl/unittests/parsestring.hpp>
 
 #include <sstream>
@@ -41,6 +42,30 @@ BOOST_AUTO_TEST_CASE(Number) {
     BOOST_REQUIRE(a->car()->is_atom());
     BOOST_REQUIRE(a->car()->get_atom()->is_number());
     BOOST_CHECK_EQUAL(a->car()->get_atom()->get_number(), nuschl::number(23));
+}
+
+BOOST_AUTO_TEST_CASE(SymbolStartsWithNumber) {
+    nuschl::memory::s_exp_pool pool;
+    std::string code = "23a";
+    nuschl::parsing::parser p(code, pool);
+    auto a = p.parse().ast;
+    BOOST_REQUIRE(a);
+    BOOST_REQUIRE(a->is_cell());
+    BOOST_REQUIRE(a->car()->is_atom());
+    BOOST_REQUIRE(a->car()->get_atom()->is_symbol());
+    BOOST_CHECK(a->car()->get_atom()->get_symbol() == "23a");
+}
+
+BOOST_AUTO_TEST_CASE(SymbolContainsNumber) {
+    nuschl::memory::s_exp_pool pool;
+    std::string code = "a23a";
+    nuschl::parsing::parser p(code, pool);
+    auto a = p.parse().ast;
+    BOOST_REQUIRE(a);
+    BOOST_REQUIRE(a->is_cell());
+    BOOST_REQUIRE(a->car()->is_atom());
+    BOOST_REQUIRE(a->car()->get_atom()->is_symbol());
+    BOOST_CHECK(a->car()->get_atom()->get_symbol() == "a23a");
 }
 
 BOOST_AUTO_TEST_CASE(List) {
@@ -105,6 +130,25 @@ BOOST_AUTO_TEST_CASE(List3) {
 BOOST_AUTO_TEST_SUITE_END()
 
 using namespace nuschl;
+using namespace nuschl::testing;
+
+BOOST_AUTO_TEST_SUITE(TokenTest)
+
+memory::s_exp_pool pool;
+
+std::vector<string_to_x<bool>> examples = {
+    {""s, false},     {"a"s, false},    {"1a"s, false},   {"a1"s, false},
+    {"+1a"s, false},  {"-1a"s, false},  {"1"s, true},     {"0"s, true},
+    {"+1"s, true},    {"-1"s, true},    {"+12"s, true},   {"-12"s, true},
+    {"++1"s, false},  {"--1"s, false},  {"+-1"s, false},  {"+-1"s, false},
+    {"++12"s, false}, {"--12"s, false}, {"+-12"s, false}, {"+-12"s, false},
+    {"+1+"s, false},  {"-1-"s, false},  {"+1-"s, false},  {"+1-"s, false}};
+
+BOOST_DATA_TEST_CASE(Parsing, bdata::make(examples), example) {
+    BOOST_CHECK_EQUAL(nuschl::parsing::parser::is_number(example.input),
+                      example.expected);
+}
+BOOST_AUTO_TEST_SUITE_END()
 
 BOOST_AUTO_TEST_SUITE(ParserData)
 
