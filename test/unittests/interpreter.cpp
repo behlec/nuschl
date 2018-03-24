@@ -12,7 +12,7 @@
 #include <nuschl/parsing/parser.hpp>
 
 #include <nuschl/unittests/string_to_s_exp.hpp>
-#include <nuschl/unittests/string_to_string.hpp>
+#include <nuschl/unittests/string_to_x.hpp>
 
 #include <nuschl/exceptions.hpp>
 #include <nuschl/util/s_exp_helpers.hpp>
@@ -175,7 +175,7 @@ BOOST_AUTO_TEST_SUITE(TestLet)
 
 nuschl::memory::s_exp_pool pool;
 
-std::vector<nuschl::testing::string_to_string> examples = {
+std::vector<nuschl::testing::string_to_x<std::string>> examples = {
     {"(let)"s,
      "Let requires one argument with the list of pairs and the body"s},
     {"(let 2)"s,
@@ -199,7 +199,7 @@ BOOST_AUTO_TEST_SUITE(TestLambda)
 
 nuschl::memory::s_exp_pool pool;
 
-std::vector<nuschl::testing::string_to_string> examples = {
+std::vector<nuschl::testing::string_to_x<std::string>> examples = {
     {"(lambda 3)"s, "Expect at least two arguments to lambda"s},
     {"(lambda (3) 3)"s,
      "Expected list of symbols as first argument to lambda"s},
@@ -222,7 +222,7 @@ BOOST_AUTO_TEST_SUITE(TestIf)
 
 nuschl::memory::s_exp_pool pool;
 
-std::vector<nuschl::testing::string_to_string> examples = {
+std::vector<nuschl::testing::string_to_x<std::string>> examples = {
     {"(if)"s, "if requires two or three arguments"s},
     {"(if 1)"s, "if requires two or three arguments"s},
     {"(if 1 2 3 4)"s, "if requires two or three arguments"s}};
