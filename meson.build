@@ -8,8 +8,6 @@ project('nuschl', 'cpp', default_options : ['cpp_std=c++1z'])
 
 version = '0.1-dev'
 
-add_project_arguments(['-DBOOST_LOG_DYN_LINK'], language : 'cpp')
-
 # We compile with libc++
 if get_option('libcpp')
     message('Using libcpp')
