@@ -99,7 +99,7 @@ nuschl_files = files(
 
 nuschl_inc = include_directories('include')
 
-nuschl_lib = static_library('nuschl', nuschl_files, include_directories: nuschl_inc, dependencies: boost_dep)
+nuschl_lib = library('nuschl', nuschl_files, include_directories: nuschl_inc, dependencies: boost_dep)
 nuschl_dep = declare_dependency(include_directories: nuschl_inc, link_with: nuschl_lib)
 
 
