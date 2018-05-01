@@ -21,7 +21,7 @@ argument_checker all_numbers() {
         }
         throw eval_argument_error("expects only numbers as arguments.");
     });
-};
+}
 
 argument_checker exact_n_args(size_t n) {
     return argument_checker([n](const std::vector<s_exp_ptr> &args) {
@@ -56,5 +56,5 @@ argument_checker is_list() {
         }
         throw eval_argument_error("expects a list as argument.");
     });
-};
+}
 }

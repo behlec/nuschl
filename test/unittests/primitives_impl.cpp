@@ -175,7 +175,7 @@ BOOST_AUTO_TEST_CASE(simple) {
     primitive_impl::to_numbers(args.begin(), args.end(),
                                std::back_inserter(res));
 
-    BOOST_REQUIRE_EQUAL(res.size(), 1);
+    BOOST_REQUIRE_EQUAL(res.size(), 1ul);
     BOOST_CHECK_EQUAL(res[0], number{1});
 }
 
@@ -189,7 +189,7 @@ BOOST_AUTO_TEST_CASE(simple2) {
     primitive_impl::to_numbers(args.begin(), args.end(),
                                std::back_inserter(res));
 
-    BOOST_REQUIRE_EQUAL(res.size(), 3);
+    BOOST_REQUIRE_EQUAL(res.size(), 3ul);
     BOOST_CHECK_EQUAL(res[0], number{1});
     BOOST_CHECK_EQUAL(res[1], number{2});
     BOOST_CHECK_EQUAL(res[2], number{3});
