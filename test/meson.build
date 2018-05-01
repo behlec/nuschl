@@ -24,7 +24,7 @@ test_lib_files = files(
 )
 
 nuschl_test_inc = include_directories('include')
-nuschl_test_lib = static_library('nuschl-test', test_lib_files, include_directories: nuschl_test_inc, dependencies: [nuschl_dep, boost_test_dep])
+nuschl_test_lib = library('nuschl-test', test_lib_files, include_directories: nuschl_test_inc, dependencies: [nuschl_dep, boost_test_dep])
 nuschl_test_dep = declare_dependency(include_directories: nuschl_test_inc, link_with: nuschl_test_lib)
 
 unit_test_files = [
