@@ -130,7 +130,7 @@ class Conf
     @@mesonconf
   end
 
-  DEFAULT = {builds: {def: ["g++", true] }, default: :def, mesonconf: ["warning_level=3"] }
+  DEFAULT = {builds: {def: ["g++", true] }, default: :def, mesonconf: ["warning_level=3"], run:{} }
 end
 
 def load_config
