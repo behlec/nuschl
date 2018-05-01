@@ -134,19 +134,19 @@ class Conf
 end
 
 def load_config
-  if !File.exists?("Rakefile.yaml")
-    puts "No config file Rakefile.yaml found, fallback to default"
+  if !File.exists?("Rakefile.yml")
+    puts "No config file Rakefile.yml found, fallback to default"
     return Conf.createDefault
   end
   begin
-    c = Conf.new(YAML.load_file("Rakefile.yaml"))
+    c = Conf.new(YAML.load_file("Rakefile.yml"))
     if c.good?
       return c
     else
       return Conf.createDefault
     end
   rescue => e
-    puts "Error loading config file Rakefile.yaml", e
+    puts "Error loading config file Rakefile.yml", e
   end
   return Conf.createDefault
 end
