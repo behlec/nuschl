@@ -36,14 +36,14 @@ BOOST_AUTO_TEST_CASE(tisfalse) {
 BOOST_AUTO_TEST_CASE(tlist_size) {
     auto f = nuschl::s_exp::fals;
     auto l0 = pool.create(nuschl::s_exp::nil, nuschl::s_exp::nil);
-    BOOST_CHECK_EQUAL(0, nuschl::list_size(nuschl::s_exp::nil));
-    BOOST_CHECK_EQUAL(0, nuschl::list_size(l0));
+    BOOST_CHECK_EQUAL(0ul, nuschl::list_size(nuschl::s_exp::nil));
+    BOOST_CHECK_EQUAL(0ul, nuschl::list_size(l0));
     auto l1 = pool.create(f, l0);
     auto l2 = pool.create(f, l1);
     auto l3 = pool.create(f, l2);
-    BOOST_CHECK_EQUAL(1, nuschl::list_size(l1));
-    BOOST_CHECK_EQUAL(2, nuschl::list_size(l2));
-    BOOST_CHECK_EQUAL(3, nuschl::list_size(l3));
+    BOOST_CHECK_EQUAL(1ul, nuschl::list_size(l1));
+    BOOST_CHECK_EQUAL(2ul, nuschl::list_size(l2));
+    BOOST_CHECK_EQUAL(3ul, nuschl::list_size(l3));
 }
 
 BOOST_AUTO_TEST_CASE(tlist_to_cont) {
@@ -57,7 +57,7 @@ BOOST_AUTO_TEST_CASE(tlist_to_cont) {
         nuschl::s_exp(nuschl::make_atom(nuschl::number{2})),
         nuschl::s_exp(nuschl::make_atom(nuschl::number{3})),
         nuschl::s_exp(nuschl::make_atom(nuschl::number{4}))};
-    BOOST_REQUIRE_EQUAL(4, res.size());
+    BOOST_REQUIRE_EQUAL(4ul, res.size());
     BOOST_CHECK_EQUAL(exp[0], *res[0]);
     BOOST_CHECK_EQUAL(exp[1], *res[1]);
     BOOST_CHECK_EQUAL(exp[2], *res[2]);
@@ -70,10 +70,10 @@ BOOST_AUTO_TEST_CASE(tlist_to_cont_empty) {
     nuschl::parsing::parser p(code, pool);
     auto pres = p.parse();
     nuschl::list_to_cont(pres.ast, std::back_inserter(res));
-    BOOST_CHECK_EQUAL(0, res.size());
+    BOOST_CHECK_EQUAL(0ul, res.size());
     auto ast = pool.create(nuschl::make_number(1, &pool), nuschl::s_exp::nil);
     nuschl::list_to_cont(ast, std::back_inserter(res));
-    BOOST_REQUIRE_EQUAL(1, res.size());
+    BOOST_REQUIRE_EQUAL(1ul, res.size());
     BOOST_CHECK(is_number(res[0]));
 }
 
